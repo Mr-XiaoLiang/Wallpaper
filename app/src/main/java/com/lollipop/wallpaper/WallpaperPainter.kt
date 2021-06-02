@@ -1,4 +1,4 @@
-package com.lollipoppp.wallpaper
+package com.lollipop.wallpaper
 
 import android.graphics.*
 import kotlin.math.max
