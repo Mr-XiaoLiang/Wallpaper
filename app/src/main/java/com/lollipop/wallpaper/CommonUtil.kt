@@ -85,17 +85,21 @@ object CommonUtil {
         if (value.isEmpty()) {
             return ""
         }
-        val iMax = value.size - 1
         val b = StringBuilder()
-        var i = 0
-        while (true) {
-            b.append(value[i].toString())
-            if (i == iMax) {
-                return b.toString()
+        value.forEach { any ->
+            if (any is Throwable) {
+                val outputStream = ByteArrayOutputStream()
+                val printer = PrintWriter(outputStream)
+                any.printStackTrace(printer)
+                printer.flush()
+                b.append(outputStream.toString())
+                b.append("\n")
+            } else {
+                b.append(any.toString())
+                b.append(" ")
             }
-            b.append(" ")
-            i++
         }
+        return b.toString()
     }
 
     /**
@@ -591,14 +595,22 @@ inline fun <reified T : Any> check(ctx: Any? = null, run: (T) -> Unit): Boolean 
 }
 
 inline fun <T : View> T.visibleOrGone(boolean: Boolean, onVisible: (T.() -> Unit) = {}) {
-    visibility = if (boolean) { View.VISIBLE } else { View.GONE }
+    visibility = if (boolean) {
+        View.VISIBLE
+    } else {
+        View.GONE
+    }
     if (boolean) {
         onVisible.invoke(this)
     }
 }
 
 inline fun <T : View> T.visibleOrInvisible(boolean: Boolean, onVisible: (T.() -> Unit) = {}) {
-    visibility = if (boolean) { View.VISIBLE } else { View.INVISIBLE }
+    visibility = if (boolean) {
+        View.VISIBLE
+    } else {
+        View.INVISIBLE
+    }
     if (boolean) {
         onVisible.invoke(this)
     }
