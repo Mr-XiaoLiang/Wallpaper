@@ -1,10 +1,15 @@
 package com.lollipop.wallpaper
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.service.wallpaper.WallpaperService
 import android.view.SurfaceHolder
+import kotlin.math.min
 
 /**
  * @author lollipop
@@ -18,25 +23,76 @@ class LWallpaperService : WallpaperService() {
          * 本壁纸本质上是静态的，所以绘制的次数主要是为了避免Surface多画布造成的黑屏问题
          */
         private const val DRAW_COUNT = 4
+
+        /**
+         * 分组信息变化时的广播内容
+         */
+        private const val ACTION_GROUP_INFO_CHANGED = "com.lollipop.ACTION_GROUP_INFO_CHANGED"
+
+        private const val WEIGHT_UPDATE_DELAY = 10 * 60 * 1000L
+
+        /**
+         * 通知组信息被更新了
+         */
+        fun notifyGroupInfoChanged(context: Context) {
+            context.sendBroadcast(Intent(ACTION_GROUP_INFO_CHANGED))
+        }
     }
 
     private var engine: WallpaperEngine? = null
 
+    private val settings = LSettings.bind(this)
+
+    private val groupInfoList = ArrayList<UsageStatsGroupInfo>()
+
+    private var groupColorArray: IntArray = IntArray(0)
+
+    private val packageUsageHelper = PackageUsageHelper(this)
+
+    private var weightArray: IntArray = IntArray(0)
+
+    private val updateWeightTask = task {
+        callUpdateWeights()
+    }
+
+    private val groupInfoReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            callGroupInfoChange()
+        }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        callGroupInfoChange()
+        registerReceiver(groupInfoReceiver, IntentFilter(ACTION_GROUP_INFO_CHANGED))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        engine = null
+        unregisterReceiver(groupInfoReceiver)
+    }
+
     override fun onCreateEngine(): Engine {
-        return WallpaperEngine(
+        val newEngine = WallpaperEngine(
             ::getWallpaperColors,
             ::getWallpaperWeight,
             ::getWallpaperBackground,
             ::getWallpaperPadding
         )
+        engine = newEngine
+        return newEngine
     }
 
     private fun getWallpaperColors(): IntArray {
-        TODO()
+        return groupColorArray
     }
 
     private fun getWallpaperWeight(): IntArray {
-        TODO()
+        if (weightArray.isEmpty()) {
+            return IntArray(groupColorArray.size) { 1 }
+        }
+        return weightArray
     }
 
     private fun getWallpaperBackground(): Int {
@@ -48,7 +104,7 @@ class LWallpaperService : WallpaperService() {
     }
 
     private fun getWallpaperPadding(): Float {
-        TODO()
+        return settings.padding
     }
 
     private fun isNightModeActive(): Boolean {
@@ -63,6 +119,54 @@ class LWallpaperService : WallpaperService() {
                 false
             }
         }
+    }
+
+    private fun callUpdateWeights() {
+        updateWeightTask.cancel()
+        doAsync {
+            packageUsageHelper.loadData()
+            if (packageUsageHelper.isEmpty) {
+                weightArray = IntArray(0)
+            } else {
+                val list = ArrayList<Long>()
+                var maxValue = 0L
+                groupInfoList.forEach { group ->
+                    val time = packageUsageHelper[group.key]
+                    if (time > maxValue) {
+                        maxValue = time
+                    }
+                    list.add(time)
+                }
+                if (maxValue > Int.MAX_VALUE) {
+                    val multiple = ((maxValue * 1.0 / Int.MAX_VALUE) + 0.9).toInt()
+                    val weightMax = Int.MAX_VALUE.toLong()
+                    for (index in list.indices) {
+                        list[index] = min(list[index] / multiple, weightMax)
+                    }
+                }
+                weightArray = IntArray(list.size) { index ->
+                    list[index].toInt()
+                }
+            }
+            callUpdateCanvas()
+            updateWeightTask.delay(WEIGHT_UPDATE_DELAY)
+        }
+    }
+
+    private fun callUpdateCanvas() {
+        onUI {
+            engine?.callDraw()
+        }
+    }
+
+    private fun callGroupInfoChange() {
+        groupInfoList.clear()
+        groupInfoList.addAll(settings.getGroupInfo())
+        groupColorArray = IntArray(groupInfoList.size) { groupInfoList[it].color }
+
+        packageUsageHelper.updateGroupMap(settings.getPackageInfo())
+
+        callUpdateWeights()
     }
 
     private class WallpaperEngine(
@@ -96,7 +200,7 @@ class LWallpaperService : WallpaperService() {
             callDraw()
         }
 
-        private fun callDraw() {
+        fun callDraw() {
             wallpaperPainter.changeColors(colorProvider())
             wallpaperPainter.changeWeights(weightProvider())
             wallpaperPainter.backgroundColor = backgroundProvider()

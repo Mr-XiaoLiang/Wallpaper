@@ -26,7 +26,7 @@ class WallpaperPainter {
         isDither = true
     }
 
-    private var totalWeight = 0
+    private var totalWeight = 0L
 
     var paddingWeight = 0.1F
         set(value) {
@@ -75,7 +75,7 @@ class WallpaperPainter {
 
     fun changeWeights(weights: IntArray) {
         if (!intArrayEquals(weights, weightArray)) {
-            totalWeight = 0
+            totalWeight = 0L
             weightArray.clear()
             weights.forEach {
                 weightArray.add(it)
