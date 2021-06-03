@@ -30,8 +30,10 @@ class WallpaperPainter {
 
     var paddingWeight = 0.1F
         set(value) {
-            field = value
-            notifyDataSetChange()
+            if ((field * 1000).toInt() != (value * 1000).toInt()) {
+                field = value
+                notifyDataSetChange()
+            }
         }
 
     var backgroundColor: Int
@@ -51,26 +53,48 @@ class WallpaperPainter {
     }
 
     fun changeBounds(left: Int, top: Int, right: Int, bottom: Int) {
-        bounds.set(left, top, right, bottom)
-        notifyDataSetChange()
+        if (bounds.left != left
+            || bounds.top != top
+            || bounds.right != right
+            || bounds.bottom != bottom
+        ) {
+            bounds.set(left, top, right, bottom)
+            notifyDataSetChange()
+        }
     }
 
-    fun changeColors(vararg colors: Int) {
-        colorArray.clear()
-        colors.forEach {
-            colorArray.add(it)
+    fun changeColors(colors: IntArray) {
+        if (!intArrayEquals(colors, colorArray)) {
+            colorArray.clear()
+            colors.forEach {
+                colorArray.add(it)
+            }
+            notifyDataSetChange()
         }
-        notifyDataSetChange()
     }
 
     fun changeWeights(weights: IntArray) {
-        totalWeight = 0
-        weightArray.clear()
-        weights.forEach {
-            weightArray.add(it)
-            totalWeight += it
+        if (!intArrayEquals(weights, weightArray)) {
+            totalWeight = 0
+            weightArray.clear()
+            weights.forEach {
+                weightArray.add(it)
+                totalWeight += it
+            }
+            notifyDataSetChange()
         }
-        notifyDataSetChange()
+    }
+
+    private fun intArrayEquals(array1: IntArray, array2: List<Int>): Boolean {
+        if (array1.size != array2.size) {
+            return false
+        }
+        for (index in array1.indices) {
+            if (array1[index] != array2[index]) {
+                return false
+            }
+        }
+        return true
     }
 
     private fun notifyDataSetChange() {
