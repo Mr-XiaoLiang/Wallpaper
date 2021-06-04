@@ -4,4 +4,7 @@
     <string name="palette">调色盘</string>
     <string name="legend">图例</string>
     <string name="settings">设置</string>
+    <string name="permission_statement">我们没有找到可用的应用使用信息，可能是因为您没有授予我们获取的权限。我们在这里承诺，软件没有任何联网功能，不会上传或者收集您的任何应用使用信息。权限所授予的信息仅用于壁纸的生成以及应用使用情况的本地展示。</string>
+    <string name="authorization">前往授权</string>
+    <string name="default_group_name">其他</string>
 </resources>

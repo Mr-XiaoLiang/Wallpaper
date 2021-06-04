@@ -3,8 +3,8 @@ package com.lollipop.wallpaper.utils
 import android.content.Context
 import com.lollipop.wallpaper.utils.SharedPreferencesUtils.get
 import com.lollipop.wallpaper.utils.SharedPreferencesUtils.set
-import com.lollipop.wallpaper.UsageStatsGroupInfo
-import com.lollipop.wallpaper.UsageStatsItemInfo
+import com.lollipop.wallpaper.engine.UsageStatsGroupInfo
+import com.lollipop.wallpaper.engine.UsageStatsItemInfo
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.reflect.KProperty
@@ -58,6 +58,15 @@ class LSettings private constructor(val context: Context) {
             } catch (e: Throwable) {
                 log(e)
             }
+        }
+        var hasDefaultGroup = false
+        list.forEach {
+            if (it.key == UsageStatsGroupInfo.DEFAULT_GROUP_KEY) {
+                hasDefaultGroup = true
+            }
+        }
+        if (!hasDefaultGroup) {
+            list.add(UsageStatsGroupInfo.createDefault(context))
         }
         return list
     }

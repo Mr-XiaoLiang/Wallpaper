@@ -1,15 +1,11 @@
 package com.lollipop.wallpaper.activity
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import com.lollipop.wallpaper.R
-import com.lollipop.wallpaper.utils.applyWindowInsetsByPadding
 import com.lollipop.wallpaper.databinding.ActivityMainBinding
-import com.lollipop.wallpaper.utils.initWindowFlag
-import com.lollipop.wallpaper.utils.lazyBind
+import com.lollipop.wallpaper.utils.*
 
 class MainActivity : BaseActivity() {
 
@@ -18,10 +14,53 @@ class MainActivity : BaseActivity() {
     override val optionMenuId: Int
         get() = R.menu.activity_main_ment
 
+    private val packageUsageHelper = PackageUsageHelper(this)
+
+    private val settings = LSettings.bind(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding)
         binding.recyclerView.applyWindowInsetsByPadding()
+        binding.swipeRefreshLayout.setColorSchemeResources(
+            R.color.design_default_color_primary,
+            R.color.design_default_color_secondary
+        )
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            loadData()
+        }
+        binding.permissionButton.setOnClickListener {
+            PackageUsageHelper.openSettingsPage(this)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        packageUsageHelper.updateGroupMap(settings.getPackageInfo())
+        loadData()
+    }
+
+    private fun loadData() {
+        binding.swipeRefreshLayout.isRefreshing = true
+        binding.swipeRefreshLayout.visibleOrInvisible(true)
+        binding.permissionDialog.visibleOrGone(false)
+        doAsync {
+            packageUsageHelper.loadData()
+            if (packageUsageHelper.isEmpty) {
+                onUI {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                    binding.swipeRefreshLayout.visibleOrInvisible(false)
+                    binding.permissionDialog.visibleOrInvisible(true)
+                }
+            } else {
+                // TODO
+                onUI {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                    binding.swipeRefreshLayout.visibleOrInvisible(true)
+                    binding.permissionDialog.visibleOrGone(false)
+                }
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

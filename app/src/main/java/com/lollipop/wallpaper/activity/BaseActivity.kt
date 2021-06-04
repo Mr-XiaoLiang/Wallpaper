@@ -28,7 +28,7 @@ open class BaseActivity : AppCompatActivity() {
         super.setContentView(baseBinding.root)
         setSupportActionBar(baseBinding.toolBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        baseBinding.appBarLayout.applyWindowInsetsByPadding()
+        baseBinding.appBarLayout.applyWindowInsetsByPadding(enableBottom = false)
     }
 
     fun setContentView(binding: ViewBinding) {

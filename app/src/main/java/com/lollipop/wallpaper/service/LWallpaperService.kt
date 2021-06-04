@@ -9,7 +9,7 @@ import android.graphics.Color
 import android.os.Build
 import android.service.wallpaper.WallpaperService
 import android.view.SurfaceHolder
-import com.lollipop.wallpaper.UsageStatsGroupInfo
+import com.lollipop.wallpaper.engine.UsageStatsGroupInfo
 import com.lollipop.wallpaper.engine.WallpaperPainter
 import com.lollipop.wallpaper.utils.*
 import kotlin.math.min

@@ -6,7 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.provider.Settings
 import android.util.ArrayMap
-import com.lollipop.wallpaper.UsageStatsItemInfo
+import com.lollipop.wallpaper.engine.UsageStatsGroupInfo
+import com.lollipop.wallpaper.engine.UsageStatsItemInfo
 import kotlin.collections.ArrayList
 
 /**
@@ -87,7 +88,7 @@ class PackageUsageHelper(private val context: Context) {
 
         usageStatsList.addAll(result.values)
 
-        if (usageStatsList.isEmpty() || packageGroupMap.isEmpty()) {
+        if (usageStatsList.isEmpty()) {
             return
         }
         usageStatsList.forEach { stats ->
@@ -136,7 +137,7 @@ class PackageUsageHelper(private val context: Context) {
                 return it.groupKey
             }
         }
-        return ""
+        return UsageStatsGroupInfo.DEFAULT_GROUP_KEY
     }
 
 }

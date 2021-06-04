@@ -696,8 +696,25 @@ fun <T : View> T.onWindowInsetsChanged(
     this.setOnApplyWindowInsetsListener(SimpleWindowInsetsListener(this, callback))
 }
 
-fun <T : View> T.applyWindowInsetsByPadding() {
+fun <T : View> T.applyWindowInsetsByPadding(
+    enableLeft: Boolean = true,
+    enableTop: Boolean = true,
+    enableRight: Boolean = true,
+    enableBottom: Boolean = true,
+) {
     onWindowInsetsChanged  { insets ->
+        if (!enableLeft) {
+            insets.left = 0
+        }
+        if (!enableTop) {
+            insets.top = 0
+        }
+        if (!enableRight) {
+            insets.right = 0
+        }
+        if (!enableBottom) {
+            insets.bottom = 0
+        }
         target.setPadding(
             basePadding.left + insets.left,
             basePadding.top + insets.top,
@@ -733,6 +750,7 @@ class SimpleWindowInsetsListener<T : View>(
     }
 
     override fun onApplyWindowInsets(v: View, insets: WindowInsets): WindowInsets {
+        log("onApplyWindowInsets: ${v == target}, $v")
         val viewInsets: Rect = when {
             versionThen(Build.VERSION_CODES.R) -> {
                 insets.getInsets(
@@ -762,23 +780,21 @@ class SimpleWindowInsetsListener<T : View>(
 }
 
 fun Activity.initWindowFlag() {
-    window.clearFlags(
-        WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
-    )
-    var viewFlag = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            viewFlag = (viewFlag or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
-//        }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        viewFlag = (viewFlag or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
+    window.apply {
+        statusBarColor = Color.TRANSPARENT
+        navigationBarColor = Color.TRANSPARENT
     }
-    window.decorView.systemUiVisibility = viewFlag
-
+    if (versionThen(Build.VERSION_CODES.R)) {
+        window.setDecorFitsSystemWindows(false)
+    } else {
+        var viewFlag = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            viewFlag = (viewFlag or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
+        }
+        window.decorView.systemUiVisibility = viewFlag
+    }
     window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-    window.statusBarColor = Color.TRANSPARENT
-    window.navigationBarColor = Color.TRANSPARENT
 }
 
