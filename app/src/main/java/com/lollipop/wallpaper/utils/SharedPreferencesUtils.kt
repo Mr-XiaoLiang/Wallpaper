@@ -1,4 +1,4 @@
-package com.lollipop.wallpaper
+package com.lollipop.wallpaper.utils
 
 import android.app.Activity
 import android.content.Context

@@ -1,8 +1,10 @@
-package com.lollipop.wallpaper
+package com.lollipop.wallpaper.utils
 
 import android.content.Context
-import com.lollipop.wallpaper.SharedPreferencesUtils.get
-import com.lollipop.wallpaper.SharedPreferencesUtils.set
+import com.lollipop.wallpaper.utils.SharedPreferencesUtils.get
+import com.lollipop.wallpaper.utils.SharedPreferencesUtils.set
+import com.lollipop.wallpaper.UsageStatsGroupInfo
+import com.lollipop.wallpaper.UsageStatsItemInfo
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.reflect.KProperty

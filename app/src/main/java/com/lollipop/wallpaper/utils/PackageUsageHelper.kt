@@ -1,4 +1,4 @@
-package com.lollipop.wallpaper
+package com.lollipop.wallpaper.utils
 
 import android.app.usage.UsageStats
 import android.app.usage.UsageStatsManager
@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.provider.Settings
 import android.util.ArrayMap
+import com.lollipop.wallpaper.UsageStatsItemInfo
 import kotlin.collections.ArrayList
 
 /**
@@ -52,6 +53,8 @@ class PackageUsageHelper(private val context: Context) {
             }
             return false
         }
+
+        private const val TIME_MODE_KEEP_LENGTH = true
     }
 
     /**
@@ -79,15 +82,8 @@ class PackageUsageHelper(private val context: Context) {
         }
 
         val now = System.currentTimeMillis()
-        val duration = now % ONE_DAY
-        val startTime = if (duration < loadTimeOffset) {
-            // 不到偏移时间就往前一天
-            now - duration + loadTimeOffset - ONE_DAY
-        } else {
-            now - duration + loadTimeOffset
-        }
 
-        val result = usageStatsManager.queryAndAggregateUsageStats(startTime, now)
+        val result = usageStatsManager.queryAndAggregateUsageStats(getStartTime(now), now)
 
         usageStatsList.addAll(result.values)
 
@@ -99,6 +95,20 @@ class PackageUsageHelper(private val context: Context) {
             if (groupKey.isNotEmpty()) {
                 val timeLength = groupUsageStats[groupKey] ?: 0L
                 groupUsageStats[groupKey] = timeLength + stats.totalTimeInForeground
+            }
+        }
+    }
+
+    private fun getStartTime(now: Long): Long {
+        return if (TIME_MODE_KEEP_LENGTH) {
+            now - ONE_DAY
+        } else {
+            val duration = now % ONE_DAY
+            if (duration < loadTimeOffset) {
+                // 不到偏移时间就往前一天
+                now - duration + loadTimeOffset - ONE_DAY
+            } else {
+                now - duration + loadTimeOffset
             }
         }
     }

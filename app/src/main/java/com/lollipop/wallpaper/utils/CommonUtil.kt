@@ -1,9 +1,10 @@
-package com.lollipop.wallpaper
+package com.lollipop.wallpaper.utils
 
 import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -688,4 +689,96 @@ fun LifecycleOwner.isStarted() = lifecycle.currentState.isAtLeast(Lifecycle.Stat
  * 是否已经可见
  */
 fun LifecycleOwner.isResumed() = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+
+fun <T : View> T.onWindowInsetsChanged(
+    callback: SimpleWindowInsetsListener<T>.(Rect) -> Unit
+) {
+    this.setOnApplyWindowInsetsListener(SimpleWindowInsetsListener(this, callback))
+}
+
+fun <T : View> T.applyWindowInsetsByPadding() {
+    onWindowInsetsChanged  { insets ->
+        target.setPadding(
+            basePadding.left + insets.left,
+            basePadding.top + insets.top,
+            basePadding.right + insets.right,
+            basePadding.bottom + insets.bottom
+        )
+    }
+}
+
+class SimpleWindowInsetsListener<T : View>(
+    val target: T,
+    private val callback: SimpleWindowInsetsListener<T>.(insets: Rect) -> Unit
+) : View.OnApplyWindowInsetsListener {
+
+    val basePadding = Rect(
+        target.paddingLeft,
+        target.paddingTop,
+        target.paddingRight,
+        target.paddingBottom
+    )
+
+    val baseMargin = Rect().apply {
+        target.layoutParams?.let { layout ->
+            if (layout is ViewGroup.MarginLayoutParams) {
+                set(
+                    layout.leftMargin,
+                    layout.topMargin,
+                    layout.rightMargin,
+                    layout.bottomMargin
+                )
+            }
+        }
+    }
+
+    override fun onApplyWindowInsets(v: View, insets: WindowInsets): WindowInsets {
+        val viewInsets: Rect = when {
+            versionThen(Build.VERSION_CODES.R) -> {
+                insets.getInsets(
+                    WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout()
+                ).let {
+                    Rect(it.left, it.top, it.right, it.bottom)
+                }
+            }
+            versionThen(Build.VERSION_CODES.Q) -> {
+                insets.systemWindowInsets.let {
+                    Rect(it.left, it.top, it.right, it.bottom)
+                }
+            }
+            else -> {
+                Rect(
+                    insets.systemWindowInsetLeft,
+                    insets.systemWindowInsetTop,
+                    insets.systemWindowInsetRight,
+                    insets.systemWindowInsetBottom
+                )
+            }
+        }
+        callback(viewInsets)
+        return insets
+    }
+
+}
+
+fun Activity.initWindowFlag() {
+    window.clearFlags(
+        WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+    )
+    var viewFlag = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            viewFlag = (viewFlag or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+//        }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        viewFlag = (viewFlag or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
+    }
+    window.decorView.systemUiVisibility = viewFlag
+
+    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+    window.statusBarColor = Color.TRANSPARENT
+    window.navigationBarColor = Color.TRANSPARENT
+}
 

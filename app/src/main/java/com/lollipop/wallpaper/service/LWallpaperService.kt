@@ -1,4 +1,4 @@
-package com.lollipop.wallpaper
+package com.lollipop.wallpaper.service
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -9,6 +9,9 @@ import android.graphics.Color
 import android.os.Build
 import android.service.wallpaper.WallpaperService
 import android.view.SurfaceHolder
+import com.lollipop.wallpaper.UsageStatsGroupInfo
+import com.lollipop.wallpaper.engine.WallpaperPainter
+import com.lollipop.wallpaper.utils.*
 import kotlin.math.min
 
 /**
@@ -169,7 +172,7 @@ class LWallpaperService : WallpaperService() {
         callUpdateWeights()
     }
 
-    private class WallpaperEngine(
+    private inner class WallpaperEngine(
         private val colorProvider: () -> IntArray,
         private val weightProvider: () -> IntArray,
         private val backgroundProvider: () -> Int,

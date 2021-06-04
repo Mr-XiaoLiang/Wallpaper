@@ -14,7 +14,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Wallpaper">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:label="@string/settings" />
+        <activity
+            android:name=".activity.PaletteActivity"
+            android:label="@string/palette" />
+        <activity
+            android:name=".activity.LegendActivity"
+            android:label="@string/legend" />
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,12 +32,13 @@
         </activity>
 
         <service
-            android:name=".LWallpaperService"
+            android:name=".service.LWallpaperService"
             android:enabled="true"
             android:permission="android.permission.BIND_WALLPAPER">
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
             </intent-filter>
+
             <meta-data
                 android:name="android.service.wallpaper"
                 android:resource="@xml/wallpaper_preference" />
