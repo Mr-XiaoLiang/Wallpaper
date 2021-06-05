@@ -24,6 +24,20 @@ class LSettings private constructor(val context: Context) {
         fun bind(context: Context): LSettings {
             return LSettings(context)
         }
+
+        private val defaultPresetColor: Array<Int> = arrayOf(
+            0xFFB0F566.toInt(),
+            0xFF4AF2A1.toInt(),
+            0xFF5CC9F5.toInt(),
+            0xFF6638F0.toInt(),
+            0xFFF78AE0.toInt(),
+            0xFFE273DB.toInt(),
+            0xFFEE6751.toInt(),
+            0xFFE9E9E9.toInt(),
+            0xFF4584D5.toInt(),
+            0xFF4EAA86.toInt(),
+            0xFFED9F54.toInt()
+        )
     }
 
     var padding by SettingDelegator(0.1F)
@@ -31,6 +45,8 @@ class LSettings private constructor(val context: Context) {
     private var usageStatsGroupInfo by SettingDelegator("")
 
     private var usageStatsPackageInfo by SettingDelegator("")
+
+    private var presetColorList by SettingDelegator("")
 
     fun getGroupInfo(): List<UsageStatsGroupInfo> {
         val list = ArrayList<UsageStatsGroupInfo>()
@@ -120,6 +136,38 @@ class LSettings private constructor(val context: Context) {
             })
         }
         usageStatsPackageInfo = jsonArray.toString()
+    }
+
+    fun getPresetColorList(): List<Int> {
+        val list = ArrayList<Int>()
+        val jsonInfo = presetColorList
+        if (jsonInfo.isNotEmpty()) {
+            try {
+                val jsonArray = JSONArray(jsonInfo)
+                val arrayCount = jsonArray.length()
+                for (index in 0 until arrayCount) {
+                    jsonArray.optInt(index).let { color ->
+                        if (color != 0) {
+                            list.add(color)
+                        }
+                    }
+                }
+            } catch (e: Throwable) {
+                log(e)
+            }
+        }
+        if (list.isEmpty()) {
+            list.addAll(defaultPresetColor)
+        }
+        return list
+    }
+
+    fun setPresetColorList(colorList: List<Int>) {
+        val jsonArray = JSONArray()
+        colorList.forEach {
+            jsonArray.put(it)
+        }
+        presetColorList = jsonArray.toString()
     }
 
     private class SettingDelegator<T>(private val default: T) {

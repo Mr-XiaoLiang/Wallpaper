@@ -3,6 +3,7 @@ package com.lollipop.wallpaper.engine
 import android.content.Context
 import android.graphics.Color
 import com.lollipop.wallpaper.R
+import java.security.MessageDigest
 
 /**
  * @author lollipop
@@ -26,6 +27,33 @@ data class UsageStatsGroupInfo(
                 DEFAULT_GROUP_COLOR
             )
         }
+
+        private val HEX_CHARS = "0123456789ABCDEF".toCharArray()
+
+        private fun md5(input: String): String {
+            return printHexBinary(
+                MessageDigest
+                    .getInstance("MD5")
+                    .digest(
+                        input.toByteArray()
+                    )
+            )
+        }
+
+        private fun printHexBinary(data: ByteArray): String {
+            val r = StringBuilder(data.size * 2)
+            data.forEach { b ->
+                val i = b.toInt()
+                r.append(HEX_CHARS[i shr 4 and 0xF])
+                r.append(HEX_CHARS[i and 0xF])
+            }
+            return r.toString()
+        }
+
+        fun generateKey(name: String): String {
+            return "K_${md5(name)}"
+        }
+
     }
 }
 

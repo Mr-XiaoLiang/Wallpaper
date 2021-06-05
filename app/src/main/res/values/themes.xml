@@ -19,4 +19,9 @@
         <item name="cornerSize">40%</item>
     </style>
 
+    <style name="huePalette">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
 </resources>

@@ -12,4 +12,9 @@
     <string name="unit_minute">%1$d分</string>
     <string name="unit_second">%1$d秒</string>
     <string name="unit_millisecond">%1$d毫秒</string>
+    <string name="group_name">分组名称</string>
+    <string name="confirm">确定</string>
+    <string name="blank_content">请输入有效的内容</string>
+    <string name="content_consistent">请换一个名字</string>
+    <string name="add">添加</string>
 </resources>
