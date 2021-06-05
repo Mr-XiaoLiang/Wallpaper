@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:shapeAppearanceOverlay="@style/appIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/appLabelView"
+        android:layout_marginStart="20dp"
+        android:src="@mipmap/ic_launcher"
+        android:id="@+id/appIconView"/>
+
+    <TextView
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:id="@+id/appLabelView"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/app_name"
+        app:layout_constraintStart_toEndOf="@id/appIconView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/textColorPrimary"/>
+
+    <TextView
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:id="@+id/appUsageView"
+        app:layout_constraintStart_toStartOf="@id/appLabelView"
+        app:layout_constraintEnd_toEndOf="@id/appLabelView"
+        app:layout_constraintTop_toBottomOf="@id/appLabelView"
+        android:text="@string/app_name"
+        android:textSize="14sp"
+        android:textColor="@color/textColorSecondary"
+        android:textStyle="bold"
+        android:layout_marginTop="3dp"/>
+
+    <TextView
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:id="@+id/appPkgView"
+        app:layout_constraintStart_toStartOf="@id/appIconView"
+        app:layout_constraintEnd_toEndOf="@id/appUsageView"
+        app:layout_constraintTop_toBottomOf="@id/appUsageView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/app_name"
+        android:textSize="14sp"
+        android:textColor="@color/textColorSecondary"
+        android:alpha="0.7"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,8 +3,12 @@ package com.lollipop.wallpaper.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.lollipop.wallpaper.R
 import com.lollipop.wallpaper.databinding.ActivityMainBinding
+import com.lollipop.wallpaper.list.AppUsageHolder
 import com.lollipop.wallpaper.utils.*
 
 class MainActivity : BaseActivity() {
@@ -18,10 +22,14 @@ class MainActivity : BaseActivity() {
 
     private val settings = LSettings.bind(this)
 
+    private val appUsageInfoList = ArrayList<PackageUsageHelper.AppInfo>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding)
-        binding.recyclerView.applyWindowInsetsByPadding()
+        binding.recyclerView.applyWindowInsetsByPadding(
+            enableTop = false
+        )
         binding.swipeRefreshLayout.setColorSchemeResources(
             R.color.design_default_color_primary,
             R.color.design_default_color_secondary
@@ -32,6 +40,8 @@ class MainActivity : BaseActivity() {
         binding.permissionButton.setOnClickListener {
             PackageUsageHelper.openSettingsPage(this)
         }
+        binding.recyclerView.adapter = UsageAdapter(appUsageInfoList)
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     override fun onResume() {
@@ -47,17 +57,26 @@ class MainActivity : BaseActivity() {
         doAsync {
             packageUsageHelper.loadData()
             if (packageUsageHelper.isEmpty) {
+                appUsageInfoList.clear()
                 onUI {
                     binding.swipeRefreshLayout.isRefreshing = false
                     binding.swipeRefreshLayout.visibleOrInvisible(false)
                     binding.permissionDialog.visibleOrInvisible(true)
+                    binding.recyclerView.adapter?.notifyDataSetChanged()
                 }
             } else {
-                // TODO
+                appUsageInfoList.clear()
+                onUI {
+                    binding.recyclerView.adapter?.notifyDataSetChanged()
+                }
+                packageUsageHelper.loadAppInfo()
+                appUsageInfoList.addAll(packageUsageHelper.appInfoList)
+                appUsageInfoList.sortWith { a, b -> (b.usageTime - a.usageTime).toInt() }
                 onUI {
                     binding.swipeRefreshLayout.isRefreshing = false
                     binding.swipeRefreshLayout.visibleOrInvisible(true)
                     binding.permissionDialog.visibleOrGone(false)
+                    binding.recyclerView.adapter?.notifyDataSetChanged()
                 }
             }
         }
@@ -82,6 +101,24 @@ class MainActivity : BaseActivity() {
             }
         }
         return true
+    }
+
+    private class UsageAdapter(
+        private val data: List<PackageUsageHelper.AppInfo>
+    ) : RecyclerView.Adapter<AppUsageHolder>() {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppUsageHolder {
+            return AppUsageHolder.create(parent)
+        }
+
+        override fun onBindViewHolder(holder: AppUsageHolder, position: Int) {
+            holder.bind(data[position])
+        }
+
+        override fun getItemCount(): Int {
+            return data.size
+        }
+
     }
 
 }

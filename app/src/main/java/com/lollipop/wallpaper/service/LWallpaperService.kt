@@ -54,6 +54,8 @@ class LWallpaperService : WallpaperService() {
 
     private var weightArray: IntArray = IntArray(0)
 
+    private var packageChangeReceiver: BroadcastReceiver? = null
+
     private val updateWeightTask = task {
         callUpdateWeights()
     }
@@ -68,12 +70,17 @@ class LWallpaperService : WallpaperService() {
         super.onCreate()
         callGroupInfoChange()
         registerReceiver(groupInfoReceiver, IntentFilter(ACTION_GROUP_INFO_CHANGED))
+        packageChangeReceiver = PackageUsageHelper.registerPackageChangeReceiver(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         engine = null
         unregisterReceiver(groupInfoReceiver)
+        packageChangeReceiver?.let {
+            unregisterReceiver(it)
+        }
+        packageChangeReceiver = null
     }
 
     override fun onCreateEngine(): Engine {
