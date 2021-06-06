@@ -155,7 +155,7 @@ class PackageUsageHelper(private val context: Context) {
     /**
      * 加载数据
      */
-    fun loadData() {
+    fun loadUsageData() {
         usageStatsList.clear()
         groupUsageStats.clear()
 
@@ -227,8 +227,7 @@ class PackageUsageHelper(private val context: Context) {
             val usageTime = getUsageTimeByPackage(pkgName)
             val label = appResolveInfo.getLabel(packageManager)
             val icon = iconCache?.get(pkgName) ?: appResolveInfo.loadIcon(packageManager)
-            val groupKey = getGroupKeyByPackage(pkgName)
-            tempAppInfoList.add(AppInfo(pkgName, icon, label, usageTime, groupKey))
+            tempAppInfoList.add(AppInfo(pkgName, icon, label, usageTime))
         }
         appInfoList.clear()
         appInfoList.addAll(tempAppInfoList)
@@ -276,6 +275,9 @@ class PackageUsageHelper(private val context: Context) {
     }
 
     private fun getUsageTimeByPackage(packageName: String): Long {
+        if (usageStatsList.isEmpty()) {
+            return 0L
+        }
         return usageStatsList.find { it.packageName == packageName }?.totalTimeInForeground ?: 0
     }
 
@@ -303,8 +305,7 @@ class PackageUsageHelper(private val context: Context) {
         val packageName: String,
         val icon: Drawable,
         val label: CharSequence,
-        val usageTime: Long,
-        val groupKey: String,
+        val usageTime: Long
     )
 
 }

@@ -134,7 +134,7 @@ class LWallpaperService : WallpaperService() {
     private fun callUpdateWeights() {
         updateWeightTask.cancel()
         doAsync {
-            packageUsageHelper.loadData()
+            packageUsageHelper.loadUsageData()
             if (packageUsageHelper.isEmpty) {
                 weightArray = IntArray(0)
             } else {

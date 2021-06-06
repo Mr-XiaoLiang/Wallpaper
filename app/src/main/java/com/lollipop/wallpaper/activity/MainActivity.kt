@@ -55,7 +55,7 @@ class MainActivity : BaseActivity() {
         binding.swipeRefreshLayout.visibleOrInvisible(true)
         binding.permissionDialog.visibleOrGone(false)
         doAsync {
-            packageUsageHelper.loadData()
+            packageUsageHelper.loadUsageData()
             if (packageUsageHelper.isEmpty) {
                 appUsageInfoList.clear()
                 onUI {
