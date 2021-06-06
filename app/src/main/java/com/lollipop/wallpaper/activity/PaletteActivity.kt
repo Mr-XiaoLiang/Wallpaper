@@ -36,7 +36,7 @@ class PaletteActivity : BaseActivity() {
     private var changedGroupInfo: UsageStatsGroupInfo? = null
 
     override val optionMenuId: Int
-        get() = R.menu.activity_palette_ment
+        get() = R.menu.activity_palette_menu
 
     override val guideLayoutId: Int
         get() = R.layout.guide_palette

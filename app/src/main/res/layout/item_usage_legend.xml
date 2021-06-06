@@ -4,14 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/legendViewPager"
+    <ImageView
+        android:id="@+id/legendColorView"
         android:layout_width="match_parent"
         android:layout_height="0px"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="#F00"/>
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/appIconView"
@@ -36,8 +37,31 @@
         android:textColor="@color/textColorPrimary"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@id/appIconView"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/legendLeftArray"
         app:layout_constraintStart_toEndOf="@id/appIconView"
         app:layout_constraintTop_toTopOf="@id/appIconView" />
+
+    <ImageView
+        android:id="@+id/legendRightArray"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
+        android:scaleType="centerInside"
+        app:tint="@color/colorOnPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="20dp"/>
+
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_baseline_keyboard_arrow_left_24"
+        android:scaleType="centerInside"
+        app:tint="@color/colorOnPrimary"
+        android:id="@+id/legendLeftArray"
+        app:layout_constraintEnd_toStartOf="@id/legendRightArray"
+        app:layout_constraintTop_toTopOf="@id/legendRightArray"
+        app:layout_constraintBottom_toBottomOf="@id/legendRightArray"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

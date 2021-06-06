@@ -12,4 +12,6 @@
 
     <color name="guideBackground">#2000</color>
 
+    <color name="floatingBackground">#292929</color>
+
 </resources>

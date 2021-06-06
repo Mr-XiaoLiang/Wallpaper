@@ -42,6 +42,8 @@ class LSettings private constructor(val context: Context) {
 
     var padding by SettingDelegator(0.1F)
 
+    var updateDelay by SettingDelegator(10)
+
     private var usageStatsGroupInfo by SettingDelegator("")
 
     private var usageStatsPackageInfo by SettingDelegator("")

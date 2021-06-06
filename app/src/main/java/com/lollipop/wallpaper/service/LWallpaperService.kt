@@ -32,7 +32,7 @@ class LWallpaperService : WallpaperService() {
          */
         private const val ACTION_GROUP_INFO_CHANGED = "com.lollipop.ACTION_GROUP_INFO_CHANGED"
 
-        private const val WEIGHT_UPDATE_DELAY = 10 * 60 * 1000L
+        private const val ONE_MINUTE = 60 * 1000L
 
         /**
          * 通知组信息被更新了
@@ -55,6 +55,8 @@ class LWallpaperService : WallpaperService() {
     private var weightArray: IntArray = IntArray(0)
 
     private var packageChangeReceiver: BroadcastReceiver? = null
+
+    private var updateDelay = 10 * ONE_MINUTE
 
     private val updateWeightTask = task {
         callUpdateWeights()
@@ -159,7 +161,7 @@ class LWallpaperService : WallpaperService() {
                 }
             }
             callUpdateCanvas()
-            updateWeightTask.delay(WEIGHT_UPDATE_DELAY)
+            updateWeightTask.delay(updateDelay)
         }
     }
 
@@ -170,6 +172,8 @@ class LWallpaperService : WallpaperService() {
     }
 
     private fun callGroupInfoChange() {
+        updateDelay = settings.updateDelay * ONE_MINUTE
+
         groupInfoList.clear()
         groupInfoList.addAll(settings.getGroupInfo())
         groupColorArray = IntArray(groupInfoList.size) { groupInfoList[it].color }

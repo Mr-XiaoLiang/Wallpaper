@@ -12,4 +12,6 @@
 
     <color name="guideBackground">#EFFF</color>
 
+    <color name="floatingBackground">#FFF</color>
+
 </resources>

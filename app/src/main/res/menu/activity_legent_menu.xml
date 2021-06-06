@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/swap"
+        android:icon="@drawable/ic_baseline_code_24"
+        android:title="@string/swap"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/build"
+        android:icon="@drawable/ic_baseline_build_24"
+        android:title="@string/build"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/helper"
+        android:icon="@drawable/ic_baseline_info_24"
+        android:title="@string/help"
+        app:showAsAction="ifRoom" />
+
+</menu>

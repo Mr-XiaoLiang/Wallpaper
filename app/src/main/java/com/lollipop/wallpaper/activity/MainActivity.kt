@@ -16,7 +16,7 @@ class MainActivity : BaseActivity() {
     private val binding: ActivityMainBinding by lazyBind()
 
     override val optionMenuId: Int
-        get() = R.menu.activity_main_ment
+        get() = R.menu.activity_main_menu
 
     override val guideLayoutId: Int
         get() = R.layout.guide_main
