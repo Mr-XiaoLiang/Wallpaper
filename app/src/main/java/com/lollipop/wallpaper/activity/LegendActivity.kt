@@ -95,6 +95,10 @@ class LegendActivity : BaseActivity() {
                 floatingPanelAnimationHelper.close()
             }
         }
+
+        binding.legendFloatingRecyclerView.adapter =
+            FloatingGroupInfoAdapter(groupInfoList, ::onGroupInfoClick)
+        binding.legendFloatingRecyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     private fun refresh() {
@@ -135,6 +139,7 @@ class LegendActivity : BaseActivity() {
             onUI {
                 binding.swipeRefreshLayout.isRefreshing = false
                 binding.recyclerView.adapter?.notifyDataSetChanged()
+                binding.legendFloatingRecyclerView.adapter?.notifyDataSetChanged()
             }
         }
     }
@@ -176,6 +181,7 @@ class LegendActivity : BaseActivity() {
                 }
             }
             binding.legendFloatingHandleColorView.setBackgroundColor(color)
+
         } else {
             floatingPanelAnimationHelper.close(false)
         }
@@ -189,6 +195,12 @@ class LegendActivity : BaseActivity() {
         }
         pkgGroupMap[appInfoList[position].packageName] = selectedGroupKey
         binding.recyclerView.adapter?.notifyItemChanged(position)
+    }
+
+    private fun onGroupInfoClick(position: Int) {
+        val usageStatsGroupInfo = groupInfoList[position]
+        selectedGroupKey = usageStatsGroupInfo.key
+        binding.legendFloatingHandleColorView.setBackgroundColor(usageStatsGroupInfo.color)
     }
 
     private fun onFloatingPanelAnimationUpdate(progress: Float) {
@@ -377,13 +389,12 @@ class LegendActivity : BaseActivity() {
         }
 
         override fun onBindViewHolder(holder: FloatingGroupInfoHolder, position: Int) {
-            TODO("Not yet implemented")
+            holder.bind(data[position])
         }
 
         override fun getItemCount(): Int {
-            TODO("Not yet implemented")
+            return data.size
         }
-
 
     }
 
