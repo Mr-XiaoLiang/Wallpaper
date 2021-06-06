@@ -1,5 +1,6 @@
 package com.lollipop.wallpaper.activity
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -37,6 +38,9 @@ class PaletteActivity : BaseActivity() {
     override val optionMenuId: Int
         get() = R.menu.activity_palette_ment
 
+    override val guideLayoutId: Int
+        get() = R.layout.guide_palette
+
     private val dialogAnimationHelper = AnimationHelper(onUpdate = ::onDialogAnimationUpdate)
 
     private val isDialogClosed: Boolean
@@ -64,11 +68,12 @@ class PaletteActivity : BaseActivity() {
         binding.groupInfoView.applyWindowInsetsByPadding(enableTop = false)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initPalette() {
         binding.huePaletteView.onHueChange { hue, _ ->
             binding.satValPaletteView.onHueChange(hue.toFloat())
         }
-        binding.satValPaletteView.onHSVChange { _, color, isUser ->
+        binding.satValPaletteView.onHSVChange { _, color, _ ->
             dialogSelectedColor = color
             val drawable = binding.colorPreviewView.drawable
             if (drawable is ColorDrawable) {
@@ -162,11 +167,15 @@ class PaletteActivity : BaseActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.add) {
-            openDialog(null)
-            return true
+        when (item.itemId) {
+            R.id.add -> {
+                openDialog(null)
+            }
+            else -> {
+                return super.onOptionsItemSelected(item)
+            }
         }
-        return super.onOptionsItemSelected(item)
+        return true
     }
 
     override fun onBackPressed() {

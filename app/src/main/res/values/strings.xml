@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Wallpaper</string>
+    <string name="app_name">LUSW</string>
     <string name="help">帮助</string>
     <string name="palette">调色盘</string>
     <string name="legend">图例</string>
@@ -17,4 +17,19 @@
     <string name="blank_content">请输入有效的内容</string>
     <string name="content_consistent">请换一个名字</string>
     <string name="add">添加</string>
+    <string name="guide_main_title">欢迎使用LUSW \n (Lollipop usage stats wallpaper 使用统计壁纸) \n 这里为您简单介绍一下应用的使用方式：</string>
+    <string name="guide_legend">在这里您可以为每一个应用单独设置它所对应的颜色</string>
+    <string name="guide_palette">在这里，您可以配置喜欢的颜色，还可以为他们设置一个好听的名字</string>
+    <string name="guide_settings">在这里您可以调整一些额外的偏好设置，还可以了解作者的一些信息</string>
+    <string name="guide_help">当您不知道怎么做时，可以点击这个按钮，它会给您一些提示</string>
+    <string name="guide_palette_title">在这里，可以调配您喜欢的颜色。\n下面为您简单介绍一下使用方式:</string>
+    <string name="guide_add">您可以通过点击它，来进行颜色的添加</string>
+    <string name="click">点击</string>
+    <string name="guide_click_palette_card">您可以点击颜色卡片，来调整颜色或者它的名称</string>
+    <string name="drag">拖拽</string>
+    <string name="guide_drag_palette_card">您还可以通过长按颜色卡片，来触发拖拽排序，为您喜欢的颜色重新排列序号</string>
+    <string name="swipe">滑动</string>
+    <string name="guide_swipe_palette_card">您还可以将颜色卡片向屏幕或卡片外滑动，以此来移除一个颜色卡片。</string>
+    <string name="guide_legend_title">在这里，可以为每一个应用关联一个您喜欢的颜色。\n下面为您简单介绍一下使用方式:</string>
+    <string name="guide_swipe_legend_color">您可以在每一个应用名称上左右滑动，以此来切换为其他的颜色</string>
 </resources>

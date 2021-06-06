@@ -170,6 +170,20 @@ class LSettings private constructor(val context: Context) {
         presetColorList = jsonArray.toString()
     }
 
+    fun isNeedShowGuide(any: Any): Boolean {
+        val name = getGuideKey(any)
+        return context[name, true]
+    }
+
+    fun onGuideShown(any: Any) {
+        val name = getGuideKey(any)
+        return context.set(name, false)
+    }
+
+    private fun getGuideKey(any: Any): String {
+        return any::class.java.name + "guide"
+    }
+
     private class SettingDelegator<T>(private val default: T) {
 
         operator fun getValue(lSettings: LSettings, property: KProperty<*>): T {

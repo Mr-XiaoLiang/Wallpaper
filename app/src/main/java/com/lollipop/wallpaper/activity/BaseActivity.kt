@@ -7,10 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
+import com.lollipop.wallpaper.R
 import com.lollipop.wallpaper.databinding.ActivityBaseBinding
-import com.lollipop.wallpaper.utils.applyWindowInsetsByPadding
-import com.lollipop.wallpaper.utils.initWindowFlag
-import com.lollipop.wallpaper.utils.lazyBind
+import com.lollipop.wallpaper.utils.*
 
 /**
  * @author lollipop
@@ -22,6 +21,8 @@ open class BaseActivity : AppCompatActivity() {
 
     protected open val optionMenuId = 0
 
+    protected open val guideLayoutId = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initWindowFlag()
@@ -29,6 +30,17 @@ open class BaseActivity : AppCompatActivity() {
         setSupportActionBar(baseBinding.toolBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         baseBinding.appBarLayout.applyWindowInsetsByPadding(enableBottom = false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (guideLayoutId != 0) {
+            val settings = LSettings.bind(this)
+            GuideHelper.attachTo(baseBinding.root)
+                .guideView(guideLayoutId)
+                .onShown { settings.onGuideShown(this) }
+                .show(settings.isNeedShowGuide(this))
+        }
     }
 
     fun setContentView(binding: ViewBinding) {
@@ -65,6 +77,11 @@ open class BaseActivity : AppCompatActivity() {
         when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
+            }
+            R.id.helper -> {
+                GuideHelper.attachTo(baseBinding.root)
+                    .guideView(guideLayoutId)
+                    .show(true)
             }
             else -> {
                 return super.onOptionsItemSelected(item)

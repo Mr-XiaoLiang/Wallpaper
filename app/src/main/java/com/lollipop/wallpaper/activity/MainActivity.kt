@@ -18,6 +18,9 @@ class MainActivity : BaseActivity() {
     override val optionMenuId: Int
         get() = R.menu.activity_main_ment
 
+    override val guideLayoutId: Int
+        get() = R.layout.guide_main
+
     private val packageUsageHelper = PackageUsageHelper(this)
 
     private val settings = LSettings.bind(this)
@@ -92,9 +95,6 @@ class MainActivity : BaseActivity() {
             }
             R.id.settings -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
-            }
-            R.id.helper -> {
-
             }
             else -> {
                 return super.onOptionsItemSelected(item)

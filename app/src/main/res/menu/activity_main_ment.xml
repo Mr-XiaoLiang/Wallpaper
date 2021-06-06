@@ -6,24 +6,24 @@
         android:id="@+id/legend"
         android:icon="@drawable/ic_baseline_pie_chart_24"
         android:title="@string/legend"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/palette"
         android:icon="@drawable/ic_baseline_palette_24"
         android:title="@string/palette"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/settings"
         android:icon="@drawable/ic_baseline_settings_24"
         android:title="@string/settings"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/helper"
         android:icon="@drawable/ic_baseline_info_24"
         android:title="@string/help"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 
 </menu>

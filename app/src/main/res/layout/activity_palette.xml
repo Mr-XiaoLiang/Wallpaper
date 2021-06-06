@@ -7,130 +7,131 @@
     tools:context=".activity.PaletteActivity">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/groupInfoView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/groupInfoView"
         android:clipToPadding="false"
-        android:padding="10dp"/>
+        android:padding="10dp" />
 
     <View
+        android:id="@+id/dialogTouchInterceptView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/dialogTouchInterceptView"
-        android:visibility="gone"
-        android:elevation="7dp"/>
+        android:elevation="7dp"
+        android:visibility="gone" />
 
     <com.google.android.material.card.MaterialCardView
-        android:visibility="invisible"
+        android:id="@+id/groupInfoCardView"
         android:layout_width="0px"
         android:layout_height="wrap_content"
-        android:id="@+id/groupInfoCardView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.9"
+        android:layout_marginTop="10dp"
+        android:visibility="invisible"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="10dp"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="10dp">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.9">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="20dp">
+
             <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/colorPreviewView"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:id="@+id/colorPreviewView"
-                app:shapeAppearanceOverlay="@style/appIcon"
                 android:src="#F00"
-                app:layout_constraintTop_toTopOf="@id/groupNameEditLayout"
+                app:layout_constraintBottom_toBottomOf="@id/groupNameEditLayout"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/groupNameEditLayout"/>
+                app:layout_constraintTop_toTopOf="@id/groupNameEditLayout"
+                app:shapeAppearanceOverlay="@style/appIcon" />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/groupNameEditLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="0px"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:id="@+id/groupNameEditLayout"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/colorPreviewView"
                 app:layout_constraintEnd_toEndOf="parent"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+                app:layout_constraintStart_toEndOf="@id/colorPreviewView"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/groupNameEditView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/groupNameEditView"
                     android:hint="@string/group_name"
                     android:lines="1"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/confirmButton"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/groupNameEditLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/confirm"
-                app:icon="@drawable/ic_baseline_done_24"/>
+                app:icon="@drawable/ic_baseline_done_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/groupNameEditLayout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:visibility="invisible"
+        android:id="@+id/paletteCardView"
         android:layout_width="0px"
         android:layout_height="wrap_content"
-        android:id="@+id/paletteCardView"
-        app:layout_constraintTop_toBottomOf="@id/groupInfoCardView"
+        android:layout_marginTop="10dp"
+        android:visibility="invisible"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="8dp"
         app:layout_constraintLeft_toLeftOf="@id/groupInfoCardView"
         app:layout_constraintRight_toRightOf="@id/groupInfoCardView"
-        android:layout_marginTop="10dp"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="8dp">
+        app:layout_constraintTop_toBottomOf="@id/groupInfoCardView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.lollipop.wallpaper.view.SatValPaletteView
+                android:id="@+id/satValPaletteView"
                 android:layout_width="0px"
                 android:layout_height="0px"
-                android:id="@+id/satValPaletteView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/huePaletteView"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintDimensionRatio="1:1"
-                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginStart="20dp"/>
+                android:layout_marginEnd="20dp"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@id/huePaletteView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.lollipop.wallpaper.view.HuePaletteView
+                android:id="@+id/huePaletteView"
                 android:layout_width="40dp"
                 android:layout_height="0px"
-                android:id="@+id/huePaletteView"
                 android:layout_marginEnd="20dp"
-                app:layout_constraintTop_toTopOf="@id/satValPaletteView"
                 app:layout_constraintBottom_toBottomOf="@id/satValPaletteView"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/satValPaletteView" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/presetColorView"
                 android:layout_width="match_parent"
                 android:layout_height="68dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/satValPaletteView"
                 android:layout_marginTop="20dp"
+                android:clipToPadding="false"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:paddingBottom="20dp"
-                android:clipToPadding="false"/>
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/satValPaletteView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

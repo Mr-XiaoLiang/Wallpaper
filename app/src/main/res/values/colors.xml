@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FFBB86FC</color>
-    <color name="colorPrimaryVariant">#FF3700B3</color>
-    <color name="colorOnPrimary">#FF000000</color>
+    <color name="colorPrimary">#aab6fe</color>
+    <color name="colorPrimaryVariant">#7986cb</color>
+    <color name="colorOnPrimary">#FFFFFFFF</color>
     <color name="colorSecondary">#FF03DAC5</color>
     <color name="colorSecondaryVariant">#FF03DAC5</color>
-    <color name="colorOnSecondary">#FF000000</color>
+    <color name="colorOnSecondary">#FFFFFFFF</color>
 
     <color name="textColorPrimary">#333</color>
     <color name="textColorSecondary">#666</color>
+
+    <color name="guideBackground">#EFFF</color>
 
 </resources>

@@ -3,6 +3,7 @@ package com.lollipop.wallpaper.activity
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +22,12 @@ import com.lollipop.wallpaper.utils.*
  * @author Lollipop
  */
 class LegendActivity : BaseActivity() {
+
+    override val optionMenuId: Int
+        get() = R.menu.activity_legent_ment
+
+    override val guideLayoutId: Int
+        get() = R.layout.guide_legend
 
     private val binding: ActivityLegendBinding by lazyBind()
     private val settings = LSettings.bind(this)
