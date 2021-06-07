@@ -109,7 +109,7 @@ class MainActivity : BaseActivity() {
             R.id.apply -> {
                 try {
                     startActivityForResult(Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER).apply {
-                        intent.putExtra(
+                        putExtra(
                             WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
                             ComponentName(applicationContext, LWallpaperService::class.java)
                         )
