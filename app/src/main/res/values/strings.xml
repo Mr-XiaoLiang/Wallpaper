@@ -31,9 +31,14 @@
     <string name="swipe">滑动</string>
     <string name="guide_swipe_palette_card">您还可以将颜色卡片向屏幕或卡片外滑动，以此来移除一个颜色卡片。</string>
     <string name="guide_legend_title">在这里，可以为每一个应用关联一个您喜欢的颜色。\n下面为您简单介绍一下使用方式:</string>
-    <string name="guide_swipe_legend_color">您可以在每一个应用名称上左右滑动，以此来切换为其他的颜色</string>
     <string name="copyright">来自Lollipop\n(https://github.com/Mr-XiaoLiang/)</string>
     <string name="wallpaper_update_delay">壁纸刷新时间</string>
     <string name="swap">交换模式</string>
-    <string name="build">建造</string>
+    <string name="build">建造模式</string>
+    <string name="guide_legend_swap">它可以帮助您切换交换模式，在交换模式下，可以方便的为每个应用切换颜色</string>
+    <string name="guide_legend_build">它可以帮助您切换建造模式，在建造模式下，您可以快速的为应用指定颜色</string>
+    <string name="apply">应用</string>
+
+    <string name="apply_wallpaper_success">壁纸设置成功</string>
+    <string name="apply_wallpaper_error">壁纸设置失败</string>
 </resources>

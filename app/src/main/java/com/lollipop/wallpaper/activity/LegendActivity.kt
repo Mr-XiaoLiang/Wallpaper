@@ -195,6 +195,7 @@ class LegendActivity : BaseActivity() {
         }
         pkgGroupMap[appInfoList[position].packageName] = selectedGroupKey
         binding.recyclerView.adapter?.notifyItemChanged(position)
+        autoSave()
     }
 
     private fun onGroupInfoClick(position: Int) {
@@ -217,6 +218,10 @@ class LegendActivity : BaseActivity() {
 
     private fun onPackageGroupChanged(pkgName: String, groupKey: String) {
         pkgGroupMap[pkgName] = groupKey
+        autoSave()
+    }
+
+    private fun autoSave() {
         autoSaveTask.cancel()
         autoSaveTask.delay(100L)
     }

@@ -1,17 +1,27 @@
 package com.lollipop.wallpaper.activity
 
+import android.app.Activity
+import android.app.WallpaperManager
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lollipop.wallpaper.R
 import com.lollipop.wallpaper.databinding.ActivityMainBinding
 import com.lollipop.wallpaper.list.AppUsageHolder
+import com.lollipop.wallpaper.service.LWallpaperService
 import com.lollipop.wallpaper.utils.*
 
+
 class MainActivity : BaseActivity() {
+
+    companion object {
+        private const val REQUEST_CODE_SET_WALLPAPER = 120
+    }
 
     private val binding: ActivityMainBinding by lazyBind()
 
@@ -96,11 +106,37 @@ class MainActivity : BaseActivity() {
             R.id.settings -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
+            R.id.apply -> {
+                try {
+                    startActivityForResult(Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER).apply {
+                        intent.putExtra(
+                            WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
+                            ComponentName(applicationContext, LWallpaperService::class.java)
+                        )
+                    }, REQUEST_CODE_SET_WALLPAPER)
+                } catch (e: Throwable) {
+                    try {
+                        startActivityForResult(
+                            Intent(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER),
+                            REQUEST_CODE_SET_WALLPAPER
+                        )
+                    } catch (ee: Throwable) {
+                        Toast.makeText(this, R.string.apply_wallpaper_error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
             else -> {
                 return super.onOptionsItemSelected(item)
             }
         }
         return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_SET_WALLPAPER && resultCode == Activity.RESULT_OK) {
+            Toast.makeText(this, R.string.apply_wallpaper_success, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private class UsageAdapter(
