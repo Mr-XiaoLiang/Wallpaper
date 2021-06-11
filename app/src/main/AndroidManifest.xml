@@ -22,16 +22,21 @@
         android:theme="@style/Theme.Wallpaper">
         <activity
             android:name=".activity.SettingsActivity"
+            android:excludeFromRecents="true"
             android:label="@string/settings" />
         <activity
             android:name=".activity.PaletteActivity"
+            android:excludeFromRecents="true"
             android:label="@string/palette" />
         <activity
             android:name=".activity.LegendActivity"
             android:enabled="true"
+            android:excludeFromRecents="true"
             android:exported="true"
             android:label="@string/legend" />
-        <activity android:name=".activity.MainActivity">
+        <activity
+            android:name=".activity.MainActivity"
+            android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
