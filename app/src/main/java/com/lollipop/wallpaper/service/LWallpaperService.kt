@@ -1,10 +1,13 @@
 package com.lollipop.wallpaper.service
 
+import android.app.WallpaperColors
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Build
 import android.service.wallpaper.WallpaperService
@@ -214,6 +217,10 @@ class LWallpaperService : WallpaperService() {
             callDraw()
         }
 
+        override fun onComputeColors(): WallpaperColors? {
+            return super.onComputeColors()
+        }
+
         fun callDraw() {
             wallpaperPainter.changeColors(colorProvider())
             wallpaperPainter.changeWeights(weightProvider())
@@ -228,6 +235,54 @@ class LWallpaperService : WallpaperService() {
                 }
             }
         }
+    }
+
+    private class WallpaperColorsEngine(
+        private val colorProvider: () -> IntArray,
+        private val weightProvider: () -> IntArray,
+        private val backgroundProvider: () -> Int,
+        private val paddingProvider: () -> Float
+    ) {
+
+        companion object {
+            private const val CANVAS_SIZE = 112
+        }
+
+        private var wallpaperPainter: WallpaperPainter? = null
+
+        private fun getPainter(): WallpaperPainter {
+            val painter = wallpaperPainter
+            if (painter == null) {
+                val newPainter = WallpaperPainter()
+                newPainter.changeBounds(0, 0, CANVAS_SIZE, CANVAS_SIZE)
+                wallpaperPainter = newPainter
+                return newPainter
+            }
+            return painter
+        }
+
+        fun getWallpaperColors(): WallpaperColors {
+            val painter = getPainter()
+            painter.changeColors(colorProvider())
+            painter.changeWeights(weightProvider())
+            painter.backgroundColor = backgroundProvider()
+            painter.paddingWeight = paddingProvider()
+
+            val bitmap = Bitmap.createBitmap(
+                CANVAS_SIZE, CANVAS_SIZE,
+                Bitmap.Config.ARGB_8888
+            )
+            val bmpCanvas = Canvas(bitmap)
+            painter.draw(bmpCanvas)
+            val colors = getColorFromBitmap(bitmap)
+            bitmap.recycle()
+            return colors
+        }
+
+        private fun getColorFromBitmap(bitmap: Bitmap): WallpaperColors {
+            TODO()
+        }
+
     }
 
 }
