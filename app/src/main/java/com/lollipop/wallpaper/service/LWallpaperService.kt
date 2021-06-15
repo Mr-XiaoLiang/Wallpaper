@@ -194,6 +194,14 @@ class LWallpaperService : WallpaperService() {
     ) : WallpaperService.Engine() {
 
         private val wallpaperPainter = WallpaperPainter()
+        private val wallpaperColorsEngine by lazy {
+            WallpaperColorsEngine(
+                colorProvider,
+                weightProvider,
+                backgroundProvider,
+                paddingProvider
+            )
+        }
 
         override fun onSurfaceChanged(
             holder: SurfaceHolder?,
@@ -218,7 +226,7 @@ class LWallpaperService : WallpaperService() {
         }
 
         override fun onComputeColors(): WallpaperColors? {
-            return super.onComputeColors()
+            return wallpaperColorsEngine.getWallpaperColors()
         }
 
         fun callDraw() {
@@ -261,7 +269,10 @@ class LWallpaperService : WallpaperService() {
             return painter
         }
 
-        fun getWallpaperColors(): WallpaperColors {
+        fun getWallpaperColors(): WallpaperColors? {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
+                return null
+            }
             val painter = getPainter()
             painter.changeColors(colorProvider())
             painter.changeWeights(weightProvider())
@@ -274,13 +285,9 @@ class LWallpaperService : WallpaperService() {
             )
             val bmpCanvas = Canvas(bitmap)
             painter.draw(bmpCanvas)
-            val colors = getColorFromBitmap(bitmap)
+            val colors = WallpaperColors.fromBitmap(bitmap)
             bitmap.recycle()
             return colors
-        }
-
-        private fun getColorFromBitmap(bitmap: Bitmap): WallpaperColors {
-            TODO()
         }
 
     }
