@@ -47,13 +47,14 @@ class LegendActivity : BaseActivity() {
     private val autoSaveTask = task {
         val tempMap = HashMap<String, String>()
         tempMap.putAll(pkgGroupMap)
+        val context = applicationContext
         doAsync {
             val list = ArrayList<UsageStatsItemInfo>()
             tempMap.entries.forEach { entry ->
                 list.add(UsageStatsItemInfo(entry.value, entry.key))
             }
             settings.setPackageInfo(list)
-            LWallpaperService.notifyGroupInfoChanged(this)
+            LWallpaperService.notifyGroupInfoChanged(context)
         }
     }
 

@@ -45,9 +45,10 @@ class SettingsActivity : BaseActivity() {
 
     override fun onStop() {
         val progress = binding.updateDelaySeekBar.progress
+        val context = applicationContext
         doAsync {
             settings.updateDelay = progress
-            LWallpaperService.notifyGroupInfoChanged(this)
+            LWallpaperService.notifyGroupInfoChanged(context)
         }
         super.onStop()
     }

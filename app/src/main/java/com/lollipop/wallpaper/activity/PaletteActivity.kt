@@ -15,6 +15,7 @@ import com.lollipop.wallpaper.databinding.ItemGroupInfoBinding
 import com.lollipop.wallpaper.databinding.ItemPresetColorBinding
 import com.lollipop.wallpaper.engine.UsageStatsGroupInfo
 import com.lollipop.wallpaper.list.ListTouchHelper
+import com.lollipop.wallpaper.service.LWallpaperService
 import com.lollipop.wallpaper.utils.*
 
 /**
@@ -49,9 +50,11 @@ class PaletteActivity : BaseActivity() {
         }
 
     private val saveInfoTask = task {
+        val context = applicationContext
         doAsync {
             settings.setPresetColorList(presetColorList)
             settings.setGroupInfo(groupInfoList)
+            LWallpaperService.notifyGroupInfoChanged(context)
         }
     }
 
