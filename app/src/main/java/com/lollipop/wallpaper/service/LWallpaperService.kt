@@ -242,6 +242,9 @@ class LWallpaperService : WallpaperService() {
                     surface.unlockCanvasAndPost(canvas)
                 }
             }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                notifyColorsChanged()
+            }
         }
     }
 
