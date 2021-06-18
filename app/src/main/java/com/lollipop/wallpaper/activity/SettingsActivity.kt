@@ -41,6 +41,10 @@ class SettingsActivity : BaseActivity() {
         })
 
         binding.updateDelaySeekBar.progress = settings.updateDelay
+        binding.animationSwitchView.isChecked = settings.animationEnable
+        binding.animationSwitchView.setOnCheckedChangeListener { _, isChecked ->
+            settings.animationEnable = isChecked
+        }
     }
 
     override fun onStop() {

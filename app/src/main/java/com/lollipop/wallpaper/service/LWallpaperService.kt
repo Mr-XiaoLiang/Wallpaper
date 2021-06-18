@@ -9,12 +9,15 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.os.Build
 import android.service.wallpaper.WallpaperService
 import android.view.SurfaceHolder
 import com.lollipop.wallpaper.engine.UsageStatsGroupInfo
 import com.lollipop.wallpaper.engine.WallpaperPainter
 import com.lollipop.wallpaper.utils.*
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.min
 
 /**
@@ -35,9 +38,15 @@ class LWallpaperService : WallpaperService() {
          */
         private const val ACTION_GROUP_INFO_CHANGED = "com.lollipop.ACTION_GROUP_INFO_CHANGED"
 
+        /**
+         * 一分钟
+         */
         private const val ONE_MINUTE = 60 * 1000L
 
-        private const val ANIMATION_DURATION = 500L
+        /**
+         * 动画的时长
+         */
+        private const val ANIMATION_DURATION = 1500L
 
         /**
          * 通知组信息被更新了
@@ -210,9 +219,17 @@ class LWallpaperService : WallpaperService() {
             )
         }
 
-        private var cacheBitmap: Bitmap? = null
+        private val cacheBitmap by lazy {
+            CacheBitmapHelper()
+        }
         private val animator by lazy {
             PassiveAnimator()
+        }
+        private val animationPaint by lazy {
+            Paint().apply {
+                isAntiAlias = true
+                isDither = true
+            }
         }
 
         override fun onSurfaceChanged(
@@ -223,12 +240,7 @@ class LWallpaperService : WallpaperService() {
         ) {
             super.onSurfaceChanged(holder, format, width, height)
             wallpaperPainter.changeBounds(0, 0, width, height)
-            cacheBitmap?.let { bitmap ->
-                if (bitmap.width != width || bitmap.height != height) {
-                    bitmap.recycle()
-                    cacheBitmap = null
-                }
-            }
+            cacheBitmap.checkBitmapSize(width, height)
         }
 
         override fun onVisibilityChanged(visible: Boolean) {
@@ -248,9 +260,11 @@ class LWallpaperService : WallpaperService() {
         }
 
         fun callDraw() {
-            if (enableAnimation()) {
-                drawByAnimation()
-            } else {
+            doAsync {
+                if (enableAnimation()) {
+                    drawByAnimation()
+                }
+                // 无论是否进行动画，都需要最后绘制为稳定版本的图案
                 drawByStatic()
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
@@ -260,37 +274,43 @@ class LWallpaperService : WallpaperService() {
 
         private fun drawByStatic() {
             updatePainter()
-            doAsync {
-                for (index in 0 until DRAW_COUNT) {
-                    val status = doDraw {
-                        wallpaperPainter.draw(it)
-                    }
-                    if (!status) {
-                        break
-                    }
+            for (index in 0 until DRAW_COUNT) {
+                val status = doDraw {
+                    wallpaperPainter.draw(it)
+                }
+                if (!status) {
+                    break
                 }
             }
         }
 
         private fun drawByAnimation() {
-            val bitmap = getCacheBitmap()
-            val cacheCanvas = Canvas(bitmap)
+            val width = wallpaperPainter.width
+            val height = wallpaperPainter.height
+
             // 缓存当前界面来做动画过渡
-            wallpaperPainter.draw(cacheCanvas)
+            val formerBitmap = cacheBitmap.formerBitmap(width, height)
+            val formerCanvas = Canvas(formerBitmap)
+            wallpaperPainter.draw(formerCanvas)
 
             // 缓存后再更新画笔，否则得到的不是老得图案
             updatePainter()
+
+            // 读取新的图案来做动画
+            val currentBitmap = cacheBitmap.currentBitmap(width, height)
+            val currentCanvas = Canvas(currentBitmap)
+            wallpaperPainter.draw(currentCanvas)
 
             animator.start(ANIMATION_DURATION)
             // 一直绘制，直到动画结束
             while (!animator.isEnd) {
                 val status = doDraw {
                     // 绘制原本的图案
-                    it.drawBitmap(bitmap, 0F, 0F, null)
+                    it.drawBitmap(formerBitmap, 0F, 0F, null)
                     // 设置透明度，用于过渡效果的渐变
-                    wallpaperPainter.setAlpha((animator.progress * 255).toInt())
+                    animationPaint.alpha = (animator.progress * 255).toInt()
                     // 绘制新的图案
-                    wallpaperPainter.draw(it)
+                    it.drawBitmap(currentBitmap, 0F, 0F, animationPaint)
                 }
                 if (!status) {
                     break
@@ -313,27 +333,9 @@ class LWallpaperService : WallpaperService() {
             wallpaperPainter.paddingWeight = paddingProvider()
         }
 
-        private fun getCacheBitmap(): Bitmap {
-            val bitmap = cacheBitmap
-            if (bitmap != null
-                && !bitmap.isRecycled
-                && bitmap.width == wallpaperPainter.width
-                && bitmap.height == wallpaperPainter.height) {
-                return bitmap
-            }
-            val newBitmap = Bitmap.createBitmap(
-                wallpaperPainter.width,
-                wallpaperPainter.height,
-                Bitmap.Config.ARGB_8888
-            )
-            cacheBitmap = newBitmap
-            return newBitmap
-        }
-
         override fun onDestroy() {
             super.onDestroy()
-            cacheBitmap?.recycle()
-            cacheBitmap = null
+            cacheBitmap.destroy()
         }
 
     }
@@ -389,12 +391,62 @@ class LWallpaperService : WallpaperService() {
         private var oldBitmap: Bitmap? = null
         private var newBitmap: Bitmap? = null
 
-        fun checkBitmapSize(width: Int, height: Int) {
+        fun formerBitmap(width: Int, height: Int): Bitmap {
+            checkBitmapSize(width, height)
+            val bitmap = oldBitmap
+            if (bitmap != null) {
+                return bitmap
+            }
+            val new = Bitmap.createBitmap(
+                width,
+                height,
+                Bitmap.Config.ARGB_8888
+            )
+            oldBitmap = new
+            return new
+        }
 
+        fun currentBitmap(width: Int, height: Int): Bitmap {
+            checkBitmapSize(width, height)
+            val bitmap = newBitmap
+            if (bitmap != null) {
+                return bitmap
+            }
+            val new = Bitmap.createBitmap(
+                width,
+                height,
+                Bitmap.Config.ARGB_8888
+            )
+            newBitmap = new
+            return new
+        }
+
+        fun checkBitmapSize(width: Int, height: Int) {
+            val old = oldBitmap
+            if (old != null) {
+                if (old.isRecycled) {
+                    oldBitmap = null
+                } else if (old.width != width || old.height != height) {
+                    old.recycle()
+                    oldBitmap = null
+                }
+            }
+            val new = newBitmap
+            if (new != null) {
+                if (new.isRecycled) {
+                    newBitmap = null
+                } else if (new.width != width || new.height != height) {
+                    new.recycle()
+                    newBitmap = null
+                }
+            }
         }
 
         fun destroy() {
-
+            oldBitmap?.recycle()
+            newBitmap?.recycle()
+            oldBitmap = null
+            newBitmap = null
         }
 
     }

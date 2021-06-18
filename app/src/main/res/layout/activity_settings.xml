@@ -64,62 +64,135 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appLabelView"
-        app:layout_constraintWidth_percent="0.8">
+        app:layout_constraintWidth_percent="0.9"
+        android:maxHeight="300dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="20dp">
-
-            <ImageView
-                android:id="@+id/updateDelayIconView"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_baseline_timer_24"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/colorPrimary" />
-
-            <TextView
-                android:id="@+id/updateDelayTitleView"
-                android:layout_width="0px"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/wallpaper_update_delay"
-                app:layout_constraintStart_toEndOf="@id/updateDelayIconView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="20dp"
-                android:textSize="16sp"
-                android:layout_marginTop="20dp"/>
+                android:orientation="vertical">
 
-            <SeekBar
-                android:id="@+id/updateDelaySeekBar"
-                android:layout_width="0px"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@id/updateDelayTitleView"
-                app:layout_constraintEnd_toEndOf="@id/updateDelayTitleView"
-                app:layout_constraintTop_toBottomOf="@id/updateDelayTitleView"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:paddingTop="10dp"
-                android:paddingBottom="30dp"
-                android:layout_marginBottom="10dp"
-                android:min="1"
-                android:max="120"/>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="20dp">
 
-            <TextView
-                android:id="@+id/updateDelayValueView"
-                android:layout_width="0px"
-                android:layout_height="wrap_content"
-                android:text="@string/wallpaper_update_delay"
-                app:layout_constraintStart_toStartOf="@id/updateDelaySeekBar"
-                app:layout_constraintEnd_toEndOf="@id/updateDelaySeekBar"
-                app:layout_constraintBottom_toBottomOf="@id/updateDelaySeekBar"
-                android:gravity="end"
-                android:textSize="12sp"
-                android:layout_marginBottom="10dp"/>
+                    <ImageView
+                        android:id="@+id/updateDelayIconView"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_baseline_timer_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/colorPrimary" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/updateDelayTitleView"
+                        android:layout_width="0px"
+                        android:layout_height="wrap_content"
+                        android:text="@string/wallpaper_update_delay"
+                        app:layout_constraintStart_toEndOf="@id/updateDelayIconView"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginStart="20dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/textColorPrimary"
+                        android:layout_marginTop="20dp"/>
+
+                    <SeekBar
+                        android:id="@+id/updateDelaySeekBar"
+                        android:layout_width="0px"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="@id/updateDelayTitleView"
+                        app:layout_constraintEnd_toEndOf="@id/updateDelayTitleView"
+                        app:layout_constraintTop_toBottomOf="@id/updateDelayTitleView"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:min="1"
+                        android:max="120"/>
+
+                    <TextView
+                        android:id="@+id/updateDelayValueView"
+                        android:layout_width="0px"
+                        android:layout_height="wrap_content"
+                        android:text="@string/wallpaper_update_delay"
+                        app:layout_constraintStart_toStartOf="@id/updateDelaySeekBar"
+                        app:layout_constraintEnd_toEndOf="@id/updateDelaySeekBar"
+                        app:layout_constraintBottom_toBottomOf="@id/updateDelaySeekBar"
+                        android:gravity="end"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="10dp"
+                        android:textColor="@color/textColorSecondary"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/textColorSecondary"
+                    android:layout_marginStart="64dp"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="20dp">
+
+                    <ImageView
+                        android:id="@+id/animationIconView"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_baseline_local_movies_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/colorPrimary" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/animationSwitchView"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/animationTitleView"
+                        android:layout_width="0px"
+                        android:layout_height="wrap_content"
+                        android:text="@string/wallpaper_animation"
+                        app:layout_constraintStart_toEndOf="@id/animationIconView"
+                        app:layout_constraintEnd_toStartOf="@id/animationSwitchView"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:textSize="16sp"
+                        android:layout_marginTop="20dp"
+                        android:textColor="@color/textColorPrimary"/>
+
+                    <TextView
+                        android:id="@+id/animationSummaryView"
+                        android:layout_width="0px"
+                        android:layout_height="wrap_content"
+                        android:text="@string/wallpaper_animation_summary"
+                        app:layout_constraintStart_toStartOf="@id/animationTitleView"
+                        app:layout_constraintEnd_toEndOf="@id/animationTitleView"
+                        app:layout_constraintTop_toBottomOf="@id/animationTitleView"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:textSize="14sp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="20dp"
+                        android:textColor="@color/textColorSecondary"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
     </com.google.android.material.card.MaterialCardView>
 
