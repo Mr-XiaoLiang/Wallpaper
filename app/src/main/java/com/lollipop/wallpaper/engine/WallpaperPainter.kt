@@ -28,6 +28,16 @@ class WallpaperPainter {
 
     private var totalWeight = 0L
 
+    val width: Int
+        get() {
+            return bounds.width()
+        }
+
+    val height: Int
+        get() {
+            return bounds.height()
+        }
+
     var paddingWeight = 0.1F
         set(value) {
             if ((field * 1000).toInt() != (value * 1000).toInt()) {

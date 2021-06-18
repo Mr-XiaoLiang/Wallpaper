@@ -37,6 +37,8 @@ class LWallpaperService : WallpaperService() {
 
         private const val ONE_MINUTE = 60 * 1000L
 
+        private const val ANIMATION_DURATION = 500L
+
         /**
          * 通知组信息被更新了
          */
@@ -60,6 +62,8 @@ class LWallpaperService : WallpaperService() {
     private var packageChangeReceiver: BroadcastReceiver? = null
 
     private var updateDelay = 10 * ONE_MINUTE
+
+    private var animationEnable = true
 
     private val updateWeightTask = task {
         callUpdateWeights()
@@ -93,7 +97,8 @@ class LWallpaperService : WallpaperService() {
             ::getWallpaperColors,
             ::getWallpaperWeight,
             ::getWallpaperBackground,
-            ::getWallpaperPadding
+            ::getWallpaperPadding,
+            ::animationEnable
         )
         engine = newEngine
         return newEngine
@@ -176,6 +181,7 @@ class LWallpaperService : WallpaperService() {
 
     private fun callGroupInfoChange() {
         updateDelay = settings.updateDelay * ONE_MINUTE
+        animationEnable = settings.animationEnable
 
         groupInfoList.clear()
         groupInfoList.addAll(settings.getGroupInfo())
@@ -190,7 +196,8 @@ class LWallpaperService : WallpaperService() {
         private val colorProvider: () -> IntArray,
         private val weightProvider: () -> IntArray,
         private val backgroundProvider: () -> Int,
-        private val paddingProvider: () -> Float
+        private val paddingProvider: () -> Float,
+        private val enableAnimation: () -> Boolean
     ) : WallpaperService.Engine() {
 
         private val wallpaperPainter = WallpaperPainter()
@@ -203,6 +210,11 @@ class LWallpaperService : WallpaperService() {
             )
         }
 
+        private var cacheBitmap: Bitmap? = null
+        private val animator by lazy {
+            PassiveAnimator()
+        }
+
         override fun onSurfaceChanged(
             holder: SurfaceHolder?,
             format: Int,
@@ -211,6 +223,12 @@ class LWallpaperService : WallpaperService() {
         ) {
             super.onSurfaceChanged(holder, format, width, height)
             wallpaperPainter.changeBounds(0, 0, width, height)
+            cacheBitmap?.let { bitmap ->
+                if (bitmap.width != width || bitmap.height != height) {
+                    bitmap.recycle()
+                    cacheBitmap = null
+                }
+            }
         }
 
         override fun onVisibilityChanged(visible: Boolean) {
@@ -230,22 +248,94 @@ class LWallpaperService : WallpaperService() {
         }
 
         fun callDraw() {
-            wallpaperPainter.changeColors(colorProvider())
-            wallpaperPainter.changeWeights(weightProvider())
-            wallpaperPainter.backgroundColor = backgroundProvider()
-            wallpaperPainter.paddingWeight = paddingProvider()
-            doAsync {
-                for (index in 0 until DRAW_COUNT) {
-                    val surface = surfaceHolder ?: break
-                    val canvas = surface.lockCanvas()
-                    wallpaperPainter.draw(canvas)
-                    surface.unlockCanvasAndPost(canvas)
-                }
+            if (enableAnimation()) {
+                drawByAnimation()
+            } else {
+                drawByStatic()
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                 notifyColorsChanged()
             }
         }
+
+        private fun drawByStatic() {
+            updatePainter()
+            doAsync {
+                for (index in 0 until DRAW_COUNT) {
+                    val status = doDraw {
+                        wallpaperPainter.draw(it)
+                    }
+                    if (!status) {
+                        break
+                    }
+                }
+            }
+        }
+
+        private fun drawByAnimation() {
+            val bitmap = getCacheBitmap()
+            val cacheCanvas = Canvas(bitmap)
+            // 缓存当前界面来做动画过渡
+            wallpaperPainter.draw(cacheCanvas)
+
+            // 缓存后再更新画笔，否则得到的不是老得图案
+            updatePainter()
+
+            animator.start(ANIMATION_DURATION)
+            // 一直绘制，直到动画结束
+            while (!animator.isEnd) {
+                val status = doDraw {
+                    // 绘制原本的图案
+                    it.drawBitmap(bitmap, 0F, 0F, null)
+                    // 设置透明度，用于过渡效果的渐变
+                    wallpaperPainter.setAlpha((animator.progress * 255).toInt())
+                    // 绘制新的图案
+                    wallpaperPainter.draw(it)
+                }
+                if (!status) {
+                    break
+                }
+            }
+        }
+
+        private fun doDraw(callback: (Canvas) -> Unit): Boolean {
+            val surface = surfaceHolder ?: return false
+            val canvas = surface.lockCanvas()
+            callback(canvas)
+            surface.unlockCanvasAndPost(canvas)
+            return true
+        }
+
+        private fun updatePainter() {
+            wallpaperPainter.changeColors(colorProvider())
+            wallpaperPainter.changeWeights(weightProvider())
+            wallpaperPainter.backgroundColor = backgroundProvider()
+            wallpaperPainter.paddingWeight = paddingProvider()
+        }
+
+        private fun getCacheBitmap(): Bitmap {
+            val bitmap = cacheBitmap
+            if (bitmap != null
+                && !bitmap.isRecycled
+                && bitmap.width == wallpaperPainter.width
+                && bitmap.height == wallpaperPainter.height) {
+                return bitmap
+            }
+            val newBitmap = Bitmap.createBitmap(
+                wallpaperPainter.width,
+                wallpaperPainter.height,
+                Bitmap.Config.ARGB_8888
+            )
+            cacheBitmap = newBitmap
+            return newBitmap
+        }
+
+        override fun onDestroy() {
+            super.onDestroy()
+            cacheBitmap?.recycle()
+            cacheBitmap = null
+        }
+
     }
 
     private class WallpaperColorsEngine(
@@ -291,6 +381,20 @@ class LWallpaperService : WallpaperService() {
             val colors = WallpaperColors.fromBitmap(bitmap)
             bitmap.recycle()
             return colors
+        }
+
+    }
+
+    private class CacheBitmapHelper {
+        private var oldBitmap: Bitmap? = null
+        private var newBitmap: Bitmap? = null
+
+        fun checkBitmapSize(width: Int, height: Int) {
+
+        }
+
+        fun destroy() {
+
         }
 
     }

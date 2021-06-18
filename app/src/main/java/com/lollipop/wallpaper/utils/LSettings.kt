@@ -44,6 +44,8 @@ class LSettings private constructor(val context: Context) {
 
     var updateDelay by SettingDelegator(10)
 
+    var animationEnable by SettingDelegator(true)
+
     private var usageStatsGroupInfo by SettingDelegator("")
 
     private var usageStatsPackageInfo by SettingDelegator("")

@@ -1,5 +1,8 @@
 package com.lollipop.wallpaper.utils
 
+import kotlin.math.max
+import kotlin.math.min
+
 /**
  * @author lollipop
  * @date 2021/6/18 22:18
@@ -35,7 +38,8 @@ class PassiveAnimator {
             if (isEnd) {
                 return 1F
             }
-            return (now - startTime) * 1F / (endTime - startTime)
+            val value = (now - startTime) * 1F / (endTime - startTime)
+            return max(0F, min(1F, value))
         }
 
     fun start(duration: Long) {
