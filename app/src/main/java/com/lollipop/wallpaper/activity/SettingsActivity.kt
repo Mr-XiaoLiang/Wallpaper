@@ -1,12 +1,14 @@
 package com.lollipop.wallpaper.activity
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.SeekBar
 import com.lollipop.wallpaper.R
 import com.lollipop.wallpaper.databinding.ActivitySettingsBinding
 import com.lollipop.wallpaper.service.LWallpaperService
 import com.lollipop.wallpaper.utils.*
-import java.lang.StringBuilder
+
 
 /**
  * 设置的Activity
@@ -28,7 +30,8 @@ class SettingsActivity : BaseActivity() {
         binding.settingsRoot.applyWindowInsetsByPadding(enableTop = false)
         binding.appVersionView.text = versionName()
 
-        binding.updateDelaySeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+        binding.updateDelaySeekBar.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 binding.updateDelayValueView.text = progressToString(progress)
             }
@@ -44,6 +47,24 @@ class SettingsActivity : BaseActivity() {
         binding.animationSwitchView.isChecked = settings.animationEnable
         binding.animationSwitchView.setOnCheckedChangeListener { _, isChecked ->
             settings.animationEnable = isChecked
+        }
+        binding.copyright.setOnClickListener {
+            openGitHub()
+        }
+        binding.appVersionView.setOnClickListener {
+            openGitHub()
+        }
+    }
+
+    private fun openGitHub() {
+        try {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://github.com/Mr-XiaoLiang/Wallpaper/releases")
+                )
+            )
+        } catch (e: Throwable) {
         }
     }
 
