@@ -232,6 +232,8 @@ class LWallpaperService : WallpaperService() {
             }
         }
 
+        private var onDrawing = false
+
         override fun onSurfaceChanged(
             holder: SurfaceHolder?,
             format: Int,
@@ -260,12 +262,19 @@ class LWallpaperService : WallpaperService() {
         }
 
         fun callDraw() {
+            if (onDrawing && enableAnimation()) {
+                return
+            }
+            // 加锁，避免多个线程的交叉
+            onDrawing = true
             doAsync {
                 if (enableAnimation()) {
                     drawByAnimation()
                 }
                 // 无论是否进行动画，都需要最后绘制为稳定版本的图案
                 drawByStatic()
+                // 解锁
+                onDrawing = false
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                 notifyColorsChanged()
