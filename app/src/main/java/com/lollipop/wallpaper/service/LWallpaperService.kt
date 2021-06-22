@@ -16,8 +16,6 @@ import android.view.SurfaceHolder
 import com.lollipop.wallpaper.engine.UsageStatsGroupInfo
 import com.lollipop.wallpaper.engine.WallpaperPainter
 import com.lollipop.wallpaper.utils.*
-import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.min
 
 /**
@@ -243,6 +241,8 @@ class LWallpaperService : WallpaperService() {
             super.onSurfaceChanged(holder, format, width, height)
             wallpaperPainter.changeBounds(0, 0, width, height)
             cacheBitmap.checkBitmapSize(width, height)
+            onDrawing = false
+            callDraw()
         }
 
         override fun onVisibilityChanged(visible: Boolean) {
@@ -313,6 +313,9 @@ class LWallpaperService : WallpaperService() {
             animator.start(ANIMATION_DURATION)
             // 一直绘制，直到动画结束
             while (!animator.isEnd) {
+                if (formerBitmap.isRecycled || currentBitmap.isRecycled) {
+                    break
+                }
                 val status = doDraw {
                     // 绘制原本的图案
                     it.drawBitmap(formerBitmap, 0F, 0F, null)
