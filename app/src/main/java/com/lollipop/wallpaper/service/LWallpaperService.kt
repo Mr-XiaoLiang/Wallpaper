@@ -230,7 +230,7 @@ class LWallpaperService : WallpaperService() {
             }
         }
 
-        private var onDrawing = false
+        private var drawTaskVersion = 0L
 
         override fun onSurfaceChanged(
             holder: SurfaceHolder?,
@@ -241,7 +241,8 @@ class LWallpaperService : WallpaperService() {
             super.onSurfaceChanged(holder, format, width, height)
             wallpaperPainter.changeBounds(0, 0, width, height)
             cacheBitmap.checkBitmapSize(width, height)
-            onDrawing = false
+            // 记录Surface更新时间作为任务版本号
+            drawTaskVersion = System.currentTimeMillis()
             callDraw()
         }
 
@@ -262,19 +263,16 @@ class LWallpaperService : WallpaperService() {
         }
 
         fun callDraw() {
-            if (onDrawing && enableAnimation()) {
-                return
-            }
-            // 加锁，避免多个线程的交叉
-            onDrawing = true
+            val version = getVersion()
             doAsync {
                 if (enableAnimation()) {
-                    drawByAnimation()
+                    drawByAnimation(version)
                 }
-                // 无论是否进行动画，都需要最后绘制为稳定版本的图案
-                drawByStatic()
-                // 解锁
-                onDrawing = false
+                // 如果执行了动画之后，版本号仍然没有发生变化，那么就需要绘制静态壁纸
+                if (checkVersion(version)) {
+                    // 无论是否进行动画，都需要最后绘制为稳定版本的图案
+                    drawByStatic()
+                }
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                 notifyColorsChanged()
@@ -293,7 +291,7 @@ class LWallpaperService : WallpaperService() {
             }
         }
 
-        private fun drawByAnimation() {
+        private fun drawByAnimation(version: Long) {
             val width = wallpaperPainter.width
             val height = wallpaperPainter.height
 
@@ -313,7 +311,12 @@ class LWallpaperService : WallpaperService() {
             animator.start(ANIMATION_DURATION)
             // 一直绘制，直到动画结束
             while (!animator.isEnd) {
-                if (formerBitmap.isRecycled || currentBitmap.isRecycled) {
+                // 如果当前的版本号与最新的版本号不一致，那么放弃绘制
+                // 如果Bitmap被回收，也放弃
+                if (!checkVersion(version)
+                    || formerBitmap.isRecycled
+                    || currentBitmap.isRecycled
+                ) {
                     break
                 }
                 val status = doDraw {
@@ -328,6 +331,14 @@ class LWallpaperService : WallpaperService() {
                     break
                 }
             }
+        }
+
+        private fun getVersion(): Long {
+            return drawTaskVersion
+        }
+
+        private fun checkVersion(version: Long): Boolean {
+            return drawTaskVersion == version
         }
 
         private fun doDraw(callback: (Canvas) -> Unit): Boolean {
