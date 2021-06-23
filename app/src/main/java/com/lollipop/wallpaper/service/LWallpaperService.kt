@@ -241,8 +241,6 @@ class LWallpaperService : WallpaperService() {
             super.onSurfaceChanged(holder, format, width, height)
             wallpaperPainter.changeBounds(0, 0, width, height)
             cacheBitmap.checkBitmapSize(width, height)
-            // 记录Surface更新时间作为任务版本号
-            drawTaskVersion = System.currentTimeMillis()
             callDraw()
         }
 
@@ -263,6 +261,12 @@ class LWallpaperService : WallpaperService() {
         }
 
         fun callDraw() {
+            // 记录Surface更新时间作为任务版本号
+            var now = System.currentTimeMillis()
+            if (now == drawTaskVersion) {
+                now += 1
+            }
+            drawTaskVersion = now
             val version = getVersion()
             doAsync {
                 if (enableAnimation()) {
