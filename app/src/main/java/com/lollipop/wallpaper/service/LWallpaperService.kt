@@ -271,7 +271,7 @@ class LWallpaperService : WallpaperService() {
                 // 如果执行了动画之后，版本号仍然没有发生变化，那么就需要绘制静态壁纸
                 if (checkVersion(version)) {
                     // 无论是否进行动画，都需要最后绘制为稳定版本的图案
-                    drawByStatic()
+                    drawByStatic(version)
                 }
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
@@ -279,9 +279,12 @@ class LWallpaperService : WallpaperService() {
             }
         }
 
-        private fun drawByStatic() {
+        private fun drawByStatic(version: Long) {
             updatePainter()
             for (index in 0 until DRAW_COUNT) {
+                if (!checkVersion(version)) {
+                    break
+                }
                 val status = doDraw {
                     wallpaperPainter.draw(it)
                 }
