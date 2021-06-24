@@ -28,7 +28,7 @@ class PaletteActivity : BaseActivity() {
 
     private var dialogSelectedColor = Color.GREEN
 
-    private val presetColorList = ArrayList<Int>()
+    private val colorStore = ColorStore()
 
     private val groupInfoList = ArrayList<UsageStatsGroupInfo>()
 
@@ -52,7 +52,7 @@ class PaletteActivity : BaseActivity() {
     private val saveInfoTask = task {
         val context = applicationContext
         doAsync {
-            settings.setPresetColorList(presetColorList)
+            colorStore.saveTo(settings)
             settings.setGroupInfo(groupInfoList)
             LWallpaperService.notifyGroupInfoChanged(context)
         }
@@ -89,7 +89,8 @@ class PaletteActivity : BaseActivity() {
         }
         binding.presetColorView.layoutManager =
             LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-        binding.presetColorView.adapter = PresetColorAdapter(presetColorList, ::onPresetColorClick)
+        binding.presetColorView.adapter =
+            PresetColorAdapter(colorStore, ::onPresetColorClick)
 
         binding.confirmButton.setOnClickListener {
             onColorConfirm()
@@ -101,7 +102,7 @@ class PaletteActivity : BaseActivity() {
                 end = true
             }.setSwipeDirection {
                 down = true
-            }.autoMoveWithList(presetColorList)
+            }.autoMoveWithList(colorStore)
             .onSwiped(::onPresetColorSwiped)
             .bindTo(binding.presetColorView)
 
@@ -145,13 +146,8 @@ class PaletteActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        presetColorList.clear()
-        binding.presetColorView.adapter?.notifyDataSetChanged()
-        doAsync {
-            presetColorList.addAll(settings.getPresetColorList())
-            onUI {
-                binding.presetColorView.adapter?.notifyDataSetChanged()
-            }
+        colorStore.reload(settings) {
+            binding.presetColorView.adapter?.notifyDataSetChanged()
         }
 
         groupInfoList.clear()
@@ -230,13 +226,8 @@ class PaletteActivity : BaseActivity() {
         }
 
         val color = dialogSelectedColor
-        doAsync {
-            if (!presetColorList.contains(color)) {
-                presetColorList.add(0, color)
-                onUI {
-                    binding.presetColorView.adapter?.notifyItemInserted(0)
-                }
-            }
+        colorStore.put(color) {
+            binding.presetColorView.adapter?.notifyItemInserted(it)
         }
 
         groupInfoList.add(
@@ -279,7 +270,7 @@ class PaletteActivity : BaseActivity() {
         direction: ListTouchHelper.Direction
     ) {
         if (direction.down) {
-            presetColorList.removeAt(position)
+            colorStore.removeAt(position)
             binding.presetColorView.adapter?.notifyItemRemoved(position)
             saveInfo()
         }
@@ -297,7 +288,7 @@ class PaletteActivity : BaseActivity() {
     }
 
     private fun onPresetColorClick(index: Int) {
-        updatePalette(presetColorList[index])
+        updatePalette(colorStore[index])
     }
 
     private fun onGroupInfoClick(index: Int) {
@@ -333,7 +324,7 @@ class PaletteActivity : BaseActivity() {
 
     }
 
-    private class PresetColorHolder(
+    private class PresetColorHolder private constructor(
         viewBinding: ItemPresetColorBinding,
         private val onClickCallback: (Int) -> Unit
     ) : RecyclerView.ViewHolder(viewBinding.root) {
@@ -382,10 +373,11 @@ class PaletteActivity : BaseActivity() {
 
     }
 
-    private class GroupHolder(
+    private class GroupHolder private constructor(
         private val viewBinding: ItemGroupInfoBinding,
         private val onClickCallback: (Int) -> Unit
     ) : RecyclerView.ViewHolder(viewBinding.root) {
+
         companion object {
             fun create(parent: ViewGroup, callback: (Int) -> Unit): GroupHolder {
                 return GroupHolder(parent.bind(), callback).apply {
