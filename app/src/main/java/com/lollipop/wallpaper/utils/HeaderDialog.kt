@@ -9,7 +9,7 @@ import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
-import androidx.viewbinding.ViewBinding
+import com.google.android.material.card.MaterialCardView
 import com.lollipop.wallpaper.provider.BackPressProvider
 
 /**
@@ -88,16 +88,81 @@ class HeaderDialog private constructor(
         }
     }
 
-//    private val dialogView: DialogView by lazy {
-//        viewProvider.createDialogView()
-//    }
+    private var dialogImpl: DialogView? = null
+
+    private val dialogContentGroup by lazy {
+        MaterialCardView(rootGroup.context).apply {
+            cardElevation = 7.dp2px()
+            radius = 10.dp2px()
+        }
+    }
+
+    private val dialogRootView by lazy {
+        ConstraintLayout(rootGroup.context).apply {
+            val rootId = View.generateViewId()
+            id = rootId
+            val layoutParams = ConstraintLayout.LayoutParams(
+                0,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            layoutParams.leftToLeft = rootId
+            layoutParams.topToTop = rootId
+            layoutParams.rightToRight = rootId
+            layoutParams.horizontalWeight = 0.9F
+            addView(dialogContentGroup, layoutParams)
+        }
+    }
+
+    private var dialogView: DialogView? = null
+
+    private fun checkView() {
+        var content = dialogImpl
+        if (content == null) {
+            content = viewProvider.createDialogView(dialogRootView)
+            dialogImpl = content
+            content.onCreate()
+        }
+        val contentView = content.view
+        contentView.parent.let {
+            if (it == null || it != dialogContentGroup) {
+                if (it is ViewManager) {
+                    it.removeView(contentView)
+                }
+                dialogContentGroup.addView(
+                    contentView,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            }
+        }
+
+        val parent = dialogRootView.parent
+        if (parent == null || parent != rootGroup) {
+            if (parent is ViewManager) {
+                parent.removeView(dialogRootView)
+            }
+            rootGroup.addView(
+                dialogRootView,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        }
+    }
 
     fun show() {
-
+        checkView()
+        dialogRootView.visibleOrInvisible(false)
+        dialogRootView.post {
+            doAnimation(true)
+        }
     }
 
     fun dismiss() {
 
+    }
+
+    private fun doAnimation(isOpen: Boolean) {
+        // TODO
     }
 
     class Builder(
@@ -119,12 +184,12 @@ class HeaderDialog private constructor(
     }
 
     fun interface ViewProvider {
-        fun createDialogView(parent: ViewGroup): DialogView<*>
+        fun createDialogView(parent: ViewGroup): DialogView
     }
 
-    abstract class DialogView<VB : ViewBinding> {
+    abstract class DialogView {
 
-        abstract val view: VB
+        abstract val view: View
 
         private var dismissCallback: (() -> Unit)? = null
 
@@ -135,9 +200,9 @@ class HeaderDialog private constructor(
         open fun onStop() {}
 
         open fun onDestroy() {
-            view.root.parent?.let {
+            view.parent?.let {
                 if (it is ViewManager) {
-                    it.removeView(view.root)
+                    it.removeView(view)
                 }
             }
         }
