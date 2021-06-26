@@ -68,7 +68,9 @@ class PaletteActivity : BaseActivity() {
         initPalette()
         binding.groupInfoView.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
         binding.groupInfoView.adapter = GroupAdapter(groupInfoList, ::onGroupInfoClick)
-        binding.groupInfoView.applyWindowInsetsByPadding(enableTop = false)
+        binding.groupInfoView.fixInsetsByPadding(
+            edge = WindowInsetsHelper.Edge.CONTENT
+        )
     }
 
     @SuppressLint("ClickableViewAccessibility")

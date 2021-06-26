@@ -25,11 +25,11 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initWindowFlag()
+        WindowInsetsHelper.initWindowFlag(this)
         super.setContentView(baseBinding.root)
         setSupportActionBar(baseBinding.toolBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        baseBinding.appBarLayout.applyWindowInsetsByPadding(enableBottom = false)
+        baseBinding.appBarLayout.fixInsetsByPadding(edge = WindowInsetsHelper.Edge.HEADER)
     }
 
     override fun onStart() {

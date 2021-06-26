@@ -27,7 +27,9 @@ class SettingsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding)
-        binding.settingsRoot.applyWindowInsetsByPadding(enableTop = false)
+        binding.settingsRoot.fixInsetsByPadding(
+            edge = WindowInsetsHelper.Edge.CONTENT
+        )
         binding.appVersionView.text = versionName()
 
         binding.updateDelaySeekBar.setOnSeekBarChangeListener(object :

@@ -81,8 +81,8 @@ class LegendActivity : BaseActivity() {
             ::getGroupKeyByPackage,
             ::onPackageGroupChanged
         )
-        binding.recyclerView.applyWindowInsetsByPadding(
-            enableTop = false
+        binding.recyclerView.fixInsetsByPadding(
+            edge = WindowInsetsHelper.Edge.CONTENT
         )
         binding.legendFloatingCardView.post {
             val offsetX = (binding.legendRoot.width - binding.legendFloatingCardView.left).toFloat()

@@ -146,6 +146,9 @@ class HeaderDialog private constructor(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
+            dialogRootView.fixInsetsByPadding(
+                edge = WindowInsetsHelper.Edge.ALL
+            )
         }
     }
 
@@ -158,7 +161,7 @@ class HeaderDialog private constructor(
     }
 
     fun dismiss() {
-
+        doAnimation(false)
     }
 
     private fun doAnimation(isOpen: Boolean) {

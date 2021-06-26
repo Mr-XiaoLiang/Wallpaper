@@ -40,8 +40,8 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding)
-        binding.recyclerView.applyWindowInsetsByPadding(
-            enableTop = false
+        binding.recyclerView.fixInsetsByPadding(
+            edge = WindowInsetsHelper.Edge.CONTENT
         )
         binding.swipeRefreshLayout.setColorSchemeResources(
             R.color.design_default_color_primary,

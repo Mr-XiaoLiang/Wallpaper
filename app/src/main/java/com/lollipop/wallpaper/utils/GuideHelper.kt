@@ -25,7 +25,9 @@ object GuideHelper {
         guideView.setOnClickListener {
             root.removeView(guideView)
         }
-        guideView.applyWindowInsetsByPadding()
+        guideView.fixInsetsByPadding(
+            edge = WindowInsetsHelper.Edge.ALL
+        )
         root.addView(
             guideView,
             ViewGroup.LayoutParams.MATCH_PARENT,
