@@ -70,7 +70,7 @@ class AnimationHelper(
         run(isAnimation, PROGRESS_MAX, PROGRESS_MIN)
     }
 
-    fun run(
+    private fun run(
         isAnimation: Boolean = true,
         startProgress: Float = PROGRESS_MAX,
         endProgress: Float = PROGRESS_MIN,
