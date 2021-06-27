@@ -1,6 +1,7 @@
 package com.lollipop.wallpaper.utils
 
 import android.app.Activity
+import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewManager
@@ -24,9 +25,9 @@ class HeaderDialog private constructor(
 ) {
 
     companion object {
-        private const val ANIMATION_MAX = 1F
-        private const val ANIMATION_MIN = 0F
         private const val ANIMATION_DURATION = 300L
+
+        private val BACKGROUND_COLOR = Color.BLACK.alpha(0.5F)
 
         fun with(activity: Activity): Builder {
             val backPressProvider = if (activity is BackPressProvider) {
@@ -113,14 +114,18 @@ class HeaderDialog private constructor(
         }
     }
 
-    private var dialogView: DialogView? = null
+    private val animatorHelper by lazy {
+        AnimationHelper(ANIMATION_DURATION, ::onAnimationUpdate).apply {
+            onStart(::onAnimationStart)
+            onEnd(::onAnimationEnd)
+        }
+    }
 
     private fun checkView() {
         var content = dialogImpl
         if (content == null) {
             content = viewProvider.createDialogView(dialogRootView)
             dialogImpl = content
-            content.onCreate()
         }
         val contentView = content.view
         contentView.parent.let {
@@ -141,6 +146,7 @@ class HeaderDialog private constructor(
             if (parent is ViewManager) {
                 parent.removeView(dialogRootView)
             }
+            content.onCreate()
             rootGroup.addView(
                 dialogRootView,
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -149,23 +155,55 @@ class HeaderDialog private constructor(
             dialogRootView.fixInsetsByPadding(
                 edge = WindowInsetsHelper.Edge.ALL
             )
+            dialogRootView.tryInvisible()
+        }
+    }
+
+    private fun removeDialogView() {
+        dialogImpl?.onDestroy()
+        val parent = dialogRootView.parent
+        if (parent == null || parent != rootGroup) {
+            if (parent is ViewManager) {
+                parent.removeView(dialogRootView)
+            }
         }
     }
 
     fun show() {
         checkView()
-        dialogRootView.visibleOrInvisible(false)
         dialogRootView.post {
+            dialogImpl?.onStart()
             doAnimation(true)
         }
     }
 
     fun dismiss() {
+        dialogImpl?.onStop()
         doAnimation(false)
     }
 
     private fun doAnimation(isOpen: Boolean) {
-        // TODO
+        if (isOpen) {
+            animatorHelper.open()
+        } else {
+            animatorHelper.close()
+        }
+    }
+
+    private fun onAnimationUpdate(progress: Float) {
+        dialogRootView.setBackgroundColor(BACKGROUND_COLOR.alpha(progress))
+        dialogContentGroup.translationY = dialogContentGroup.bottom * (progress - 1)
+    }
+
+    private fun onAnimationStart(progress: Float) {
+        onAnimationUpdate(progress)
+        dialogRootView.tryVisible()
+    }
+
+    private fun onAnimationEnd(progress: Float) {
+        if (animatorHelper.progressIs(AnimationHelper.PROGRESS_MIN)) {
+            removeDialogView()
+        }
     }
 
     class Builder(
