@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
+import com.lollipop.wallpaper.listener.BackPressListener
 import com.lollipop.wallpaper.provider.BackPressProvider
 
 /**
@@ -22,7 +23,7 @@ class HeaderDialog private constructor(
     private val rootGroup: ViewGroup,
     private val backPressProvider: BackPressProvider?,
     private val viewProvider: ViewProvider
-) {
+): BackPressListener {
 
     companion object {
         private const val ANIMATION_DURATION = 300L
@@ -170,6 +171,7 @@ class HeaderDialog private constructor(
     }
 
     fun show() {
+        backPressProvider?.addBackPressListener(this)
         checkView()
         dialogRootView.post {
             dialogImpl?.onStart()
@@ -178,6 +180,7 @@ class HeaderDialog private constructor(
     }
 
     fun dismiss() {
+        backPressProvider?.removeBackPressListener(this)
         dialogImpl?.onStop()
         doAnimation(false)
     }
@@ -252,6 +255,14 @@ class HeaderDialog private constructor(
             dismissCallback?.invoke()
         }
 
+    }
+
+    override fun onBackPressed(): Boolean {
+        if (dialogRootView.isShown) {
+            dismiss()
+            return true
+        }
+        return false
     }
 
 }
