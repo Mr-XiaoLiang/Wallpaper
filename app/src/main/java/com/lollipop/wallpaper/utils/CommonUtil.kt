@@ -235,16 +235,16 @@ fun Activity.closeBoard() {
  * 对一个颜色值设置它的透明度
  * 只支持#AARRGGBB格式排列的颜色值
  */
-fun Int.alpha(a: Int): Int {
-    return this and 0xFFFFFF or ((a % 255) shl 24)
+fun Int.changeAlpha(a: Int): Int {
+    return this and 0xFFFFFF or ((a % 256) shl 24)
 }
 
 /**
  * 以浮点数的形式，以当前透明度为基础，
  * 调整颜色值的透明度
  */
-fun Int.alpha(f: Float): Int {
-    return this.alpha(((this shr 24) * f).toInt().range(0, 255))
+fun Int.changeAlpha(f: Float): Int {
+    return this.changeAlpha(((this ushr 24) * f).toInt().range(0, 255))
 }
 
 /**

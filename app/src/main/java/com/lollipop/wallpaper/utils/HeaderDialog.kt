@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.view.ViewManager
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
@@ -28,7 +29,9 @@ class HeaderDialog private constructor(
     companion object {
         private const val ANIMATION_DURATION = 300L
 
-        private val BACKGROUND_COLOR = Color.BLACK.alpha(0.5F)
+        private const val DIALOG_TOP_SPACE = 24
+
+        private val BACKGROUND_COLOR = Color.BLACK.changeAlpha(0.5F)
 
         fun with(activity: Activity): Builder {
             val backPressProvider = if (activity is BackPressProvider) {
@@ -96,13 +99,28 @@ class HeaderDialog private constructor(
         MaterialCardView(rootGroup.context).apply {
             cardElevation = 7.dp2px()
             radius = 10.dp2px()
+            setOnClickListener {
+                // do nothing
+            }
         }
     }
 
     private val dialogRootView by lazy {
         ConstraintLayout(rootGroup.context).apply {
+            clipToPadding = false
+            setOnClickListener {
+                dismiss()
+            }
+            addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener{
+                override fun onViewAttachedToWindow(v: View?) {}
+
+                override fun onViewDetachedFromWindow(v: View?) {
+                    animatorHelper.destroy()
+                }
+            })
             val rootId = View.generateViewId()
             id = rootId
+
             val layoutParams = ConstraintLayout.LayoutParams(
                 0,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -110,7 +128,8 @@ class HeaderDialog private constructor(
             layoutParams.leftToLeft = rootId
             layoutParams.topToTop = rootId
             layoutParams.rightToRight = rootId
-            layoutParams.horizontalWeight = 0.9F
+            layoutParams.matchConstraintPercentWidth = 0.9F
+            layoutParams.topMargin = DIALOG_TOP_SPACE.dp2px().toInt()
             addView(dialogContentGroup, layoutParams)
         }
     }
@@ -163,10 +182,8 @@ class HeaderDialog private constructor(
     private fun removeDialogView() {
         dialogImpl?.onDestroy()
         val parent = dialogRootView.parent
-        if (parent == null || parent != rootGroup) {
-            if (parent is ViewManager) {
-                parent.removeView(dialogRootView)
-            }
+        if (parent is ViewManager) {
+            parent.removeView(dialogRootView)
         }
     }
 
@@ -194,7 +211,7 @@ class HeaderDialog private constructor(
     }
 
     private fun onAnimationUpdate(progress: Float) {
-        dialogRootView.setBackgroundColor(BACKGROUND_COLOR.alpha(progress))
+        dialogRootView.setBackgroundColor(BACKGROUND_COLOR.changeAlpha(progress))
         dialogContentGroup.translationY = dialogContentGroup.bottom * (progress - 1)
     }
 
@@ -206,6 +223,7 @@ class HeaderDialog private constructor(
     private fun onAnimationEnd(progress: Float) {
         if (animatorHelper.progressIs(AnimationHelper.PROGRESS_MIN)) {
             removeDialogView()
+            Toast.makeText(rootGroup.context, "Dialog 被移除了", Toast.LENGTH_SHORT).show()
         }
     }
 

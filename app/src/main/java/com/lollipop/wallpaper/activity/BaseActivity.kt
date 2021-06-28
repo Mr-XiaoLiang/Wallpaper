@@ -1,27 +1,30 @@
 package com.lollipop.wallpaper.activity
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 import com.lollipop.wallpaper.R
 import com.lollipop.wallpaper.databinding.ActivityBaseBinding
+import com.lollipop.wallpaper.listener.BackPressListener
+import com.lollipop.wallpaper.provider.BackPressProvider
 import com.lollipop.wallpaper.utils.*
 
 /**
  * @author lollipop
  * @date 2021/6/5 00:49
  */
-open class BaseActivity : AppCompatActivity() {
+open class BaseActivity : AppCompatActivity(), BackPressProvider {
 
     protected val baseBinding: ActivityBaseBinding by lazyBind()
 
     protected open val optionMenuId = 0
 
     protected open val guideLayoutId = 0
+
+    private val backPressProviderHelper by lazy {
+        BackPressProviderHelper()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,5 +93,25 @@ open class BaseActivity : AppCompatActivity() {
         return true
     }
 
+    override fun addBackPressListener(listener: BackPressListener) {
+        backPressProviderHelper.addBackPressListener(listener)
+    }
+
+    override fun removeBackPressListener(listener: BackPressListener) {
+        backPressProviderHelper.removeBackPressListener(listener)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event != null
+            && keyCode == KeyEvent.KEYCODE_BACK
+            && event.isTracking
+            && !event.isCanceled
+        ) {
+            if (backPressProviderHelper.onBackPressed()) {
+                return true
+            }
+        }
+        return super.onKeyUp(keyCode, event)
+    }
 
 }
