@@ -95,6 +95,16 @@ class HeaderDialog private constructor(
 
     private var dialogImpl: DialogView? = null
 
+    var dismissWhenClickBackground = true
+
+    var dismissWhenBackPress = true
+
+    var backgroundColor = BACKGROUND_COLOR
+
+    var topSpace = DIALOG_TOP_SPACE
+
+    var cardBackgroundColor = Color.WHITE
+
     private val dialogContentGroup by lazy {
         MaterialCardView(rootGroup.context).apply {
             cardElevation = 7.dp2px()
@@ -108,8 +118,10 @@ class HeaderDialog private constructor(
     private val dialogRootView by lazy {
         ConstraintLayout(rootGroup.context).apply {
             clipToPadding = false
-            setOnClickListener {
-                dismiss()
+            if (dismissWhenClickBackground) {
+                setOnClickListener {
+                    dismiss()
+                }
             }
             addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener{
                 override fun onViewAttachedToWindow(v: View?) {}
@@ -129,7 +141,7 @@ class HeaderDialog private constructor(
             layoutParams.topToTop = rootId
             layoutParams.rightToRight = rootId
             layoutParams.matchConstraintPercentWidth = 0.9F
-            layoutParams.topMargin = DIALOG_TOP_SPACE.dp2px().toInt()
+            layoutParams.topMargin = topSpace.dp2px().toInt()
             addView(dialogContentGroup, layoutParams)
         }
     }
@@ -139,6 +151,10 @@ class HeaderDialog private constructor(
             onStart(::onAnimationStart)
             onEnd(::onAnimationEnd)
         }
+    }
+
+    private val viewCallback = {
+        dismiss()
     }
 
     private fun checkView() {
@@ -191,6 +207,7 @@ class HeaderDialog private constructor(
         backPressProvider?.addBackPressListener(this)
         checkView()
         dialogRootView.post {
+            dialogImpl?.setDismissCallback(viewCallback)
             dialogImpl?.onStart()
             doAnimation(true)
         }
@@ -199,6 +216,7 @@ class HeaderDialog private constructor(
     fun dismiss() {
         backPressProvider?.removeBackPressListener(this)
         dialogImpl?.onStop()
+        dialogImpl?.setDismissCallback(null)
         doAnimation(false)
     }
 
@@ -211,7 +229,7 @@ class HeaderDialog private constructor(
     }
 
     private fun onAnimationUpdate(progress: Float) {
-        dialogRootView.setBackgroundColor(BACKGROUND_COLOR.changeAlpha(progress))
+        dialogRootView.setBackgroundColor(backgroundColor.changeAlpha(progress))
         dialogContentGroup.translationY = dialogContentGroup.bottom * (progress - 1)
     }
 
@@ -223,7 +241,6 @@ class HeaderDialog private constructor(
     private fun onAnimationEnd(progress: Float) {
         if (animatorHelper.progressIs(AnimationHelper.PROGRESS_MIN)) {
             removeDialogView()
-            Toast.makeText(rootGroup.context, "Dialog 被移除了", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -269,6 +286,10 @@ class HeaderDialog private constructor(
             }
         }
 
+        fun setDismissCallback(callback: (() -> Unit)?) {
+            dismissCallback = callback
+        }
+
         protected fun dismiss() {
             dismissCallback?.invoke()
         }
@@ -276,7 +297,7 @@ class HeaderDialog private constructor(
     }
 
     override fun onBackPressed(): Boolean {
-        if (dialogRootView.isShown) {
+        if (dismissWhenBackPress && dialogRootView.isShown) {
             dismiss()
             return true
         }
