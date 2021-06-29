@@ -3,6 +3,7 @@ package com.lollipop.wallpaper.utils
 import android.app.Activity
 import android.graphics.Color
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.lollipop.wallpaper.R
@@ -13,8 +14,7 @@ import com.lollipop.wallpaper.R
  * 在屏幕顶部的Toast
  */
 class HeaderToast private constructor(
-    private val activity: Activity,
-    private val value: String
+    private val activity: Activity
 ) : HeaderDialog.DialogView() {
 
     companion object {
@@ -24,20 +24,43 @@ class HeaderToast private constructor(
         private const val TEXT_SIZE = 18F
 
         fun show(activity: Activity, value: String) {
-            HeaderDialog.with(activity).content {
-                HeaderToast(activity, value)
-            }.build().apply {
-                dismissWhenClickBackground = false
-                backgroundColor = Color.TRANSPARENT
-                cardBackgroundColor = ContextCompat.getColor(activity, R.color.floatingBackground)
-            }.show()
+            var needCreate = true
+            HeaderDialog.findDialog(activity.window.decorView) { dialogRoot ->
+                val dialog = dialogRoot.dialog
+                val dialogImpl = dialog.optDialogView()
+                if (dialogImpl is HeaderToast) {
+                    dialogImpl.toastMessage = value
+                    dialog.show()
+                    needCreate = false
+                    return@findDialog true
+                }
+                return@findDialog false
+            }
+            if (needCreate) {
+                HeaderDialog.with(activity).content {
+                    HeaderToast(activity).apply {
+                        toastMessage = value
+                    }
+                }.build().apply {
+                    dismissWhenClickBackground = false
+                    backgroundColor = Color.TRANSPARENT
+                    cardBackgroundColor = ContextCompat.getColor(activity, R.color.floatingBackground)
+                }.show()
+            }
         }
 
     }
 
+    private var toastMessage: CharSequence
+        set(value) {
+            toastView.text = value
+        }
+        get() {
+            return toastView.text
+        }
+
     private val toastView by lazy {
         TextView(activity).apply {
-            text = value
             val paddingVertical = PADDING_VERTICAL.dp2px().toInt()
             val paddingHorizontal = PADDING_HORIZONTAL.dp2px().toInt()
             setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical)
@@ -52,6 +75,8 @@ class HeaderToast private constructor(
     private val autoRemoveTask = task {
         dismiss()
     }
+
+
 
     override fun onStart() {
         super.onStart()

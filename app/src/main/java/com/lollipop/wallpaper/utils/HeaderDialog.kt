@@ -1,6 +1,7 @@
 package com.lollipop.wallpaper.utils
 
 import android.app.Activity
+import android.content.Context
 import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
 import com.lollipop.wallpaper.listener.BackPressListener
 import com.lollipop.wallpaper.provider.BackPressProvider
+import java.util.*
 
 /**
  * @author lollipop
@@ -24,7 +26,7 @@ class HeaderDialog private constructor(
     private val rootGroup: ViewGroup,
     private val backPressProvider: BackPressProvider?,
     private val viewProvider: ViewProvider
-): BackPressListener {
+) : BackPressListener {
 
     companion object {
         private const val ANIMATION_DURATION = 300L
@@ -91,6 +93,22 @@ class HeaderDialog private constructor(
                     || view is RelativeLayout
                     || view is CoordinatorLayout)
         }
+
+        fun findDialog(rootGroup: View, onFound: (DialogRootGroup) -> Boolean) {
+            val viewList = LinkedList<View>()
+            viewList.add(rootGroup)
+            while (viewList.isNotEmpty()) {
+                val view = viewList.removeFirst()
+                if (view is DialogRootGroup && onFound(view)) {
+                    break
+                }
+                if (view is ViewGroup) {
+                    for (i in 0 until view.childCount) {
+                        viewList.addLast(view.getChildAt(i))
+                    }
+                }
+            }
+        }
     }
 
     private var dialogImpl: DialogView? = null
@@ -116,14 +134,14 @@ class HeaderDialog private constructor(
     }
 
     private val dialogRootView by lazy {
-        ConstraintLayout(rootGroup.context).apply {
+        DialogRootGroup(this, rootGroup.context).apply {
             clipToPadding = false
             if (dismissWhenClickBackground) {
                 setOnClickListener {
                     dismiss()
                 }
             }
-            addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener{
+            addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
                 override fun onViewAttachedToWindow(v: View?) {}
 
                 override fun onViewDetachedFromWindow(v: View?) {
@@ -201,6 +219,10 @@ class HeaderDialog private constructor(
         if (parent is ViewManager) {
             parent.removeView(dialogRootView)
         }
+    }
+
+    fun optDialogView(): DialogView? {
+        return dialogImpl
     }
 
     fun show() {
@@ -303,5 +325,7 @@ class HeaderDialog private constructor(
         }
         return false
     }
+
+    class DialogRootGroup(val dialog: HeaderDialog, context: Context) : ConstraintLayout(context)
 
 }
