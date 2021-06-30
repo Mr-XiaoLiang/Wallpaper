@@ -6,11 +6,9 @@
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
-
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
-
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
 
     <application
@@ -20,27 +18,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Wallpaper">
+        <activity android:name=".activity.GenerateActivity"></activity>
         <activity
             android:name=".activity.SettingsActivity"
             android:excludeFromRecents="true"
-            android:launchMode="singleInstance"
-            android:label="@string/settings" />
+            android:label="@string/settings"
+            android:launchMode="singleInstance" />
         <activity
             android:name=".activity.PaletteActivity"
             android:excludeFromRecents="true"
-            android:launchMode="singleInstance"
-            android:label="@string/palette" />
+            android:label="@string/palette"
+            android:launchMode="singleInstance" />
         <activity
             android:name=".activity.LegendActivity"
             android:enabled="true"
             android:excludeFromRecents="true"
             android:exported="true"
-            android:launchMode="singleInstance"
-            android:label="@string/legend" />
+            android:label="@string/legend"
+            android:launchMode="singleInstance" />
         <activity
             android:name=".activity.MainActivity"
-            android:launchMode="singleInstance"
-            android:excludeFromRecents="true">
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
