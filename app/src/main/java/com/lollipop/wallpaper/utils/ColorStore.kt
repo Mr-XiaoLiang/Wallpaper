@@ -3,6 +3,7 @@ package com.lollipop.wallpaper.utils
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import androidx.palette.graphics.Palette
+import kotlin.math.min
 
 
 /**
@@ -76,7 +77,8 @@ class ColorStore private constructor(private val colorList: ArrayList<Int>) :
     }
 
     fun saveTo(settings: LSettings) {
-        settings.setPresetColorList(colorList)
+        val maxIndex = min(colorList.size, 256)
+        settings.setPresetColorList(colorList.subList(0, maxIndex - 1))
     }
 
     fun reload(settings: LSettings, callback: (after: Boolean) -> Unit) {
