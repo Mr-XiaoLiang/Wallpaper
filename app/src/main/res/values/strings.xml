@@ -37,11 +37,13 @@
     <string name="build">build mode</string>
     <string name="guide_legend_swap">It can help you switch the exchange mode, in the exchange mode, you can easily switch colors for each application</string>
     <string name="guide_legend_build">It can help you switch the build mode, in the build mode, you can quickly specify the color for the application</string>
-    <string name="apply">application</string>
+    <string name="apply">Apply</string>
+    <string name="generate">Generate</string>
 
     <string name="apply_wallpaper_success">Wallpaper is set successfully</string>
     <string name="apply_wallpaper_error">Wallpaper setting failed</string>
     <string name="guide_apply">You can quickly set LUSW as your wallpaper through it. If you can’t find LSUW on the wallpaper setting page of the system, then it may help you</string>
     <string name="wallpaper_animation">Enable animation</string>
     <string name="wallpaper_animation_summary">After closing, the wallpaper will not show transition effects when it appears. But this will not save you power.</string>
+    <string name="menu">Options</string>
 </resources>

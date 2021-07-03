@@ -2,40 +2,47 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/legend"
-        android:icon="@drawable/ic_baseline_pie_chart_24"
-        android:title="@string/legend"
-        app:showAsAction="ifRoom" />
+    <item android:id="@+id/menu"
+        android:title="@string/menu"
+        android:icon="@drawable/ic_baseline_more_vert_24"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/legend"
+                android:icon="@drawable/ic_baseline_pie_chart_24"
+                android:title="@string/legend"
+                app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/palette"
-        android:icon="@drawable/ic_baseline_palette_24"
-        android:title="@string/palette"
-        app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/palette"
+                android:icon="@drawable/ic_baseline_palette_24"
+                android:title="@string/palette"
+                app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/generate"
-        android:icon="@drawable/ic_baseline_architecture_24"
-        android:title="@string/apply"
-        app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/generate"
+                android:icon="@drawable/ic_baseline_architecture_24"
+                android:title="@string/generate"
+                app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/apply"
-        android:icon="@drawable/ic_baseline_build_24"
-        android:title="@string/apply"
-        app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/apply"
+                android:icon="@drawable/ic_baseline_build_24"
+                android:title="@string/apply"
+                app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/settings"
-        android:icon="@drawable/ic_baseline_settings_24"
-        android:title="@string/settings"
-        app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/settings"
+                android:icon="@drawable/ic_baseline_settings_24"
+                android:title="@string/settings"
+                app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/helper"
-        android:icon="@drawable/ic_baseline_info_24"
-        android:title="@string/help"
-        app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/helper"
+                android:icon="@drawable/ic_baseline_info_24"
+                android:title="@string/help"
+                app:showAsAction="ifRoom" />
+        </menu>
+    </item>
 
 </menu>

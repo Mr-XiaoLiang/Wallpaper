@@ -39,10 +39,13 @@
     <string name="guide_legend_swap">它可以帮助您切换交换模式，在交换模式下，可以方便的为每个应用切换颜色</string>
     <string name="guide_legend_build">它可以帮助您切换建造模式，在建造模式下，您可以快速的为应用指定颜色</string>
     <string name="apply">应用</string>
+    <string name="generate">生成</string>
 
     <string name="apply_wallpaper_success">壁纸设置成功</string>
     <string name="apply_wallpaper_error">壁纸设置失败</string>
     <string name="guide_apply">您可以通过它快速的将LUSW设置为您的壁纸，如果您在系统的壁纸设置页面找不到LSUW，那么它可能会帮助到您</string>
     <string name="wallpaper_animation">启用壁纸动画</string>
     <string name="wallpaper_animation_summary">关闭后，壁纸不会在出现时展示过渡效果。但是这并不能为您节约电量</string>
+    <string name="menu">选项</string>
+
 </resources>
