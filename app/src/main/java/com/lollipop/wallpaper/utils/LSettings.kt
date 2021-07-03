@@ -44,7 +44,15 @@ class LSettings private constructor(val context: Context) {
 
     var updateDelay by SettingDelegator(10)
 
-    var animationEnable by SettingDelegator(true)
+//    var animationEnable by SettingDelegator(true)
+    // 禁用动画
+    var animationEnable: Boolean
+        get() {
+            return false
+        }
+        set(value) {
+
+        }
 
     private var usageStatsGroupInfo by SettingDelegator("")
 

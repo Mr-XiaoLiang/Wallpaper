@@ -1,12 +1,9 @@
 package com.lollipop.wallpaper.activity
 
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.Fragment
 import com.lollipop.wallpaper.databinding.ActivityGenerateBinding
-import com.lollipop.wallpaper.databinding.ItemSelectColorBinding
-import com.lollipop.wallpaper.utils.bind
+import com.lollipop.wallpaper.generate.*
 import com.lollipop.wallpaper.utils.lazyBind
 
 /**
@@ -14,7 +11,14 @@ import com.lollipop.wallpaper.utils.lazyBind
  * @author Lollipop
  * @date 2021/06/30
  */
-class GenerateActivity : BaseActivity() {
+class GenerateActivity : BaseActivity(),
+    GenerateBaseFragment.Callback,
+    GenerateFirstFragment.Callback,
+    GenerateRetrievalFragment.Callback,
+    GenerateGroupPreferenceFragment.Callback,
+    GenerateGroupingFragment.Callback,
+    GenerateCompleteFragment.Callback
+{
 
     private val binding: ActivityGenerateBinding by lazyBind()
 
@@ -23,31 +27,12 @@ class GenerateActivity : BaseActivity() {
         setContentView(binding)
     }
 
-    private class ColorHolder(
-        private val binding: ItemSelectColorBinding,
-        private val onClick: (position: Int) -> Unit
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        companion object {
-            fun create(parent: ViewGroup, onClick: (position: Int) -> Unit): ColorHolder {
-                return ColorHolder(parent.bind(), onClick)
-            }
+    override fun nextStep(fragment: Fragment): Boolean {
+        if (fragment is GenerateCompleteFragment) {
+            finish()
+            return true
         }
-
-        private val colorDrawable = ColorDrawable()
-
-        init {
-            binding.colorPreviewView.setImageDrawable(colorDrawable)
-            itemView.setOnClickListener {
-                onClick(adapterPosition)
-            }
-        }
-
-        fun bind(color: Int, isSelected: Boolean) {
-            binding.colorPreviewView.isSelected = isSelected
-            colorDrawable.color = color
-        }
-
+        return false
     }
 
 }

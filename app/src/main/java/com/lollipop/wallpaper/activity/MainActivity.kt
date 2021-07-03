@@ -106,6 +106,9 @@ class MainActivity : BaseActivity() {
             R.id.settings -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
+            R.id.generate -> {
+                startActivity(Intent(this, GenerateActivity::class.java))
+            }
             R.id.apply -> {
                 try {
                     startActivityForResult(Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER).apply {
