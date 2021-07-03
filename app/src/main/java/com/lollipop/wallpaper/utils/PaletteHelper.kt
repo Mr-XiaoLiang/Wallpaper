@@ -3,7 +3,7 @@ package com.lollipop.wallpaper.utils
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import androidx.palette.graphics.Palette
-import kotlin.math.abs
+import kotlin.math.min
 
 /**
  * @author lollipop
@@ -19,6 +19,117 @@ class PaletteHelper {
         private const val MIN_COLOR_OCCURRENCE = 0.05f
 
         private const val minColorArea = SAMPLING_SIZE * SAMPLING_SIZE * MIN_COLOR_OCCURRENCE
+
+        /**
+         * 为颜色分组
+         * @param colorArray 颜色的原始数组，它是有序的，返回结果中将会包含原始颜色的序号信息
+         * @param groupCount 分组的数量，它也将决定每一组的颜色数量
+         * 它的算法在于，计算每个颜色的HSV值中的色相，然后通过色相值进行排序
+         * 排序后的色相覆盖范围进行分组，统一色相区域的颜色分为一组。
+         * 分组颜色取决于色相区域的中间颜色，饱和度与明度保持为最高
+         */
+        fun colorGrouping(colorArray: IntArray, groupCount: Int): Array<ColorGroupInfo> {
+            if (colorArray.size < 2) {
+                return arrayOf()
+            }
+            // 获取色相并且排序
+            val hueArray = getHueArray(colorArray).sortedBy { it.value }
+
+            // 寻找颜色切入点，并且得到色相范围
+            val breakthrough = getBreakthrough(hueArray)
+
+            // 范围内计算色相范围步长
+            val hueStep = (((breakthrough[1] - breakthrough[0]) * 1F / groupCount) + 0.5F).toInt()
+
+            val groupList = ArrayList<ColorGroupInfo>()
+
+            val tempHsv = FloatArray(3) { 1F }
+            val tempChildrenList = ArrayList<ColorChild>()
+
+            // 色相分布范围
+            val minHue = breakthrough[0]
+            // 最大值+1，增加取值范围
+            val maxHue = breakthrough[1] + 1
+
+            var startHue = minHue
+            while (startHue < maxHue) {
+                // 计算当前片段中的结束位置
+                // 采用四舍五入的形式
+                val endHue = min(maxHue, startHue + hueStep)
+
+                findChild(tempChildrenList, hueArray, startHue % 360, endHue % 360)
+
+                // 计算当前色相颜色
+                tempHsv[0] = (((endHue + startHue) / 2) % 360).toFloat()
+                val groupColor = Color.HSVToColor(tempHsv)
+
+                groupList.add(ColorGroupInfo(groupColor, tempChildrenList.toTypedArray()))
+
+                // 清理缓存
+                tempChildrenList.clear()
+
+                // 接着上一个的结尾，避免漏掉
+                startHue = endHue
+            }
+            return groupList.toTypedArray()
+        }
+
+        private fun findChild(
+            list: MutableList<ColorChild>,
+            hueArray: List<Hue>,
+            start: Int,
+            end: Int
+        ) {
+            if (start < end) {
+                val range = start until end
+                hueArray.forEach {
+                    // 比较中，使用半包形式，包头不包尾
+                    if (it.value in range) {
+                        list.add(ColorChild(it.color, it.index))
+                    }
+                }
+            } else {
+                val range1 = start..360
+                val range2 = 0 until end
+                hueArray.forEach {
+                    // 比较中，使用半包形式，包头不包尾
+                    if (it.value in range1 || it.value in range2) {
+                        list.add(ColorChild(it.color, it.index))
+                    }
+                }
+            }
+        }
+
+        private fun getHueArray(colorArray: IntArray): List<Hue> {
+            val hueArray = ArrayList<Hue>(colorArray.size)
+            val tempHsv = FloatArray(3)
+            for (index in colorArray.indices) {
+                val color = colorArray[index]
+                Color.colorToHSV(color, tempHsv)
+                // 丢弃明度与饱和度，只记录色相
+                hueArray.add(Hue((tempHsv[0] + 0.5F).toInt(), color, index))
+            }
+            return hueArray
+        }
+
+        private fun getBreakthrough(list: List<Hue>): Array<Int> {
+            var start = 0
+            var end = list.size - 1
+            var space = 360 - list[end].value + list[start].value
+            for (index in 1 until list.size) {
+                val s = list[index].value - list[index - 1].value
+                if (s > space) {
+                    space = s
+                    start = index
+                    end = index - 1
+                }
+            }
+            return if (start > end) {
+                arrayOf(start, 360 + end)
+            } else {
+                arrayOf(start, end)
+            }
+        }
 
     }
 
@@ -75,75 +186,6 @@ class PaletteHelper {
 
         // 得到所有取出的颜色
         return IntArray(swatches.size) { swatches[it].rgb }
-    }
-
-    /**
-     * 为颜色分组
-     * @param colorArray 颜色的原始数组，它是有序的，返回结果中将会包含原始颜色的序号信息
-     * @param groupCount 分组的数量，它也将决定每一组的颜色数量
-     * 它的算法在于，计算每个颜色的HSV值中的色相，然后通过色相值进行排序（不考虑环处理
-     * 排序后的色相覆盖范围进行分组，统一色相区域的颜色分为一组。
-     * 分组颜色取决于色相区域的中间颜色，饱和度与明度保持为最高
-     */
-    fun colorGrouping(colorArray: IntArray, groupCount: Int): Array<ColorGroupInfo> {
-        // 获取色相并且排序
-        val hueArray = getHueArray(colorArray).sortedBy { it.value }
-
-        // 色相分布范围
-        val minHue = hueArray[0].value
-        // 最大值+1，增加取值范围
-        val maxHue = hueArray[hueArray.size - 1].value + 1
-
-        // 范围内计算色相范围步长
-        val hueStep = abs(maxHue - minHue) * 1F / groupCount
-
-        val groupList = ArrayList<ColorGroupInfo>()
-        val tempHsv = FloatArray(3) { 1F }
-        val tempChildrenList = ArrayList<ColorChild>()
-
-        var startHue = minHue
-        for (index in 0 until groupCount) {
-            // 清理缓存
-            tempChildrenList.clear()
-
-            // 计算当前片段中的结束位置
-            val endHue = if (index == groupCount - 1) {
-                // 如果是最后一个，那么直接食用最大值，避免遗漏
-                maxHue
-            } else {
-                // 采用四舍五入的形式
-                (startHue + hueStep + 0.5F).toInt()
-            }
-
-            // 计算当前色相颜色
-            tempHsv[0] = (endHue + startHue) * 0.5F
-            val groupColor = Color.HSVToColor(tempHsv)
-
-            hueArray.forEach {
-                // 比较中，使用半包形式，包头不包尾
-                if (it.value in startHue until endHue) {
-                    tempChildrenList.add(ColorChild(it.color, it.index))
-                }
-            }
-
-            groupList.add(ColorGroupInfo(groupColor, tempChildrenList.toTypedArray()))
-
-            // 接着上一个的结尾，避免漏掉
-            startHue = endHue
-        }
-        return groupList.toTypedArray()
-    }
-
-    private fun getHueArray(colorArray: IntArray): List<Hue> {
-        val hueArray = ArrayList<Hue>(colorArray.size)
-        val tempHsv = FloatArray(3)
-        for (index in colorArray.indices) {
-            val color = colorArray[index]
-            Color.colorToHSV(color, tempHsv)
-            // 丢弃明度与饱和度，只记录色相
-            hueArray.add(Hue((tempHsv[0] + 0.5F).toInt(), color, index))
-        }
-        return hueArray
     }
 
     fun destroy() {
