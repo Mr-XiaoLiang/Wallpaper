@@ -14,4 +14,6 @@
 
     <color name="floatingBackground">#292929</color>
 
+    <color name="contentLoadingBackground">#8FFF</color>
+
 </resources>

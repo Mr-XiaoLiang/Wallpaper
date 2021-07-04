@@ -14,6 +14,7 @@ import com.lollipop.wallpaper.databinding.ItemUsageLegendFloatingBinding
 import com.lollipop.wallpaper.engine.UsageStatsGroupInfo
 import com.lollipop.wallpaper.engine.UsageStatsItemInfo
 import com.lollipop.wallpaper.entitys.AppInfo
+import com.lollipop.wallpaper.list.ViewBindingHolder
 import com.lollipop.wallpaper.service.LWallpaperService
 import com.lollipop.wallpaper.utils.*
 
@@ -290,7 +291,7 @@ class LegendActivity : BaseActivity() {
         private val binding: ItemUsageLegendBinding,
         private val onLegendChanged: (holderPosition: Int, legendPosition: Int) -> Unit,
         private val onItemClick: (holderPosition: Int) -> Unit
-    ) : RecyclerView.ViewHolder(binding.root) {
+    ) : ViewBindingHolder(binding) {
 
         companion object {
             fun create(
@@ -408,7 +409,7 @@ class LegendActivity : BaseActivity() {
     private class FloatingGroupInfoHolder(
         private val binding: ItemUsageLegendFloatingBinding,
         private val onItemClick: (position: Int) -> Unit
-    ) : RecyclerView.ViewHolder(binding.root) {
+    ) : ViewBindingHolder(binding) {
         companion object {
             fun create(
                 parent: ViewGroup,

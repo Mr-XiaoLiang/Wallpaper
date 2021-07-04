@@ -16,7 +16,7 @@ import com.lollipop.wallpaper.utils.bind
  * APP使用时间的Bean
  */
 class AppUsageHolder(private val viewBinding: ItemAppUsageBinding) :
-    RecyclerView.ViewHolder(viewBinding.root) {
+    ViewBindingHolder(viewBinding) {
 
     companion object {
         fun create(parent: ViewGroup): AppUsageHolder {

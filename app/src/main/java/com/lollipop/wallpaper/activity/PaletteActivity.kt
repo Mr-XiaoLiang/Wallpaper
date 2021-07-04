@@ -15,6 +15,7 @@ import com.lollipop.wallpaper.databinding.ItemGroupInfoBinding
 import com.lollipop.wallpaper.databinding.ItemPresetColorBinding
 import com.lollipop.wallpaper.engine.UsageStatsGroupInfo
 import com.lollipop.wallpaper.list.ListTouchHelper
+import com.lollipop.wallpaper.list.ViewBindingHolder
 import com.lollipop.wallpaper.service.LWallpaperService
 import com.lollipop.wallpaper.utils.*
 
@@ -329,7 +330,7 @@ class PaletteActivity : BaseActivity() {
     private class PresetColorHolder private constructor(
         viewBinding: ItemPresetColorBinding,
         private val onClickCallback: (Int) -> Unit
-    ) : RecyclerView.ViewHolder(viewBinding.root) {
+    ) : ViewBindingHolder(viewBinding) {
 
         companion object {
             fun create(parent: ViewGroup, callback: (Int) -> Unit): PresetColorHolder {
@@ -378,7 +379,7 @@ class PaletteActivity : BaseActivity() {
     private class GroupHolder private constructor(
         private val viewBinding: ItemGroupInfoBinding,
         private val onClickCallback: (Int) -> Unit
-    ) : RecyclerView.ViewHolder(viewBinding.root) {
+    ) : ViewBindingHolder(viewBinding) {
 
         companion object {
             fun create(parent: ViewGroup, callback: (Int) -> Unit): GroupHolder {

@@ -6,11 +6,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.lollipop.wallpaper.R
 import com.lollipop.wallpaper.databinding.FragmentGenerateRetrievalBinding
+import com.lollipop.wallpaper.databinding.ItemAppColorBinding
 import com.lollipop.wallpaper.databinding.ItemSelectColorBinding
 import com.lollipop.wallpaper.entitys.AppColorInfo
+import com.lollipop.wallpaper.list.ViewBindingHolder
 import com.lollipop.wallpaper.utils.bind
 import com.lollipop.wallpaper.utils.lazyBind
 
@@ -30,12 +34,8 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
     override val nextStepAction: Int
         get() = R.id.actionRetrievalToGroupPreference
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return binding.root
-    }
+    override val contentViewBinding: ViewBinding
+        get() = binding
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -55,10 +55,98 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
 
     }
 
+    private class AppColorListAdapter(
+        private val data: List<AppColorInfo>,
+        private val onColorSelected: (position: Int, colorIndex: Int) -> Unit,
+        private val getSelectedColorIndex: (position: Int) -> Int
+    ): RecyclerView.Adapter<AppColorHolder>() {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppColorHolder {
+            return AppColorHolder.create(parent, onColorSelected)
+        }
+
+        override fun onBindViewHolder(holder: AppColorHolder, position: Int) {
+            holder.bind(data[position], getSelectedColorIndex(position))
+        }
+
+        override fun getItemCount(): Int {
+            return data.size
+        }
+
+    }
+
+    private class AppColorHolder(
+        private val binding: ItemAppColorBinding,
+        private val onColorSelected: (position: Int, colorIndex: Int) -> Unit
+    ) : ViewBindingHolder(binding) {
+
+        companion object {
+            fun create(
+                parent: ViewGroup,
+                onColorSelected: (position: Int, colorIndex: Int) -> Unit
+            ): AppColorHolder {
+                return AppColorHolder(parent.bind(), onColorSelected)
+            }
+        }
+
+        private var selectedColorIndex = 0
+
+        private val colorList = ArrayList<Int>()
+
+        private val adapter = ColorListAdapter(colorList, ::getSelectedColorIndex, ::onColorClick)
+
+        init {
+            binding.appColorGroup.layoutManager = LinearLayoutManager(
+                context, RecyclerView.HORIZONTAL, false
+            )
+            binding.appColorGroup.adapter = adapter
+        }
+
+        fun bind(info: AppColorInfo, selectedIndex: Int) {
+            binding.appIconView.setImageDrawable(info.appInfo.icon)
+            binding.appLabelView.text = info.appInfo.label
+            selectedColorIndex = selectedIndex
+            colorList.clear()
+            info.colorArray.forEach {
+                colorList.add(it)
+            }
+            adapter.notifyDataSetChanged()
+        }
+
+        private fun onColorClick(colorIndex: Int) {
+            onColorSelected(adapterPosition, colorIndex)
+        }
+
+        private fun getSelectedColorIndex(): Int {
+            return selectedColorIndex
+        }
+
+    }
+
+    private class ColorListAdapter(
+        private val colorList: List<Int>,
+        private val colorSelected: () -> Int,
+        private val onClick: (position: Int) -> Unit
+    ) : RecyclerView.Adapter<ColorHolder>() {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColorHolder {
+            return ColorHolder.create(parent, onClick)
+        }
+
+        override fun onBindViewHolder(holder: ColorHolder, position: Int) {
+            holder.bind(colorList[position], colorSelected() == position)
+        }
+
+        override fun getItemCount(): Int {
+            return colorList.size
+        }
+
+    }
+
     private class ColorHolder(
         private val binding: ItemSelectColorBinding,
         private val onClick: (position: Int) -> Unit
-    ) : RecyclerView.ViewHolder(binding.root) {
+    ) : ViewBindingHolder(binding) {
 
         companion object {
             fun create(parent: ViewGroup, onClick: (position: Int) -> Unit): ColorHolder {

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
 import com.lollipop.wallpaper.R
 import com.lollipop.wallpaper.databinding.FragmentGenerateGroupingBinding
 import com.lollipop.wallpaper.utils.lazyBind
@@ -24,12 +25,8 @@ class GenerateGroupingFragment : GenerateBaseFragment() {
     override val nextStepAction: Int
         get() = R.id.actionGroupingToComplete
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return binding.root
-    }
+    override val contentViewBinding: ViewBinding
+        get() = binding
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

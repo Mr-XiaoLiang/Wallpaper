@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".generate.GenerateFirstFragment">
+
+    <FrameLayout
+        android:id="@+id/fragmentContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/contentLoadingView"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="center_horizontal|top"
+        android:background="@drawable/bg_content_loading"
+        android:layout_margin="12dp"/>
+
+</FrameLayout>
