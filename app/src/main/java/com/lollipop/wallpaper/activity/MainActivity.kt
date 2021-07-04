@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lollipop.wallpaper.R
 import com.lollipop.wallpaper.databinding.ActivityMainBinding
+import com.lollipop.wallpaper.entitys.AppInfo
 import com.lollipop.wallpaper.list.AppUsageHolder
 import com.lollipop.wallpaper.service.LWallpaperService
 import com.lollipop.wallpaper.utils.*
@@ -35,7 +36,7 @@ class MainActivity : BaseActivity() {
 
     private val settings = LSettings.bind(this)
 
-    private val appUsageInfoList = ArrayList<PackageUsageHelper.AppInfo>()
+    private val appUsageInfoList = ArrayList<AppInfo>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -143,7 +144,7 @@ class MainActivity : BaseActivity() {
     }
 
     private class UsageAdapter(
-        private val data: List<PackageUsageHelper.AppInfo>
+        private val data: List<AppInfo>
     ) : RecyclerView.Adapter<AppUsageHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppUsageHolder {

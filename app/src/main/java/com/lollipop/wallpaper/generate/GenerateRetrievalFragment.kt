@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lollipop.wallpaper.R
 import com.lollipop.wallpaper.databinding.FragmentGenerateRetrievalBinding
 import com.lollipop.wallpaper.databinding.ItemSelectColorBinding
+import com.lollipop.wallpaper.entitys.AppColorInfo
 import com.lollipop.wallpaper.utils.bind
 import com.lollipop.wallpaper.utils.lazyBind
 
@@ -49,6 +50,8 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
     }
 
     interface Callback {
+
+        fun getAppList(callback: (List<AppColorInfo>) -> Unit)
 
     }
 

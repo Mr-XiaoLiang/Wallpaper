@@ -20,6 +20,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import com.lollipop.wallpaper.engine.UsageStatsGroupInfo
 import com.lollipop.wallpaper.engine.UsageStatsItemInfo
+import com.lollipop.wallpaper.entitys.AppInfo
 
 /**
  * @author lollipop
@@ -301,11 +302,5 @@ class PackageUsageHelper(private val context: Context) {
 
     }
 
-    data class AppInfo(
-        val packageName: String,
-        val icon: Drawable,
-        val label: CharSequence,
-        val usageTime: Long
-    )
 
 }

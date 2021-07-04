@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.lollipop.wallpaper.R
 import com.lollipop.wallpaper.databinding.ItemAppUsageBinding
-import com.lollipop.wallpaper.utils.PackageUsageHelper
+import com.lollipop.wallpaper.entitys.AppInfo
 import com.lollipop.wallpaper.utils.bind
 
 /**
@@ -44,7 +44,7 @@ class AppUsageHolder(private val viewBinding: ItemAppUsageBinding) :
         usageProgressDrawable.alpha = 32
     }
 
-    fun bind(info: PackageUsageHelper.AppInfo) {
+    fun bind(info: AppInfo) {
         viewBinding.appIconView.setImageDrawable(info.icon)
         viewBinding.appLabelView.text = info.label
         viewBinding.appPkgView.text = info.packageName

@@ -13,6 +13,7 @@ import com.lollipop.wallpaper.databinding.ItemUsageLegendBinding
 import com.lollipop.wallpaper.databinding.ItemUsageLegendFloatingBinding
 import com.lollipop.wallpaper.engine.UsageStatsGroupInfo
 import com.lollipop.wallpaper.engine.UsageStatsItemInfo
+import com.lollipop.wallpaper.entitys.AppInfo
 import com.lollipop.wallpaper.service.LWallpaperService
 import com.lollipop.wallpaper.utils.*
 
@@ -34,7 +35,7 @@ class LegendActivity : BaseActivity() {
 
     private val groupInfoList = ArrayList<UsageStatsGroupInfo>()
     private val pkgGroupMap = HashMap<String, String>()
-    private val appInfoList = ArrayList<PackageUsageHelper.AppInfo>()
+    private val appInfoList = ArrayList<AppInfo>()
 
     private var swapMode = false
     private var buildMode = false
@@ -228,7 +229,7 @@ class LegendActivity : BaseActivity() {
     }
 
     private class AppInfoAdapter(
-        private val data: List<PackageUsageHelper.AppInfo>,
+        private val data: List<AppInfo>,
         private val groupInfo: List<UsageStatsGroupInfo>,
         private val swapModeProvider: () -> Boolean,
         private val itemClickCallback: (position: Int) -> Unit,
@@ -345,7 +346,7 @@ class LegendActivity : BaseActivity() {
         }
 
         fun bind(
-            info: PackageUsageHelper.AppInfo,
+            info: AppInfo,
             legendPosition: Int,
             isSwapMode: Boolean
         ) {
