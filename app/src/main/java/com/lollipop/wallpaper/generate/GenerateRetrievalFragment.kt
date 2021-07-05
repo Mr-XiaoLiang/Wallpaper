@@ -3,7 +3,6 @@ package com.lollipop.wallpaper.generate
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,6 +35,50 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
 
     override val contentViewBinding: ViewBinding
         get() = binding
+
+    private val appListData = ArrayList<AppColorInfo>()
+
+    private val selectedColorIndex = ArrayList<Int>()
+
+    private val adapter = AppColorListAdapter(appListData, ::onColorSelected, ::getSelectedColorIndex)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.appList.layoutManager = LinearLayoutManager(context)
+
+    }
+
+    private fun onColorSelected(position: Int, colorIndex: Int) {
+        while (selectedColorIndex.size <= position) {
+            selectedColorIndex.add(0)
+        }
+        selectedColorIndex[position] = colorIndex
+    }
+
+    private fun getSelectedColorIndex(position: Int): Int {
+        if (selectedColorIndex.size > position) {
+            return selectedColorIndex[position]
+        }
+        return 0
+    }
+
+    override fun onStart() {
+        super.onStart()
+        loadData()
+    }
+
+    private fun loadData() {
+        startLoading()
+        appListData.clear()
+        selectedColorIndex.clear()
+        adapter.notifyDataSetChanged()
+        callback?.getAppList {
+            appListData.clear()
+            appListData.addAll(it)
+            adapter.notifyDataSetChanged()
+            endLoading()
+        }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
