@@ -29,6 +29,8 @@ class GenerateActivity : BaseActivity(),
 
     private val appColorList = ArrayList<AppColorInfo>()
 
+    private val selectedColorIndex = ArrayList<Int>()
+
     private var onAppInfoLoadedListener: ((List<AppColorInfo>) -> Unit)? = null
 
     private var isAppInfoLoading = false
@@ -54,6 +56,7 @@ class GenerateActivity : BaseActivity(),
         if (isDestroyed) {
             return@task
         }
+        selectedColorIndex.clear()
         appColorList.clear()
         appColorList.addAll(appColors)
         isAppInfoLoading = false
@@ -80,6 +83,20 @@ class GenerateActivity : BaseActivity(),
         if (!isAppInfoLoading) {
             appLoadTask.run()
         }
+    }
+
+    override fun onSelectedColorChange(position: Int, colorIndex: Int) {
+        while (selectedColorIndex.size <= position) {
+            selectedColorIndex.add(0)
+        }
+        selectedColorIndex[position] = colorIndex
+    }
+
+    override fun getSelectedColorIndex(position: Int): Int {
+        if (selectedColorIndex.size > position) {
+            return selectedColorIndex[position]
+        }
+        return 0
     }
 
     private fun onAppInfoLoadStart() {

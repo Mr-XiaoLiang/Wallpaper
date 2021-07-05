@@ -38,9 +38,8 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
 
     private val appListData = ArrayList<AppColorInfo>()
 
-    private val selectedColorIndex = ArrayList<Int>()
-
-    private val adapter = AppColorListAdapter(appListData, ::onColorSelected, ::getSelectedColorIndex)
+    private val adapter =
+        AppColorListAdapter(appListData, ::onColorSelected, ::getSelectedColorIndex)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,17 +49,11 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
     }
 
     private fun onColorSelected(position: Int, colorIndex: Int) {
-        while (selectedColorIndex.size <= position) {
-            selectedColorIndex.add(0)
-        }
-        selectedColorIndex[position] = colorIndex
+        callback?.onSelectedColorChange(position, colorIndex)
     }
 
     private fun getSelectedColorIndex(position: Int): Int {
-        if (selectedColorIndex.size > position) {
-            return selectedColorIndex[position]
-        }
-        return 0
+        return callback?.getSelectedColorIndex(position) ?: 0
     }
 
     override fun onStart() {
@@ -71,11 +64,10 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
     private fun loadData() {
         startLoading()
         appListData.clear()
-        selectedColorIndex.clear()
         adapter.notifyDataSetChanged()
-        callback?.getAppList {
+        callback?.getAppList { appList ->
             appListData.clear()
-            appListData.addAll(it)
+            appListData.addAll(appList)
             adapter.notifyDataSetChanged()
             endLoading()
             onLoadedData()
@@ -106,13 +98,17 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
 
         fun getAppList(callback: (List<AppColorInfo>) -> Unit)
 
+        fun onSelectedColorChange(position: Int, colorIndex: Int)
+
+        fun getSelectedColorIndex(position: Int): Int
+
     }
 
     private class AppColorListAdapter(
         private val data: List<AppColorInfo>,
         private val onColorSelected: (position: Int, colorIndex: Int) -> Unit,
         private val getSelectedColorIndex: (position: Int) -> Int
-    ): RecyclerView.Adapter<AppColorHolder>() {
+    ) : RecyclerView.Adapter<AppColorHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppColorHolder {
             return AppColorHolder.create(parent, onColorSelected)
