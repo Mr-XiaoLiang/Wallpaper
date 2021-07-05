@@ -12,10 +12,10 @@ import com.lollipop.wallpaper.R
 import com.lollipop.wallpaper.databinding.FragmentGenerateRetrievalBinding
 import com.lollipop.wallpaper.databinding.ItemAppColorBinding
 import com.lollipop.wallpaper.databinding.ItemSelectColorBinding
+import com.lollipop.wallpaper.dialog.HeaderMessageDialog
 import com.lollipop.wallpaper.entitys.AppColorInfo
 import com.lollipop.wallpaper.list.ViewBindingHolder
-import com.lollipop.wallpaper.utils.bind
-import com.lollipop.wallpaper.utils.lazyBind
+import com.lollipop.wallpaper.utils.*
 
 /**
  * 色彩生成的APP信息检索页面
@@ -45,7 +45,8 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.appList.layoutManager = LinearLayoutManager(context)
-
+        binding.appList.adapter = adapter
+        binding.appList.fixInsetsByPadding(WindowInsetsHelper.Edge.CONTENT)
     }
 
     private fun onColorSelected(position: Int, colorIndex: Int) {
@@ -77,7 +78,16 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
             appListData.addAll(it)
             adapter.notifyDataSetChanged()
             endLoading()
+            onLoadedData()
         }
+    }
+
+    private fun onLoadedData() {
+        HeaderMessageDialog.create(this)
+            .setMessage(getString(R.string.msg_retrieval_guide))
+            .setCancelMessage(getString(R.string.confirm)) {
+                it.dismiss()
+            }.show()
     }
 
     override fun onAttach(context: Context) {
@@ -128,7 +138,12 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
                 parent: ViewGroup,
                 onColorSelected: (position: Int, colorIndex: Int) -> Unit
             ): AppColorHolder {
-                return AppColorHolder(parent.bind(), onColorSelected)
+                return AppColorHolder(parent.bind(), onColorSelected).apply {
+                    itemView.layoutParams {
+                        it.width = ViewGroup.LayoutParams.MATCH_PARENT
+                        it.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    }
+                }
             }
         }
 
@@ -157,7 +172,11 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
         }
 
         private fun onColorClick(colorIndex: Int) {
+            val lastPosition = selectedColorIndex
+            selectedColorIndex = colorIndex
             onColorSelected(adapterPosition, colorIndex)
+            adapter.notifyItemChanged(lastPosition)
+            adapter.notifyItemChanged(colorIndex)
         }
 
         private fun getSelectedColorIndex(): Int {
@@ -193,7 +212,12 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
 
         companion object {
             fun create(parent: ViewGroup, onClick: (position: Int) -> Unit): ColorHolder {
-                return ColorHolder(parent.bind(), onClick)
+                return ColorHolder(parent.bind(), onClick).apply {
+                    itemView.layoutParams {
+                        it.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                        it.height = ViewGroup.LayoutParams.MATCH_PARENT
+                    }
+                }
             }
         }
 
@@ -207,7 +231,7 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
         }
 
         fun bind(color: Int, isSelected: Boolean) {
-            binding.colorPreviewView.isSelected = isSelected
+            binding.colorSelectView.isSelected = isSelected
             colorDrawable.color = color
         }
 

@@ -545,6 +545,15 @@ inline fun <reified T : ViewBinding> LayoutInflater.bind(): T {
     throw InflateException("Cant inflate ViewBinding ${bindingClass.name}")
 }
 
+fun View.layoutParams(run: (ViewGroup.LayoutParams) -> Unit) {
+    val lp = this.layoutParams ?: ViewGroup.LayoutParams(
+        ViewGroup.LayoutParams.WRAP_CONTENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT
+    )
+    run(lp)
+    layoutParams = lp
+}
+
 inline fun <reified T : ViewBinding> View.withThis(inflate: Boolean = false): Lazy<T> = lazy {
     val bindingClass = T::class.java
     val view: View = this

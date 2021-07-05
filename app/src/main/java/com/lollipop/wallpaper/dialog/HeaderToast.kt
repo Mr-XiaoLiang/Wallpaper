@@ -1,11 +1,15 @@
-package com.lollipop.wallpaper.utils
+package com.lollipop.wallpaper.dialog
 
 import android.app.Activity
 import android.graphics.Color
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.lollipop.wallpaper.R
+import com.lollipop.wallpaper.utils.dp2px
+import com.lollipop.wallpaper.utils.getColor
+import com.lollipop.wallpaper.utils.task
 
 /**
  * @author lollipop
@@ -21,6 +25,12 @@ class HeaderToast private constructor(
         private const val PADDING_VERTICAL = 20
         private const val PADDING_HORIZONTAL = 20
         private const val TEXT_SIZE = 18F
+
+        fun show(fragment: Fragment, value: String) {
+            fragment.activity?.let {
+                show(it, value)
+            }
+        }
 
         fun show(activity: Activity, value: String) {
             var needCreate = true
@@ -74,8 +84,6 @@ class HeaderToast private constructor(
     private val autoRemoveTask = task {
         dismiss()
     }
-
-
 
     override fun onStart() {
         super.onStart()

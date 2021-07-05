@@ -177,12 +177,8 @@ class PaletteHelper {
             .resizeBitmapArea(SAMPLING_SIZE * SAMPLING_SIZE)
             .generate()
 
-        // 过滤无效颜色
-        var swatches = ArrayList<Palette.Swatch>(palette.swatches).filter {
-            it.population >= minColorArea
-        }
         // 对颜色进行排序
-        swatches = swatches.sortedBy { it.population }
+        val swatches = ArrayList<Palette.Swatch>(palette.swatches).sortedBy { it.population }
 
         // 得到所有取出的颜色
         return IntArray(swatches.size) { swatches[it].rgb }

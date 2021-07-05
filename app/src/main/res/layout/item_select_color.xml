@@ -4,19 +4,23 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.material.imageview.ShapeableImageView
+    <FrameLayout
         android:layout_width="68dp"
         android:layout_height="68dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:src="@mipmap/ic_launcher"
-        app:shapeAppearanceOverlay="@style/appIcon"
-        android:id="@+id/colorPreviewView"
-        app:layout_constraintVertical_chainStyle="packed"
+        android:id="@+id/colorSelectView"
         android:padding="10dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/bg_select_color" />
+        android:background="@drawable/bg_select_color"
+        android:layout_margin="10dp">
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/ic_launcher"
+            app:shapeAppearanceOverlay="@style/appIcon"
+            android:id="@+id/colorPreviewView" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

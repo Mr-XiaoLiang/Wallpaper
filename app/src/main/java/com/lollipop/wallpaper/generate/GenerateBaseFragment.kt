@@ -47,6 +47,7 @@ abstract class GenerateBaseFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        endLoading()
     }
 
     protected fun startLoading() {

@@ -48,4 +48,6 @@
     <string name="wallpaper_animation_summary">关闭后，壁纸不会在出现时展示过渡效果。但是这并不能为您节约电量</string>
     <string name="menu">选项</string>
 
+    <string name="msg_retrieval_guide">请为每一个应用选择一种代表色\n点击右上角的确认按钮进入下一步</string>
+
 </resources>

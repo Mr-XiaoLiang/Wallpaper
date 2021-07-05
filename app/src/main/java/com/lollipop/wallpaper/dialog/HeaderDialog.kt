@@ -1,4 +1,4 @@
-package com.lollipop.wallpaper.utils
+package com.lollipop.wallpaper.dialog
 
 import android.app.Activity
 import android.content.Context
@@ -8,13 +8,13 @@ import android.view.ViewGroup
 import android.view.ViewManager
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
 import com.lollipop.wallpaper.listener.BackPressListener
 import com.lollipop.wallpaper.provider.BackPressProvider
+import com.lollipop.wallpaper.utils.*
 import java.util.*
 
 /**
@@ -50,7 +50,7 @@ class HeaderDialog private constructor(
             } else {
                 null
             }
-            return with(findRootGroup(fragment.view!!), true, backPressProvider)
+            return with(findRootGroup(fragment.requireView()), true, backPressProvider)
         }
 
         fun with(
@@ -229,6 +229,7 @@ class HeaderDialog private constructor(
         backPressProvider?.addBackPressListener(this)
         checkView()
         dialogRootView.post {
+            dialogImpl?.setHost(this)
             dialogImpl?.setDismissCallback(viewCallback)
             dialogImpl?.onStart()
             doAnimation(true)
@@ -239,6 +240,7 @@ class HeaderDialog private constructor(
         backPressProvider?.removeBackPressListener(this)
         dialogImpl?.onStop()
         dialogImpl?.setDismissCallback(null)
+        dialogImpl?.setHost(null)
         doAnimation(false)
     }
 
@@ -292,7 +294,18 @@ class HeaderDialog private constructor(
 
         abstract val view: View
 
+        val dialog: HeaderDialog?
+            get() {
+                return host
+            }
+
         private var dismissCallback: (() -> Unit)? = null
+
+        private var host: HeaderDialog? = null
+
+        fun setHost(dialog: HeaderDialog?) {
+            host = dialog
+        }
 
         open fun onCreate() {}
 

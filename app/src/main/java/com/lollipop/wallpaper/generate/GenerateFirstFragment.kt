@@ -47,7 +47,6 @@ class GenerateFirstFragment : GenerateBaseFragment() {
             nextStep()
         }
         binding.root.fixInsetsByPadding(WindowInsetsHelper.Edge.CONTENT)
-        startLoading()
     }
 
     interface Callback {
