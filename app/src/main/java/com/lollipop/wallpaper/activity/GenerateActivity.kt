@@ -1,6 +1,8 @@
 package com.lollipop.wallpaper.activity
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.lollipop.wallpaper.databinding.ActivityGenerateBinding
 import com.lollipop.wallpaper.entitys.AppColorInfo
@@ -18,8 +20,7 @@ class GenerateActivity : BaseActivity(),
     GenerateRetrievalFragment.Callback,
     GenerateGroupPreferenceFragment.Callback,
     GenerateGroupingFragment.Callback,
-    GenerateCompleteFragment.Callback
-{
+    GenerateCompleteFragment.Callback {
 
     private val binding: ActivityGenerateBinding by lazyBind()
 
@@ -34,6 +35,10 @@ class GenerateActivity : BaseActivity(),
     private var onAppInfoLoadedListener: ((List<AppColorInfo>) -> Unit)? = null
 
     private var isAppInfoLoading = false
+
+    private var childOptionMenuId = 0
+
+    private var onOptionMenuSelectedListener: ((Int) -> Unit)? = null
 
     private val appLoadTask = task {
         isAppInfoLoading = true
@@ -70,12 +75,39 @@ class GenerateActivity : BaseActivity(),
         setContentView(binding)
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu ?: return super.onPrepareOptionsMenu(menu)
+        menu.clear()
+        if (childOptionMenuId != 0) {
+            menuInflater.inflate(childOptionMenuId, menu)
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val listener = onOptionMenuSelectedListener ?: return super.onOptionsItemSelected(item)
+        if (childOptionMenuId != 0) {
+            listener(item.itemId)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun nextStep(fragment: Fragment): Boolean {
         if (fragment is GenerateCompleteFragment) {
             finish()
             return true
         }
         return false
+    }
+
+    override fun setOptionMenu(menuId: Int) {
+        childOptionMenuId = menuId
+        invalidateOptionsMenu()
+    }
+
+    override fun setOptionMenuListener(callback: (Int) -> Unit) {
+        onOptionMenuSelectedListener = callback
     }
 
     override fun getAppList(callback: (List<AppColorInfo>) -> Unit) {

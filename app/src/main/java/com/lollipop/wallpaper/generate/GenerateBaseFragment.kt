@@ -25,6 +25,8 @@ abstract class GenerateBaseFragment : BaseFragment() {
 
     abstract val contentViewBinding: ViewBinding
 
+    protected open val optionMenuId: Int = 0
+
     private val baseBinding: FragmentGenerateBaseBinding by lazyBind()
 
     protected var isLoading = false
@@ -77,6 +79,8 @@ abstract class GenerateBaseFragment : BaseFragment() {
         super.onAttach(context)
         checkIdentity<Callback>(context) {
             stepCallback = it
+            it.setOptionMenu(optionMenuId)
+            it.setOptionMenuListener(::onOptionMenuSelected)
         }
     }
 
@@ -95,8 +99,14 @@ abstract class GenerateBaseFragment : BaseFragment() {
         NavHostFragment.findNavController(this).navigate(nextStepAction)
     }
 
+    protected open fun onOptionMenuSelected(menuItemId: Int) {
+
+    }
+
     interface Callback {
         fun nextStep(fragment: Fragment): Boolean
+        fun setOptionMenu(menuId: Int)
+        fun setOptionMenuListener(callback: (Int) -> Unit)
     }
 
 }
