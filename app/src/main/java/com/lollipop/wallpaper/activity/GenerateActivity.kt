@@ -45,25 +45,28 @@ class GenerateActivity : BaseActivity(),
         onUI {
             onAppInfoLoadStart()
         }
-        packageUsageHelper.loadAppInfo()
-        if (isDestroyed) {
-            return@task
-        }
-        val appInfoList = packageUsageHelper.appInfoList
-        val appColors = ArrayList<AppColorInfo>()
-        appInfoList.forEach {
+        // 如果是空的，才加载
+        if (appColorList.isEmpty()) {
+            packageUsageHelper.loadAppInfo()
             if (isDestroyed) {
                 return@task
             }
-            val color = paletteHelper.getColor(it.icon)
-            appColors.add(AppColorInfo(it, color))
+            val appInfoList = packageUsageHelper.appInfoList
+            val appColors = ArrayList<AppColorInfo>()
+            appInfoList.forEach {
+                if (isDestroyed) {
+                    return@task
+                }
+                val color = paletteHelper.getColor(it.icon)
+                appColors.add(AppColorInfo(it, color))
+            }
+            if (isDestroyed) {
+                return@task
+            }
+            selectedColorIndex.clear()
+            appColorList.clear()
+            appColorList.addAll(appColors)
         }
-        if (isDestroyed) {
-            return@task
-        }
-        selectedColorIndex.clear()
-        appColorList.clear()
-        appColorList.addAll(appColors)
         isAppInfoLoading = false
         onUI {
             onAppInfoLoadEnd()
@@ -81,16 +84,19 @@ class GenerateActivity : BaseActivity(),
         if (childOptionMenuId != 0) {
             menuInflater.inflate(childOptionMenuId, menu)
         }
+//        androidx.fragment.app.FragmentContainerView
+//        androidx.fragment.app.FragmentContainerView
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val listener = onOptionMenuSelectedListener ?: return super.onOptionsItemSelected(item)
-        if (childOptionMenuId != 0) {
-            listener(item.itemId)
+        val superResult = super.onOptionsItemSelected(item)
+        if (superResult) {
             return true
         }
-        return super.onOptionsItemSelected(item)
+        val listener = onOptionMenuSelectedListener ?: return false
+        listener(item.itemId)
+        return true
     }
 
     override fun nextStep(fragment: Fragment): Boolean {

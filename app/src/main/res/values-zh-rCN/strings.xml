@@ -49,5 +49,6 @@
     <string name="menu">选项</string>
 
     <string name="msg_retrieval_guide">请为每一个应用选择一种代表色\n点击右上角的确认按钮进入下一步</string>
+    <string name="next">下一步</string>
 
 </resources>

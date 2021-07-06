@@ -10,6 +10,8 @@
         android:name="com.lollipop.wallpaper.generate.GenerateFirstFragment"
         tools:layout="@layout/fragment_generate_first">
         <action
+            app:enterAnim="@anim/navigate_in"
+            app:exitAnim="@anim/navigate_out"
             android:id="@+id/actionFirstToRetrieval"
             app:destination="@id/retrievalFragment" />
     </fragment>
@@ -19,6 +21,8 @@
         android:name="com.lollipop.wallpaper.generate.GenerateRetrievalFragment"
         tools:layout="@layout/fragment_generate_retrieval">
         <action
+            app:enterAnim="@anim/navigate_in"
+            app:exitAnim="@anim/navigate_out"
             android:id="@+id/actionRetrievalToGroupPreference"
             app:destination="@id/groupPreferenceFragment" />
     </fragment>
@@ -28,6 +32,8 @@
         android:name="com.lollipop.wallpaper.generate.GenerateGroupPreferenceFragment"
         tools:layout="@layout/fragment_generate_group_preference">
         <action
+            app:enterAnim="@anim/navigate_in"
+            app:exitAnim="@anim/navigate_out"
             android:id="@+id/actionGroupPreferenceToGrouping"
             app:destination="@id/groupingFragment" />
     </fragment>
@@ -37,6 +43,8 @@
         android:name="com.lollipop.wallpaper.generate.GenerateGroupingFragment"
         tools:layout="@layout/fragment_generate_grouping" >
         <action
+            app:enterAnim="@anim/navigate_in"
+            app:exitAnim="@anim/navigate_out"
             android:id="@+id/actionGroupingToComplete"
             app:destination="@id/completeFragment" />
     </fragment>

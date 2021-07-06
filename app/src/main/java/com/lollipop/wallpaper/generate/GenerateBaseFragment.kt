@@ -68,6 +68,8 @@ abstract class GenerateBaseFragment : BaseFragment() {
         if (isLoading) {
             baseBinding.contentLoadingView.show()
         }
+        stepCallback?.setOptionMenu(optionMenuId)
+        stepCallback?.setOptionMenuListener(::onOptionMenuSelected)
     }
 
     override fun onStop() {
@@ -79,8 +81,6 @@ abstract class GenerateBaseFragment : BaseFragment() {
         super.onAttach(context)
         checkIdentity<Callback>(context) {
             stepCallback = it
-            it.setOptionMenu(optionMenuId)
-            it.setOptionMenuListener(::onOptionMenuSelected)
         }
     }
 

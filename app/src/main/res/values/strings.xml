@@ -47,5 +47,6 @@
     <string name="wallpaper_animation_summary">After closing, the wallpaper will not show transition effects when it appears. But this will not save you power.</string>
     <string name="menu">Options</string>
     <string name="msg_retrieval_guide"> Please choose a representative color for each application\nclick the confirmation button in the upper right corner to enter the next step</string>
+    <string name="next">Next</string>
 
 </resources>

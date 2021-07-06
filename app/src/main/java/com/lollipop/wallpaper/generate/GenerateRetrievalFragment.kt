@@ -26,6 +26,10 @@ import com.lollipop.wallpaper.utils.*
  */
 class GenerateRetrievalFragment : GenerateBaseFragment() {
 
+    companion object {
+        private const val KEY_SHOW_GUIDE = "KEY_SHOW_GUIDE"
+    }
+
     private val binding: FragmentGenerateRetrievalBinding by lazyBind()
 
     private var callback: Callback? = null
@@ -36,10 +40,20 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
     override val contentViewBinding: ViewBinding
         get() = binding
 
+    override val optionMenuId: Int
+        get() = R.menu.fragment_generate_retrieval
+
     private val appListData = ArrayList<AppColorInfo>()
 
     private val adapter =
         AppColorListAdapter(appListData, ::onColorSelected, ::getSelectedColorIndex)
+
+    private var isShowGuide = true
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isShowGuide = savedInstanceState?.getBoolean(KEY_SHOW_GUIDE) ?: true
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -75,11 +89,28 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
     }
 
     private fun onLoadedData() {
-        HeaderMessageDialog.create(this)
-            .setMessage(getString(R.string.msg_retrieval_guide))
-            .setCancelMessage(getString(R.string.confirm)) {
-                it.dismiss()
-            }.show()
+        if (isShowGuide) {
+            isShowGuide = false
+            HeaderMessageDialog.create(this)
+                .setMessage(getString(R.string.msg_retrieval_guide))
+                .setCancelMessage(getString(R.string.confirm)) {
+                    it.dismiss()
+                }.show()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(KEY_SHOW_GUIDE, isShowGuide)
+    }
+
+    override fun onOptionMenuSelected(menuItemId: Int) {
+        super.onOptionMenuSelected(menuItemId)
+        when (menuItemId) {
+            R.id.next -> {
+                nextStep()
+            }
+        }
     }
 
     override fun onAttach(context: Context) {

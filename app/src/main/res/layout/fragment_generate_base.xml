@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".generate.GenerateFirstFragment">
+    tools:context=".generate.GenerateFirstFragment"
+    android:background="@color/background">
 
     <FrameLayout
         android:id="@+id/fragmentContent"

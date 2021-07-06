@@ -16,4 +16,6 @@
 
     <color name="contentLoadingBackground">#8000</color>
 
+    <color name="background">#fff</color>
+
 </resources>
