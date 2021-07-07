@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
-        app:icon="@drawable/ic_baseline_arrow_forward_24"
+        app:icon="@drawable/ic_baseline_navigate_next_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -23,7 +24,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:gravity="center"
-        android:text="颜色生成辅助工具"
+        android:text="@string/generate_color"
         android:textColor="@color/textColorPrimary"
         android:textSize="22sp"
         app:layout_constraintBottom_toTopOf="@id/hintSummaryView"
@@ -40,7 +41,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:gravity="center"
-        android:text="本工具主要用于帮助您从应用图标中提取主题色，并且合并为组。他可能不能完全符合您的想法，但是它可以帮助您完成一些基础的工作。"
+        android:text="@string/generate_color_summary"
         android:textColor="@color/textColorSecondary"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/nextBtn"

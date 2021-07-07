@@ -50,5 +50,10 @@
 
     <string name="msg_retrieval_guide">请为每一个应用选择一种代表色\n点击右上角的确认按钮进入下一步</string>
     <string name="next">下一步</string>
+    <string name="save_color">保存颜色</string>
+    <string name="generate_color">颜色生成辅助工具</string>
+    <string name="generate_color_summary">本工具主要用于帮助您从应用图标中提取主题色，并且合并为组。他可能不能完全符合您的想法，但是它可以帮助您完成一些基础的工作。</string>
+    <string name="generate_preference_summary">恭喜你，已经为每个应用选择了一个颜色了。现在你有两个选择：\n1.点击保存按钮，把应用的颜色都保存起来，这样您可以方便的使用。\n2. 点击下方的箭头，我们进行下一步的颜色聚合，这可以直接帮你进行应用的分组。</string>
+    <string name="group_count">分组数量</string>
 
 </resources>

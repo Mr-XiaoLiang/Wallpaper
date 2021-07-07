@@ -48,5 +48,10 @@
     <string name="menu">Options</string>
     <string name="msg_retrieval_guide"> Please choose a representative color for each application\nclick the confirmation button in the upper right corner to enter the next step</string>
     <string name="next">Next</string>
+    <string name="save_color">Save</string>
+    <string name="generate_color">Generate color</string>
+    <string name="generate_color_summary">This tool is mainly used to help you extract theme colors from application icons and merge them into groups. He may not fully meet your ideas, but it can help you complete some basic tasks.</string>
+    <string name="generate_preference_summary">Congratulations, you have chosen a color for each application. Now you have two options:\n1. Click the save button to save all the applied colors so that you can use them conveniently. \n2. Click the arrow below, we will proceed to the next step of color aggregation, which can directly help you group applications.</string>
+    <string name="group_count">Count</string>
 
 </resources>

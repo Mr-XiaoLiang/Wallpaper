@@ -18,7 +18,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Wallpaper">
-        <activity android:name=".activity.GenerateActivity"></activity>
+        <activity android:name=".activity.GenerateActivity"
+            android:label="@string/generate_color"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"/>
         <activity
             android:name=".activity.SettingsActivity"
             android:excludeFromRecents="true"
