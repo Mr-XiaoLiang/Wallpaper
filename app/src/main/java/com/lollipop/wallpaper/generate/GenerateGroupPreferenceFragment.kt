@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import com.lollipop.wallpaper.R
 import com.lollipop.wallpaper.databinding.FragmentGenerateGroupPreferenceBinding
+import com.lollipop.wallpaper.utils.WindowInsetsHelper
+import com.lollipop.wallpaper.utils.fixInsetsByPadding
 import com.lollipop.wallpaper.utils.lazyBind
 
 /**
@@ -27,6 +29,11 @@ class GenerateGroupPreferenceFragment : GenerateBaseFragment() {
 
     override val contentViewBinding: ViewBinding
         get() = binding
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.fixInsetsByPadding(WindowInsetsHelper.Edge.CONTENT)
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
