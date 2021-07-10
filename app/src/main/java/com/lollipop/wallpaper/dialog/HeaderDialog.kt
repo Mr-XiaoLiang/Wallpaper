@@ -325,7 +325,7 @@ class HeaderDialog private constructor(
             dismissCallback = callback
         }
 
-        protected fun dismiss() {
+        fun dismiss() {
             dismissCallback?.invoke()
         }
 

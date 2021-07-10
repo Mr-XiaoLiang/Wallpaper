@@ -40,6 +40,8 @@ class GenerateActivity : BaseActivity(),
 
     private var onOptionMenuSelectedListener: ((Int) -> Unit)? = null
 
+    private var groupingCount = PaletteHelper.DEFAULT_GROUPING_COUNT
+
     private val appLoadTask = task {
         isAppInfoLoading = true
         onUI {
@@ -156,6 +158,14 @@ class GenerateActivity : BaseActivity(),
         onAppInfoLoadedListener = null
         paletteHelper.destroy()
         appLoadTask.cancel()
+    }
+
+    override fun getGroupingCount(): Int {
+        return groupingCount
+    }
+
+    override fun setGroupingCount(count: Int) {
+        this.groupingCount = count
     }
 
 }

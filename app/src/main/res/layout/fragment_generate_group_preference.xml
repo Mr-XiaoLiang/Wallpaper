@@ -32,14 +32,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.4" />
 
-    <androidx.appcompat.widget.AppCompatSpinner
+    <TextView
         android:id="@+id/groupCountSpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:minWidth="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/hintSummaryView" />
+        app:layout_constraintTop_toBottomOf="@id/hintSummaryView"
+        android:text="6"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="22sp"
+        android:gravity="center"
+        android:drawableEnd="@drawable/ic_baseline_edit_24"
+        android:drawableTint="@color/colorPrimaryVariant"
+        android:drawablePadding="5dp"/>
 
     <TextView
         android:layout_width="wrap_content"

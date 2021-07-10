@@ -14,6 +14,10 @@ class PaletteHelper {
 
     companion object {
 
+        const val MIN_GROUPING_COUNT = 3
+        const val DEFAULT_GROUPING_COUNT = 6
+        const val MAX_GROUPING_COUNT = 14
+
         private const val SAMPLING_SIZE = 96
 
         private const val MIN_COLOR_OCCURRENCE = 0.05f
