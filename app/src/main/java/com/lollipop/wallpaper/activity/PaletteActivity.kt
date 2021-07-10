@@ -334,12 +334,7 @@ class PaletteActivity : BaseActivity() {
 
         companion object {
             fun create(parent: ViewGroup, callback: (Int) -> Unit): PresetColorHolder {
-                return PresetColorHolder(parent.bind(), callback).apply {
-                    itemView.layoutParams = ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
-                    )
-                }
+                return PresetColorHolder(parent.bind(true), callback)
             }
         }
 
@@ -383,12 +378,7 @@ class PaletteActivity : BaseActivity() {
 
         companion object {
             fun create(parent: ViewGroup, callback: (Int) -> Unit): GroupHolder {
-                return GroupHolder(parent.bind(), callback).apply {
-                    itemView.layoutParams = ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                    )
-                }
+                return GroupHolder(parent.bind(true), callback)
             }
         }
 

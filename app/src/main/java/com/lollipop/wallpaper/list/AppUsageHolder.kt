@@ -20,12 +20,7 @@ class AppUsageHolder(private val viewBinding: ItemAppUsageBinding) :
 
     companion object {
         fun create(parent: ViewGroup): AppUsageHolder {
-            return AppUsageHolder(parent.bind()).apply {
-                itemView.layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-            }
+            return AppUsageHolder(parent.bind(true))
         }
 
         private const val ONE_SECOND = 1000L

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        app:layout_constraintDimensionRatio="1:1">
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/appIconView"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_gravity="center"
+            app:shapeAppearanceOverlay="@style/appIcon" />
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -520,7 +520,7 @@ inline fun <reified T : ViewBinding> Activity.lazyBind(): Lazy<T> = lazy { bind(
 
 inline fun <reified T : ViewBinding> Fragment.lazyBind(): Lazy<T> = lazy { bind() }
 
-inline fun <reified T : ViewBinding> View.lazyBind(): Lazy<T> = lazy { bind() }
+inline fun <reified T : ViewBinding> View.lazyBind(isParent: Boolean): Lazy<T> = lazy { bind(isParent) }
 
 inline fun <reified T : ViewBinding> Activity.bind(): T {
     return this.layoutInflater.bind()
@@ -530,15 +530,26 @@ inline fun <reified T : ViewBinding> Fragment.bind(): T {
     return this.layoutInflater.bind()
 }
 
-inline fun <reified T : ViewBinding> View.bind(): T {
-    return LayoutInflater.from(this.context).bind()
+inline fun <reified T : ViewBinding> View.bind(isParent: Boolean): T {
+    val parent = if (isParent && this is ViewGroup) { this } else { null }
+    return LayoutInflater.from(this.context).bind(parent)
 }
 
-inline fun <reified T : ViewBinding> LayoutInflater.bind(): T {
+inline fun <reified T : ViewBinding> LayoutInflater.bind(parent: ViewGroup? = null): T {
     val layoutInflater: LayoutInflater = this
     val bindingClass = T::class.java
-    val inflateMethod = bindingClass.getMethod("inflate", LayoutInflater::class.java)
-    val invokeObj = inflateMethod.invoke(null, layoutInflater)
+    val invokeObj = if (parent != null) {
+        val inflateMethod = bindingClass.getMethod(
+            "inflate",
+            LayoutInflater::class.java,
+            ViewGroup::class.java,
+            Boolean::class.javaPrimitiveType
+        )
+        inflateMethod.invoke(null, layoutInflater, parent, false)
+    } else {
+        val inflateMethod = bindingClass.getMethod("inflate", LayoutInflater::class.java)
+        inflateMethod.invoke(null, layoutInflater)
+    }
     if (invokeObj is T) {
         return invokeObj
     }

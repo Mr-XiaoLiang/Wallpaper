@@ -6,8 +6,12 @@ import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.lollipop.wallpaper.databinding.ActivityGenerateBinding
 import com.lollipop.wallpaper.entitys.AppColorInfo
+import com.lollipop.wallpaper.entitys.AppInfo
+import com.lollipop.wallpaper.entitys.GroupInfo
 import com.lollipop.wallpaper.generate.*
 import com.lollipop.wallpaper.utils.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * 生成颜色的activity
@@ -32,9 +36,15 @@ class GenerateActivity : BaseActivity(),
 
     private val selectedColorIndex = ArrayList<Int>()
 
+    private val colorGroupList = ArrayList<GroupInfo>()
+
     private var onAppInfoLoadedListener: ((List<AppColorInfo>) -> Unit)? = null
 
+    private var onColorGroupedListener: ((List<GroupInfo>) -> Unit)? = null
+
     private var isAppInfoLoading = false
+
+    private var isColorGrouping = false
 
     private var childOptionMenuId = 0
 
@@ -72,6 +82,45 @@ class GenerateActivity : BaseActivity(),
         isAppInfoLoading = false
         onUI {
             onAppInfoLoadEnd()
+        }
+    }
+
+    private val colorGroupingTask = task({
+        it.printStackTrace()
+    }) {
+        isColorGrouping = true
+        onUI {
+            onColorGroupingStart()
+        }
+        if (colorGroupList.isEmpty() && appColorList.isNotEmpty()) {
+            val colorArray = IntArray(appColorList.size)
+            appColorList.forEachIndexed { index, appColorInfo ->
+                val colorSize = appColorInfo.colorArray.size
+                val colorIndex = if (index >= selectedColorIndex.size) {
+                    0
+                } else {
+                    selectedColorIndex[index].range(0, colorSize - 1)
+                }
+                colorArray[index] = appColorInfo.colorArray[colorIndex]
+            }
+            val colorGroupInfoList = PaletteHelper.colorGrouping(colorArray, groupingCount)
+            colorGroupInfoList.forEach { group ->
+                val appInfo = ArrayList<AppInfo>()
+
+                group.childrenList.forEach { groupChild ->
+                    val index = groupChild.index.range(0, appColorList.size - 1)
+                    appInfo.add(appColorList[index].appInfo)
+                }
+                if (appInfo.isNotEmpty()) {
+                    val groupColor = group.groupColor
+                    val groupLabel = PaletteHelper.getColorName(groupColor).uppercase()
+                    colorGroupList.add(GroupInfo(groupColor, groupLabel, appInfo))
+                }
+            }
+        }
+        isColorGrouping = false
+        onUI {
+            onColorGroupingEnd()
         }
     }
 
@@ -119,9 +168,16 @@ class GenerateActivity : BaseActivity(),
     }
 
     override fun getAppList(callback: (List<AppColorInfo>) -> Unit) {
-        onAppInfoLoadedListener = callback
+        this.onAppInfoLoadedListener = callback
         if (!isAppInfoLoading) {
             appLoadTask.run()
+        }
+    }
+
+    override fun getGroupingInfo(callback: (List<GroupInfo>) -> Unit) {
+        this.onColorGroupedListener = callback
+        if (!isColorGrouping) {
+            colorGroupingTask.run()
         }
     }
 
@@ -130,6 +186,7 @@ class GenerateActivity : BaseActivity(),
             selectedColorIndex.add(0)
         }
         selectedColorIndex[position] = colorIndex
+        colorGroupList.clear()
     }
 
     override fun getSelectedColorIndex(position: Int): Int {
@@ -153,6 +210,20 @@ class GenerateActivity : BaseActivity(),
         onAppInfoLoadedListener?.invoke(appColorList)
     }
 
+    private fun onColorGroupingStart() {
+        if (isDestroyed) {
+            return
+        }
+        // 可以做点什么
+    }
+
+    private fun onColorGroupingEnd() {
+        if (isDestroyed) {
+            return
+        }
+        onColorGroupedListener?.invoke(colorGroupList)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         onAppInfoLoadedListener = null
@@ -165,7 +236,11 @@ class GenerateActivity : BaseActivity(),
     }
 
     override fun setGroupingCount(count: Int) {
+        val oldCount = this.groupingCount
         this.groupingCount = count
+        if (oldCount != count) {
+            colorGroupList.clear()
+        }
     }
 
 }

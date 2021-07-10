@@ -299,12 +299,7 @@ class LegendActivity : BaseActivity() {
                 legendCallback: (Int, Int) -> Unit,
                 clickClick: (holderPosition: Int) -> Unit
             ): AppInfoHolder {
-                return AppInfoHolder(parent.bind(), legendCallback, clickClick).apply {
-                    itemView.layoutParams = ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                    )
-                }
+                return AppInfoHolder(parent.bind(true), legendCallback, clickClick)
             }
         }
 
@@ -415,12 +410,7 @@ class LegendActivity : BaseActivity() {
                 parent: ViewGroup,
                 clickClick: (holderPosition: Int) -> Unit
             ): FloatingGroupInfoHolder {
-                return FloatingGroupInfoHolder(parent.bind(), clickClick).apply {
-                    itemView.layoutParams = ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                    )
-                }
+                return FloatingGroupInfoHolder(parent.bind(true), clickClick)
             }
         }
 

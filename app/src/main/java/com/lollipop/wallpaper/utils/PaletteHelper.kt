@@ -3,6 +3,7 @@ package com.lollipop.wallpaper.utils
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import androidx.palette.graphics.Palette
+import java.lang.StringBuilder
 import kotlin.math.min
 
 /**
@@ -133,6 +134,25 @@ class PaletteHelper {
             } else {
                 arrayOf(start, end)
             }
+        }
+
+        fun getColorName(color: Int): String {
+            val colorValue = Integer.toHexString(color)
+            if (colorValue.length == 6 || colorValue.length == 8) {
+                return colorValue
+            }
+            if (colorValue.length < 6) {
+                val builder = StringBuilder(colorValue)
+                while (builder.length < 6) {
+                    builder.insert(0, "0")
+                }
+                return builder.toString()
+            }
+            val builder = StringBuilder(colorValue)
+            while (builder.length < 8) {
+                builder.insert(0, "0")
+            }
+            return builder.toString()
         }
 
     }

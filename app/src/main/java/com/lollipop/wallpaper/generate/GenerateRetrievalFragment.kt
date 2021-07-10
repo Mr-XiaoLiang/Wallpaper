@@ -165,12 +165,7 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
                 parent: ViewGroup,
                 onColorSelected: (position: Int, colorIndex: Int) -> Unit
             ): AppColorHolder {
-                return AppColorHolder(parent.bind(), onColorSelected).apply {
-                    itemView.layoutParams {
-                        it.width = ViewGroup.LayoutParams.MATCH_PARENT
-                        it.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    }
-                }
+                return AppColorHolder(parent.bind(true), onColorSelected)
             }
         }
 
@@ -239,12 +234,7 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
 
         companion object {
             fun create(parent: ViewGroup, onClick: (position: Int) -> Unit): ColorHolder {
-                return ColorHolder(parent.bind(), onClick).apply {
-                    itemView.layoutParams {
-                        it.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                        it.height = ViewGroup.LayoutParams.MATCH_PARENT
-                    }
-                }
+                return ColorHolder(parent.bind(true), onClick)
             }
         }
 
