@@ -26,7 +26,7 @@ class PaletteActivity : BaseActivity() {
 
     private val binding: ActivityPaletteBinding by lazyBind()
 
-    private val groupInfoList = ArrayList<UsageStatsGroupInfo>()
+    private val groupStore = GroupStore()
 
     private val settings = LSettings.bind(this)
 
@@ -54,7 +54,7 @@ class PaletteActivity : BaseActivity() {
     private val saveInfoTask = task {
         val context = applicationContext
         doAsync {
-            settings.setGroupInfo(groupInfoList)
+            groupStore.saveTo(settings)
             LWallpaperService.notifyGroupInfoChanged(context)
         }
     }
@@ -68,7 +68,7 @@ class PaletteActivity : BaseActivity() {
     private fun initView() {
         initPalette()
         binding.groupInfoView.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
-        binding.groupInfoView.adapter = GroupAdapter(groupInfoList, ::onGroupInfoClick)
+        binding.groupInfoView.adapter = GroupAdapter(groupStore, ::onGroupInfoClick)
         binding.groupInfoView.fixInsetsByPadding(
             edge = WindowInsetsHelper.Edge.CONTENT
         )
@@ -100,7 +100,7 @@ class PaletteActivity : BaseActivity() {
             }.setSwipeDirection {
                 start = true
                 end = true
-            }.autoMoveWithList(groupInfoList)
+            }.autoMoveWithList(groupStore)
             .onSwiped(::onGroupInfoSwiped)
             .bindTo(binding.groupInfoView)
 
@@ -132,14 +132,8 @@ class PaletteActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
         paletteDialogDelegator.reload()
-
-        groupInfoList.clear()
-        binding.groupInfoView.adapter?.notifyDataSetChanged()
-        doAsync {
-            groupInfoList.addAll(settings.getGroupInfo())
-            onUI {
-                binding.groupInfoView.adapter?.notifyDataSetChanged()
-            }
+        groupStore.reload(settings) {
+            binding.groupInfoView.adapter?.notifyDataSetChanged()
         }
     }
 
@@ -185,44 +179,31 @@ class PaletteActivity : BaseActivity() {
             binding.groupNameEditView.error = getString(R.string.blank_content)
             return
         }
-        var key = ""
-
         val editInfo = changedGroupInfo
-        var index = 0
         if (editInfo != null) {
-            key = editInfo.key
-            index = groupInfoList.indexOf(editInfo)
-            if (index >= 0) {
-                groupInfoList.removeAt(index)
-            } else {
-                index = 0
+            groupStore.change(editInfo.key, name, paletteDialogDelegator.selectedColor) {
+                binding.groupInfoView.adapter?.apply {
+                    if (it == 0) {
+                        notifyItemInserted(0)
+                    } else {
+                        notifyItemChanged(it)
+                    }
+                }
             }
-        }
-        if (key.isEmpty()) {
-            key = UsageStatsGroupInfo.generateKey(name)
-        }
-
-        groupInfoList.forEach { info ->
-            if (info.key == key) {
+        } else {
+            val hasGroup = groupStore.findByKey(GroupStore.generateKey(name))
+            if (hasGroup != null) {
                 binding.groupNameEditView.error = getString(R.string.content_consistent)
                 return
             }
-        }
-
-        groupInfoList.add(
-            index,
-            UsageStatsGroupInfo(
-                key = key,
-                name = name,
-                color = paletteDialogDelegator.selectedColor
-            )
-        )
-
-        binding.groupInfoView.adapter?.apply {
-            if (editInfo == null) {
-                notifyItemInserted(0)
-            } else {
-                notifyItemChanged(index)
+            groupStore.put(name, paletteDialogDelegator.selectedColor) {
+                binding.groupInfoView.adapter?.apply {
+                    if (it == 0) {
+                        notifyItemInserted(0)
+                    } else {
+                        notifyItemChanged(it)
+                    }
+                }
             }
         }
         closeDialog()
@@ -249,14 +230,14 @@ class PaletteActivity : BaseActivity() {
         direction: ListTouchHelper.Direction
     ) {
         if (direction.start || direction.end) {
-            groupInfoList.removeAt(position)
+            groupStore.removeAt(position)
             binding.groupInfoView.adapter?.notifyItemRemoved(position)
             saveInfo()
         }
     }
 
     private fun onGroupInfoClick(index: Int) {
-        openDialog(groupInfoList[index])
+        openDialog(groupStore[index])
     }
 
     private fun updatePalette(color: Int) {

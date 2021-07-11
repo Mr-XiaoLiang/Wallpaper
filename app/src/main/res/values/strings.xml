@@ -53,5 +53,7 @@
     <string name="generate_color_summary">This tool is mainly used to help you extract theme colors from application icons and merge them into groups. He may not fully meet your ideas, but it can help you complete some basic tasks.</string>
     <string name="generate_preference_summary">Congratulations, you have chosen a color for each application. Now you can set the number of groups, and then click the button below, we will proceed to the next step of color aggregation.</string>
     <string name="group_count">Count</string>
+    <string name="generate_complete_summary">Congratulations 🎉, you have completed all application grouping work. \nNow you can choose to click the OK button below to make the settings take effect. \nOr you can go back and make some adjustments to the previous settings. \nIt should be noted that if the group name is the same as the existing name, the original color will be overwritten.</string>
+    <string name="back_on_changing">Applying changes, please wait</string>
 
 </resources>

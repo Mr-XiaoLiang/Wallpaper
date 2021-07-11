@@ -55,5 +55,7 @@
     <string name="generate_color_summary">本工具主要用于帮助您从应用图标中提取主题色，并且合并为组。他可能不能完全符合您的想法，但是它可以帮助您完成一些基础的工作。</string>
     <string name="generate_preference_summary">恭喜你，已经为每个应用选择了一个颜色了。现在你可以设置分组的数量，然后点击下方的按钮，我们进行下一步的颜色聚合。</string>
     <string name="group_count">分组数量</string>
+    <string name="generate_complete_summary">恭喜你🎉，你已经完成了所有应用分组工作。\n现在你可以选择点击下方的确定按钮使设置生效。\n或者可以返回对前面的设置再做一些调整。\n需要注意的是，如果分组的名称与现有名称重名的话，将会把原有的颜色覆盖。</string>
+    <string name="back_on_changing">正在应用更改，请稍等</string>
 
 </resources>

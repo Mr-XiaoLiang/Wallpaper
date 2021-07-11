@@ -4,11 +4,15 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
+import com.lollipop.wallpaper.R
 import com.lollipop.wallpaper.databinding.ActivityGenerateBinding
+import com.lollipop.wallpaper.dialog.showToast
+import com.lollipop.wallpaper.engine.UsageStatsItemInfo
 import com.lollipop.wallpaper.entitys.AppColorInfo
 import com.lollipop.wallpaper.entitys.AppInfo
 import com.lollipop.wallpaper.entitys.GroupInfo
 import com.lollipop.wallpaper.generate.*
+import com.lollipop.wallpaper.service.LWallpaperService
 import com.lollipop.wallpaper.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -51,6 +55,8 @@ class GenerateActivity : BaseActivity(),
     private var onOptionMenuSelectedListener: ((Int) -> Unit)? = null
 
     private var groupingCount = PaletteHelper.DEFAULT_GROUPING_COUNT
+
+    private var isLockBack = false
 
     private val appLoadTask = task {
         isAppInfoLoading = true
@@ -246,6 +252,37 @@ class GenerateActivity : BaseActivity(),
         this.groupingCount = count
         if (oldCount != count) {
             colorGroupList.clear()
+        }
+    }
+
+    override fun onBackPressed() {
+        if (isLockBack) {
+            showToast(R.string.back_on_changing)
+            return
+        }
+        super.onBackPressed()
+    }
+
+    override fun callComplete(callback: () -> Unit) {
+        isLockBack = true
+        doAsync {
+            val groupStore = GroupStore()
+            val settings = LSettings.bind(this)
+            val packageList = ArrayList<UsageStatsItemInfo>()
+            groupStore.reloadSync(settings)
+            colorGroupList.forEach { info ->
+                val key = groupStore.putSync(info.label, info.color)
+                info.appList.forEach { app ->
+                    packageList.add(UsageStatsItemInfo(key, app.packageName))
+                }
+            }
+            groupStore.saveTo(settings)
+            settings.setPackageInfo(packageList)
+            onUI {
+                isLockBack = false
+                LWallpaperService.notifyGroupInfoChanged(this)
+                callback()
+            }
         }
     }
 
