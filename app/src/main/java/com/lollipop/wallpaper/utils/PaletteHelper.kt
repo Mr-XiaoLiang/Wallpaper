@@ -64,9 +64,13 @@ class PaletteHelper {
 
                 findChild(tempChildrenList, hueArray, startHue % 360, endHue % 360)
 
-                // 计算当前色相颜色
-                tempHsv[0] = (((endHue + startHue) / 2) % 360).toFloat()
-                val groupColor = Color.HSVToColor(tempHsv)
+                // 取Children的平均色
+                var groupColor = getAverageColor(tempChildrenList)
+                if (groupColor == 0) {
+                    // 计算当前色相颜色
+                    tempHsv[0] = (((endHue + startHue) / 2) % 360).toFloat()
+                    groupColor = Color.HSVToColor(tempHsv)
+                }
 
                 groupList.add(ColorGroupInfo(groupColor, tempChildrenList.toTypedArray()))
 
@@ -77,6 +81,26 @@ class PaletteHelper {
                 startHue = endHue
             }
             return groupList.toTypedArray()
+        }
+
+        private fun getAverageColor(children: List<ColorChild>): Int {
+            if (children.isEmpty()) {
+                return Color.TRANSPARENT
+            }
+            var red = 0L
+            var green = 0L
+            var blue = 0L
+            children.forEach {
+                red += Color.red(it.value)
+                green += Color.green(it.value)
+                blue += Color.blue(it.value)
+            }
+            val count = children.size
+            return Color.rgb(
+                (red / count).toInt().range(0, 255),
+                (green / count).toInt().range(0, 255),
+                (blue / count).toInt().range(0, 255)
+            )
         }
 
         private fun findChild(

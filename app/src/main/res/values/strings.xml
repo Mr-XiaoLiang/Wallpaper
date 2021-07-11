@@ -12,7 +12,7 @@
     <string name="unit_minute">%1$d points</string>
     <string name="unit_second">%1$d second</string>
     <string name="unit_millisecond">%1$d milliseconds</string>
-    <string name="group_name">group name</string>
+    <string name="group_name">Group name</string>
     <string name="confirm">OK</string>
     <string name="blank_content">Please enter valid content</string>
     <string name="content_consistent">please change a name</string>
@@ -46,7 +46,7 @@
     <string name="wallpaper_animation">Enable animation</string>
     <string name="wallpaper_animation_summary">After closing, the wallpaper will not show transition effects when it appears. But this will not save you power.</string>
     <string name="menu">Options</string>
-    <string name="msg_retrieval_guide"> Please choose a representative color for each application\nclick the confirmation button in the upper right corner to enter the next step</string>
+    <string name="msg_retrieval_guide">Please choose a representative color for each application\nclick the confirm button in the lower right corner to enter the next step</string>
     <string name="next">Next</string>
     <string name="save_color">Save</string>
     <string name="generate_color">Generate color</string>

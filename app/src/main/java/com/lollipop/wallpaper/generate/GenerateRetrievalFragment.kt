@@ -40,8 +40,8 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
     override val contentViewBinding: ViewBinding
         get() = binding
 
-    override val optionMenuId: Int
-        get() = R.menu.fragment_generate_retrieval
+//    override val optionMenuId: Int
+//        get() = R.menu.fragment_generate_retrieval
 
     private val appListData = ArrayList<AppColorInfo>()
 
@@ -59,7 +59,20 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.appList.layoutManager = LinearLayoutManager(context)
         binding.appList.adapter = adapter
-        binding.appList.fixInsetsByPadding(WindowInsetsHelper.Edge.CONTENT)
+
+        binding.nextBtn.setOnClickListener {
+            nextStep()
+        }
+
+        val edgeStrategy = WindowInsetsHelper.Edge.CONTENT.baseTo(
+            bottom = WindowInsetsHelper.EdgeStrategy.ACCUMULATE
+        )
+        binding.nextBtn.fixInsetsByMargin(edgeStrategy).apply {
+            baseMargin.bottom = 16F.dp2px().toInt()
+        }
+        binding.appList.fixInsetsByPadding(edgeStrategy).apply {
+            basePadding.bottom = 72F.dp2px().toInt()
+        }
     }
 
     private fun onColorSelected(position: Int, colorIndex: Int) {
@@ -77,6 +90,7 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
 
     private fun loadData() {
         startLoading()
+        binding.nextBtn.hide()
         appListData.clear()
         adapter.notifyDataSetChanged()
         callback?.getAppList { appList ->
@@ -89,6 +103,9 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
     }
 
     private fun onLoadedData() {
+        if (appListData.size > 0) {
+            binding.nextBtn.show()
+        }
         if (isShowGuide) {
             isShowGuide = false
             HeaderMessageDialog.create(this)
@@ -102,15 +119,6 @@ class GenerateRetrievalFragment : GenerateBaseFragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_SHOW_GUIDE, isShowGuide)
-    }
-
-    override fun onOptionMenuSelected(menuItemId: Int) {
-        super.onOptionMenuSelected(menuItemId)
-        when (menuItemId) {
-            R.id.next -> {
-                nextStep()
-            }
-        }
     }
 
     override fun onAttach(context: Context) {
