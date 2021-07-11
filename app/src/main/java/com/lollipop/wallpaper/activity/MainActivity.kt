@@ -5,7 +5,6 @@ import android.app.WallpaperManager
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.Toast
@@ -57,6 +56,15 @@ class MainActivity : BaseActivity() {
         }
         binding.recyclerView.adapter = UsageAdapter(appUsageInfoList)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
+    }
+
+    override fun canShowGuide(): Boolean {
+        if (settings.isNeedShowGenerate(this)) {
+            startActivity(Intent(this, GenerateActivity::class.java))
+            settings.onGenerateShown(this)
+            return false
+        }
+        return super.canShowGuide()
     }
 
     override fun onResume() {

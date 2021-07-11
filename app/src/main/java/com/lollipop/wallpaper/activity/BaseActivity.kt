@@ -37,13 +37,17 @@ open class BaseActivity : AppCompatActivity(), BackPressProvider {
 
     override fun onStart() {
         super.onStart()
-        if (guideLayoutId != 0) {
+        if (canShowGuide() && guideLayoutId != 0) {
             val settings = LSettings.bind(this)
             GuideHelper.attachTo(baseBinding.root)
                 .guideView(guideLayoutId)
                 .onShown { settings.onGuideShown(this) }
                 .show(settings.isNeedShowGuide(this))
         }
+    }
+
+    protected open fun canShowGuide(): Boolean {
+        return true
     }
 
     fun setContentView(binding: ViewBinding) {

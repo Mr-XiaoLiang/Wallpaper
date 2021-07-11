@@ -38,6 +38,11 @@ class LSettings private constructor(val context: Context) {
             0xFF4EAA86.toInt(),
             0xFFED9F54.toInt()
         )
+
+        fun keyWithAny(any: Any, key: String): String {
+            return any::class.java.name + key
+        }
+
     }
 
     var padding by SettingDelegator(0.1F)
@@ -189,11 +194,21 @@ class LSettings private constructor(val context: Context) {
 
     fun onGuideShown(any: Any) {
         val name = getGuideKey(any)
-        return context.set(name, false)
+        context[name] = false
+    }
+
+    fun isNeedShowGenerate(any: Any): Boolean {
+        val name = keyWithAny(any, "Generate")
+        return context[name, true]
+    }
+
+    fun onGenerateShown(any: Any) {
+        val name = keyWithAny(any, "Generate")
+        context[name] = false
     }
 
     private fun getGuideKey(any: Any): String {
-        return any::class.java.name + "guide"
+        return keyWithAny(any, "guide")
     }
 
     private class SettingDelegator<T>(private val default: T) {

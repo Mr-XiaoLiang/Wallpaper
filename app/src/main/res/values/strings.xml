@@ -55,5 +55,6 @@
     <string name="group_count">Count</string>
     <string name="generate_complete_summary">Congratulations 🎉, you have completed all application grouping work. \nNow you can choose to click the OK button below to make the settings take effect. \nOr you can go back and make some adjustments to the previous settings. \nIt should be noted that if the group name is the same as the existing name, the original color will be overwritten.</string>
     <string name="back_on_changing">Applying changes, please wait</string>
+    <string name="guide_generate">It can help you quickly group applications. Although it can’t satisfy you, it can reduce part of your workload.</string>
 
 </resources>
