@@ -181,6 +181,12 @@ class GenerateActivity : BaseActivity(),
         }
     }
 
+    override fun onGroupInfoChanged(info: GroupInfo, position: Int) {
+        if (position >= 0 && position < colorGroupList.size) {
+            colorGroupList[position] = info
+        }
+    }
+
     override fun onSelectedColorChange(position: Int, colorIndex: Int) {
         while (selectedColorIndex.size <= position) {
             selectedColorIndex.add(0)

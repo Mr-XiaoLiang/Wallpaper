@@ -6,13 +6,12 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.lollipop.wallpaper.R
 import com.lollipop.wallpaper.databinding.ActivityPaletteBinding
 import com.lollipop.wallpaper.databinding.ItemGroupInfoBinding
-import com.lollipop.wallpaper.databinding.ItemPresetColorBinding
+import com.lollipop.wallpaper.dialog.PaletteDialogDelegator
 import com.lollipop.wallpaper.engine.UsageStatsGroupInfo
 import com.lollipop.wallpaper.list.ListTouchHelper
 import com.lollipop.wallpaper.list.ViewBindingHolder
@@ -26,10 +25,6 @@ import com.lollipop.wallpaper.utils.*
 class PaletteActivity : BaseActivity() {
 
     private val binding: ActivityPaletteBinding by lazyBind()
-
-    private var dialogSelectedColor = Color.GREEN
-
-    private val colorStore = ColorStore()
 
     private val groupInfoList = ArrayList<UsageStatsGroupInfo>()
 
@@ -50,10 +45,15 @@ class PaletteActivity : BaseActivity() {
             return dialogAnimationHelper.progressIs(AnimationHelper.PROGRESS_MIN)
         }
 
+    private val paletteDialogDelegator: PaletteDialogDelegator by lazy {
+        PaletteDialogDelegator(binding.paletteCardView.bind(true)).apply {
+            binding.paletteCardView.addView(view)
+        }
+    }
+
     private val saveInfoTask = task {
         val context = applicationContext
         doAsync {
-            colorStore.saveTo(settings)
             settings.setGroupInfo(groupInfoList)
             LWallpaperService.notifyGroupInfoChanged(context)
         }
@@ -76,11 +76,8 @@ class PaletteActivity : BaseActivity() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initPalette() {
-        binding.huePaletteView.onHueChange { hue, _ ->
-            binding.satValPaletteView.onHueChange(hue.toFloat())
-        }
-        binding.satValPaletteView.onHSVChange { _, color, _ ->
-            dialogSelectedColor = color
+        paletteDialogDelegator.isShowPreview = false
+        paletteDialogDelegator.onColorChanged { color ->
             val drawable = binding.colorPreviewView.drawable
             if (drawable is ColorDrawable) {
                 drawable.color = color
@@ -90,24 +87,9 @@ class PaletteActivity : BaseActivity() {
                 )
             }
         }
-        binding.presetColorView.layoutManager =
-            LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-        binding.presetColorView.adapter =
-            PresetColorAdapter(colorStore, ::onPresetColorClick)
-
         binding.confirmButton.setOnClickListener {
             onColorConfirm()
         }
-
-        ListTouchHelper.create()
-            .setMoveDirection {
-                start = true
-                end = true
-            }.setSwipeDirection {
-                down = true
-            }.autoMoveWithList(colorStore)
-            .onSwiped(::onPresetColorSwiped)
-            .bindTo(binding.presetColorView)
 
         ListTouchHelper.create()
             .setMoveDirection {
@@ -149,9 +131,7 @@ class PaletteActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        colorStore.reload(settings) {
-            binding.presetColorView.adapter?.notifyDataSetChanged()
-        }
+        paletteDialogDelegator.reload()
 
         groupInfoList.clear()
         binding.groupInfoView.adapter?.notifyDataSetChanged()
@@ -166,6 +146,7 @@ class PaletteActivity : BaseActivity() {
     override fun onStop() {
         super.onStop()
         saveInfo()
+        paletteDialogDelegator.saveInfo()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -228,17 +209,12 @@ class PaletteActivity : BaseActivity() {
             }
         }
 
-        val color = dialogSelectedColor
-        colorStore.put(color) {
-            binding.presetColorView.adapter?.notifyItemInserted(it)
-        }
-
         groupInfoList.add(
             index,
             UsageStatsGroupInfo(
                 key = key,
                 name = name,
-                color = color
+                color = paletteDialogDelegator.selectedColor
             )
         )
 
@@ -268,17 +244,6 @@ class PaletteActivity : BaseActivity() {
         dialogAnimationHelper.close()
     }
 
-    private fun onPresetColorSwiped(
-        position: Int,
-        direction: ListTouchHelper.Direction
-    ) {
-        if (direction.down) {
-            colorStore.removeAt(position)
-            binding.presetColorView.adapter?.notifyItemRemoved(position)
-            saveInfo()
-        }
-    }
-
     private fun onGroupInfoSwiped(
         position: Int,
         direction: ListTouchHelper.Direction
@@ -290,67 +255,17 @@ class PaletteActivity : BaseActivity() {
         }
     }
 
-    private fun onPresetColorClick(index: Int) {
-        updatePalette(colorStore[index])
-    }
-
     private fun onGroupInfoClick(index: Int) {
         openDialog(groupInfoList[index])
     }
 
     private fun updatePalette(color: Int) {
-        dialogSelectedColor = color
-        binding.huePaletteView.parser(color)
-        binding.satValPaletteView.parser(color)
+        paletteDialogDelegator.updatePalette(color)
     }
 
     private fun saveInfo() {
         saveInfoTask.cancel()
         saveInfoTask.delay(100L)
-    }
-
-    private class PresetColorAdapter(
-        private val data: List<Int>,
-        private val onClickCallback: (Int) -> Unit
-    ) : RecyclerView.Adapter<PresetColorHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PresetColorHolder {
-            return PresetColorHolder.create(parent, onClickCallback)
-        }
-
-        override fun onBindViewHolder(holder: PresetColorHolder, position: Int) {
-            holder.bind(data[position])
-        }
-
-        override fun getItemCount(): Int {
-            return data.size
-        }
-
-    }
-
-    private class PresetColorHolder private constructor(
-        viewBinding: ItemPresetColorBinding,
-        private val onClickCallback: (Int) -> Unit
-    ) : ViewBindingHolder(viewBinding) {
-
-        companion object {
-            fun create(parent: ViewGroup, callback: (Int) -> Unit): PresetColorHolder {
-                return PresetColorHolder(parent.bind(true), callback)
-            }
-        }
-
-        private val colorDrawable = ColorDrawable()
-
-        init {
-            viewBinding.colorPreviewView.setImageDrawable(colorDrawable)
-            viewBinding.colorPreviewView.setOnClickListener {
-                onClickCallback(adapterPosition)
-            }
-        }
-
-        fun bind(color: Int) {
-            colorDrawable.color = color
-        }
-
     }
 
     private class GroupAdapter(

@@ -14,6 +14,8 @@ import com.lollipop.wallpaper.R
 import com.lollipop.wallpaper.databinding.FragmentGenerateGroupingBinding
 import com.lollipop.wallpaper.databinding.ItemAppInGroupBinding
 import com.lollipop.wallpaper.databinding.ItemColorGroupBinding
+import com.lollipop.wallpaper.dialog.GroupNameDialog
+import com.lollipop.wallpaper.dialog.PaletteDialog
 import com.lollipop.wallpaper.entitys.AppInfo
 import com.lollipop.wallpaper.entitys.GroupInfo
 import com.lollipop.wallpaper.list.ViewBindingHolder
@@ -47,6 +49,9 @@ class GenerateGroupingFragment : GenerateBaseFragment() {
         binding.groupListView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         binding.groupListView.adapter = adapter
+        binding.groupListView.onFlingListener?.let {
+            binding.groupListView.onFlingListener = null
+        }
         PagerSnapHelper().attachToRecyclerView(binding.groupListView)
         binding.nextBtn.setOnClickListener {
             nextStep()
@@ -72,9 +77,31 @@ class GenerateGroupingFragment : GenerateBaseFragment() {
         }
     }
 
-    private fun changeColor(position: Int) {}
+    private fun changeColor(position: Int) {
+        if (position < 0 || groupInfoList.size <= position) {
+            return
+        }
+        PaletteDialog.create(this, groupInfoList[position].color) {
+            if (position >= 0 && groupInfoList.size > position) {
+                groupInfoList[position].color = it
+                adapter.notifyItemChanged(position)
+                callback?.onGroupInfoChanged(groupInfoList[position], position)
+            }
+        }
+    }
 
-    private fun changeLabel(position: Int) {}
+    private fun changeLabel(position: Int) {
+        if (position < 0 || groupInfoList.size <= position) {
+            return
+        }
+        GroupNameDialog.create(this, groupInfoList[position].label) {
+            if (position >= 0 && groupInfoList.size > position) {
+                groupInfoList[position].label = it
+                adapter.notifyItemChanged(position)
+                callback?.onGroupInfoChanged(groupInfoList[position], position)
+            }
+        }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -90,6 +117,7 @@ class GenerateGroupingFragment : GenerateBaseFragment() {
 
     interface Callback {
         fun getGroupingInfo(callback: (List<GroupInfo>) -> Unit)
+        fun onGroupInfoChanged(info: GroupInfo, position: Int)
     }
 
     private class GroupAdapter(

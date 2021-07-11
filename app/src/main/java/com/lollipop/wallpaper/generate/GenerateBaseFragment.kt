@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.viewbinding.ViewBinding
@@ -38,6 +39,11 @@ abstract class GenerateBaseFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         if (contentViewBinding.root.parent != baseBinding.fragmentContent) {
+            contentViewBinding.root.parent?.let {
+                if (it is ViewManager) {
+                    it.removeView(contentViewBinding.root)
+                }
+            }
             baseBinding.fragmentContent.addView(
                 contentViewBinding.root,
                 ViewGroup.LayoutParams.MATCH_PARENT,

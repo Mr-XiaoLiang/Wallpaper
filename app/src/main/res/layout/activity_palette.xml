@@ -96,45 +96,6 @@
         app:layout_constraintRight_toRightOf="@id/groupInfoCardView"
         app:layout_constraintTop_toBottomOf="@id/groupInfoCardView">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.lollipop.wallpaper.view.SatValPaletteView
-                android:id="@+id/satValPaletteView"
-                android:layout_width="0px"
-                android:layout_height="0px"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toStartOf="@id/huePaletteView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.lollipop.wallpaper.view.HuePaletteView
-                android:id="@+id/huePaletteView"
-                android:layout_width="40dp"
-                android:layout_height="0px"
-                android:layout_marginEnd="20dp"
-                app:layout_constraintBottom_toBottomOf="@id/satValPaletteView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/satValPaletteView" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/presetColorView"
-                android:layout_width="match_parent"
-                android:layout_height="68dp"
-                android:layout_marginTop="20dp"
-                android:clipToPadding="false"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:paddingBottom="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/satValPaletteView" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
     </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
