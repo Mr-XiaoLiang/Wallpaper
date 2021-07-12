@@ -5,7 +5,7 @@
     <string name="palette">调色盘</string>
     <string name="legend">图例</string>
     <string name="settings">设置</string>
-    <string name="permission_statement">我们没有找到可用的应用使用信息，可能是因为您没有授予我们获取的权限。我们在这里承诺，软件没有任何联网功能，不会上传或者收集您的任何应用使用信息。权限所授予的信息仅用于壁纸的生成以及应用使用情况的本地展示。</string>
+    <string name="permission_statement">我们没有找到可用的应用使用信息，可能是因为您没有授予我们获取的权限，但是我们启用了虚拟数据模式，您仍然可以将本应用设置为壁纸，并且仍然可以使用调色盘自定义颜色信息。但是显示的数据将会是随机生成的模拟数据。\n如果您希望使用真实数据，我们在这里承诺，软件没有任何联网功能，不会上传或者收集您的任何应用使用信息。权限所授予的信息仅用于壁纸的生成以及应用使用情况的本地展示。</string>
     <string name="authorization">前往授权</string>
     <string name="default_group_name">其他</string>
 
@@ -53,9 +53,9 @@
     <string name="save_color">保存颜色</string>
     <string name="generate_color">颜色生成辅助工具</string>
     <string name="generate_color_summary">本工具主要用于帮助您从应用图标中提取主题色，并且合并为组。他可能不能完全符合您的想法，但是它可以帮助您完成一些基础的工作。</string>
-    <string name="generate_preference_summary">恭喜你，已经为每个应用选择了一个颜色了。现在你可以设置分组的数量，然后点击下方的按钮，我们进行下一步的颜色聚合。</string>
+    <string name="generate_preference_summary">恭喜你 🎉，已经为每个应用选择了一个颜色了。现在你可以设置分组的数量，然后点击下方的按钮，我们进行下一步的颜色聚合。</string>
     <string name="group_count">分组数量</string>
-    <string name="generate_complete_summary">恭喜你🎉，你已经完成了所有应用分组工作。\n现在你可以选择点击下方的确定按钮使设置生效。\n或者可以返回对前面的设置再做一些调整。\n需要注意的是，如果分组的名称与现有名称重名的话，将会把原有的颜色覆盖。</string>
+    <string name="generate_complete_summary">恭喜你 🎉，你已经完成了所有应用分组工作。\n现在你可以选择点击下方的确定按钮使设置生效。\n或者可以返回对前面的设置再做一些调整。\n需要注意的是，如果分组的名称与现有名称重名的话，将会把原有的颜色覆盖。</string>
     <string name="back_on_changing">正在应用更改，请稍等</string>
     <string name="guide_generate">它可以帮助您进行快速的对应用分组工作，尽管不能让您完全满意，但是可以减少您的部分工作量</string>
 

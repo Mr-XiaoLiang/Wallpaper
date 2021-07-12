@@ -69,6 +69,9 @@ class MainActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        doAsync {
+            LWallpaperService.notifyGroupInfoChanged(this)
+        }
         packageUsageHelper.updateGroupMap(settings.getPackageInfo())
         loadData()
     }
@@ -134,7 +137,8 @@ class MainActivity : BaseActivity() {
                             REQUEST_CODE_SET_WALLPAPER
                         )
                     } catch (ee: Throwable) {
-                        Toast.makeText(this, R.string.apply_wallpaper_error, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, R.string.apply_wallpaper_error, Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             }

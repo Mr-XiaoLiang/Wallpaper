@@ -8,10 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
-import android.graphics.drawable.AdaptiveIconDrawable
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.provider.Settings
 import android.util.ArrayMap
 import androidx.lifecycle.Lifecycle
@@ -21,6 +18,9 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.lollipop.wallpaper.engine.UsageStatsGroupInfo
 import com.lollipop.wallpaper.engine.UsageStatsItemInfo
 import com.lollipop.wallpaper.entitys.AppInfo
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 /**
  * @author lollipop
@@ -48,6 +48,18 @@ class PackageUsageHelper(private val context: Context) {
          * 应用原始信息
          */
         private val appResolveInfo = ArrayList<AppResolveInfo>()
+
+        /**
+         * 创建虚假的时间信息
+         */
+        fun createAnalogData(groupInfo: List<UsageStatsGroupInfo>): UsageStatsMap {
+            val timeMap = HashMap<String, Long>()
+            val random = Random()
+            groupInfo.forEach { info ->
+                timeMap[info.key] = random.nextInt(996).toLong()
+            }
+            return UsageStatsMap(timeMap)
+        }
 
         fun openSettingsPage(context: Context): Boolean {
             val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
@@ -262,8 +274,8 @@ class PackageUsageHelper(private val context: Context) {
             return usageStatsList.isEmpty() || groupUsageStats.isEmpty()
         }
 
-    operator fun get(groupKey: String): Long {
-        return groupUsageStats[groupKey] ?: 0L
+    fun getUsageStats(): UsageStatsMap {
+        return UsageStatsMap(HashMap<String, Long>(groupUsageStats))
     }
 
     private fun getGroupKeyByPackage(packageName: String): String {
@@ -280,6 +292,18 @@ class PackageUsageHelper(private val context: Context) {
             return 0L
         }
         return usageStatsList.find { it.packageName == packageName }?.totalTimeInForeground ?: 0
+    }
+
+    class UsageStatsMap(private val map: Map<String, Long>) {
+
+        operator fun get(groupKey: String): Long {
+            return map[groupKey] ?: 0L
+        }
+
+        val isEmpty: Boolean get() {
+            return map.isEmpty()
+        }
+
     }
 
     private class AppResolveInfo(

@@ -59,6 +59,8 @@ class LSettings private constructor(val context: Context) {
 
         }
 
+    var useAnalogData by SettingDelegator(true)
+
     private var usageStatsGroupInfo by SettingDelegator("")
 
     private var usageStatsPackageInfo by SettingDelegator("")
@@ -68,6 +70,7 @@ class LSettings private constructor(val context: Context) {
     fun getGroupInfo(): List<UsageStatsGroupInfo> {
         val list = ArrayList<UsageStatsGroupInfo>()
         val jsonInfo = usageStatsGroupInfo
+        var hasDefaultGroup = false
         if (jsonInfo.isNotEmpty()) {
             try {
                 val jsonArray = JSONArray(jsonInfo)
@@ -78,6 +81,9 @@ class LSettings private constructor(val context: Context) {
                         val key = obj.optString(KEY)
                         val color = obj.optInt(COLOR)
                         if (name.isNotEmpty() && key.isNotEmpty()) {
+                            if (key == UsageStatsGroupInfo.DEFAULT_GROUP_KEY) {
+                                hasDefaultGroup = true
+                            }
                             list.add(
                                 UsageStatsGroupInfo(
                                     name = name,
@@ -91,12 +97,22 @@ class LSettings private constructor(val context: Context) {
             } catch (e: Throwable) {
                 log(e)
             }
-        }
-        var hasDefaultGroup = false
-        list.forEach {
-            if (it.key == UsageStatsGroupInfo.DEFAULT_GROUP_KEY) {
-                hasDefaultGroup = true
+        } else {
+            // 增加默认的颜色
+            defaultPresetColor.forEach { color ->
+                val name = PaletteHelper.getColorName(color)
+                list.add(
+                    UsageStatsGroupInfo(
+                        name = name,
+                        key = UsageStatsGroupInfo.generateKey(name),
+                        color = color
+                    )
+                )
             }
+            list.add(UsageStatsGroupInfo.createDefault(context))
+            hasDefaultGroup = true
+            // 保存一下
+            setGroupInfo(list)
         }
         if (!hasDefaultGroup) {
             list.add(UsageStatsGroupInfo.createDefault(context))

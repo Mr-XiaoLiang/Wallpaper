@@ -4,7 +4,7 @@
     <string name="palette">color palette</string>
     <string name="legend">Legend</string>
     <string name="settings">settings</string>
-    <string name="permission_statement">We did not find available application usage information, it may be because you did not grant us the permission to obtain it. We hereby promise that the software does not have any networking function, and will not upload or collect any of your application usage information. The information granted by the permission is only used for wallpaper generation and local display of application usage.</string>
+    <string name="permission_statement">We did not find the available application usage information, probably because you did not give us permission to get it, but we enabled the virtual data mode, you can still set this application as wallpaper, and you can still use the palette to customize the color information. But the data displayed will be randomly generated simulation data. \nIf you want to use real data, we promise here that the software has no networking function and will not upload or collect any of your application usage information. Permission granted information is only used for wallpaper generation and local display of application usage.</string>
     <string name="authorization">go to authorization</string>
     <string name="default_group_name">other</string>
 
@@ -51,7 +51,7 @@
     <string name="save_color">Save</string>
     <string name="generate_color">Generate color</string>
     <string name="generate_color_summary">This tool is mainly used to help you extract theme colors from application icons and merge them into groups. He may not fully meet your ideas, but it can help you complete some basic tasks.</string>
-    <string name="generate_preference_summary">Congratulations, you have chosen a color for each application. Now you can set the number of groups, and then click the button below, we will proceed to the next step of color aggregation.</string>
+    <string name="generate_preference_summary">Congratulations 🎉, you have chosen a color for each application. Now you can set the number of groups, and then click the button below, we will proceed to the next step of color aggregation.</string>
     <string name="group_count">Count</string>
     <string name="generate_complete_summary">Congratulations 🎉, you have completed all application grouping work. \nNow you can choose to click the OK button below to make the settings take effect. \nOr you can go back and make some adjustments to the previous settings. \nIt should be noted that if the group name is the same as the existing name, the original color will be overwritten.</string>
     <string name="back_on_changing">Applying changes, please wait</string>

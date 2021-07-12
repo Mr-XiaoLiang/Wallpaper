@@ -152,13 +152,21 @@ class LWallpaperService : WallpaperService() {
         updateWeightTask.cancel()
         doAsync {
             packageUsageHelper.loadUsageData()
-            if (packageUsageHelper.isEmpty) {
-                weightArray = IntArray(0)
-            } else {
+            var hasData = true
+            var usageStats = packageUsageHelper.getUsageStats()
+            if (packageUsageHelper.isEmpty || usageStats.isEmpty) {
+                if (settings.useAnalogData) {
+                    usageStats = PackageUsageHelper.createAnalogData(groupInfoList)
+                } else {
+                    hasData = false
+                    weightArray = IntArray(0)
+                }
+            }
+            if (hasData) {
                 val list = ArrayList<Long>()
                 var maxValue = 0L
                 groupInfoList.forEach { group ->
-                    val time = packageUsageHelper[group.key]
+                    val time = usageStats[group.key]
                     if (time > maxValue) {
                         maxValue = time
                     }
@@ -187,16 +195,18 @@ class LWallpaperService : WallpaperService() {
     }
 
     private fun callGroupInfoChange() {
-        updateDelay = settings.updateDelay * ONE_MINUTE
-        animationEnable = settings.animationEnable
+        doAsync {
+            updateDelay = settings.updateDelay * ONE_MINUTE
+            animationEnable = settings.animationEnable
 
-        groupInfoList.clear()
-        groupInfoList.addAll(settings.getGroupInfo())
-        groupColorArray = IntArray(groupInfoList.size) { groupInfoList[it].color }
+            groupInfoList.clear()
+            groupInfoList.addAll(settings.getGroupInfo())
+            groupColorArray = IntArray(groupInfoList.size) { groupInfoList[it].color }
 
-        packageUsageHelper.updateGroupMap(settings.getPackageInfo())
+            packageUsageHelper.updateGroupMap(settings.getPackageInfo())
 
-        callUpdateWeights()
+            callUpdateWeights()
+        }
     }
 
     private inner class WallpaperEngine(
