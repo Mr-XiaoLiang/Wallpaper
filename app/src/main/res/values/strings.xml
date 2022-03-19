@@ -56,5 +56,16 @@
     <string name="generate_complete_summary">Congratulations 🎉, you have completed all application grouping work. \nNow you can choose to click the OK button below to make the settings take effect. \nOr you can go back and make some adjustments to the previous settings. \nIt should be noted that if the group name is the same as the existing name, the original color will be overwritten.</string>
     <string name="back_on_changing">Applying changes, please wait</string>
     <string name="guide_generate">It can help you quickly group applications. Although it can’t satisfy you, it can reduce part of your workload.</string>
+    <string name="background">Background</string>
+    <string name="guide_background">Select a picture as the background</string>
+    <string name="start_loading">开始加载</string>
+    <string name="end_loading_successful">Loading succeeded</string>
+    <string name="end_loading_fail">Loading failed</string>
+    <string name="msg_change_background">How do you want to change the background?</string>
+    <string name="change">Modify</string>
+    <string name="delete">Delete</string>
+    <string name="start_delete">Start deletion</string>
+    <string name="delete_successful">Deleted successfully</string>
+    <string name="delete_fail">Delete failed</string>
 
 </resources>

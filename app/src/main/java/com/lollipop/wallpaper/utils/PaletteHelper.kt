@@ -149,14 +149,16 @@ class PaletteHelper {
                 val s = list[index].value - list[index - 1].value
                 if (s > space) {
                     space = s
-                    start = index
-                    end = index - 1
+                    start = index - 1
+                    end = index
                 }
             }
-            return if (start > end) {
-                arrayOf(start, 360 + end)
+            val startHue = list[start].value
+            val endHue = list[end].value
+            return if (startHue > endHue) {
+                arrayOf(startHue, 360 + endHue)
             } else {
-                arrayOf(start, end)
+                arrayOf(startHue, endHue)
             }
         }
 

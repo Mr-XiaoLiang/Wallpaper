@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 31
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.lollipop.wallpaper"
         minSdkVersion 22
-        targetSdkVersion 32
+        targetSdkVersion 31
         versionCode 20_01_00
         versionName "2.1.0"
     }

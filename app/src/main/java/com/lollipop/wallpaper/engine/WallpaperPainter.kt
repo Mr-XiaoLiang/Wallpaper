@@ -28,6 +28,8 @@ class WallpaperPainter {
 
     private var totalWeight = 0L
 
+    var backgroundProvider: BackgroundProvider? = null
+
     val width: Int
         get() {
             return bounds.width()
@@ -180,11 +182,20 @@ class WallpaperPainter {
         paint.shader = null
         // 绘制底色
         canvas.drawRect(bounds, paint)
+
+        backgroundProvider?.getBackground()?.let {
+            canvas.drawBitmap(it, 0F, 0F, null)
+        }
+
         // 绘制每一个元素
         shaderArray.forEach {
             paint.shader = it
             canvas.drawRect(bounds, paint)
         }
+    }
+
+    fun interface BackgroundProvider {
+        fun getBackground(): Bitmap?
     }
 
 }

@@ -26,6 +26,12 @@
                 app:showAsAction="ifRoom" />
 
             <item
+                android:id="@+id/background"
+                android:icon="@drawable/ic_baseline_image_24"
+                android:title="@string/background"
+                app:showAsAction="ifRoom" />
+
+            <item
                 android:id="@+id/apply"
                 android:icon="@drawable/ic_baseline_build_24"
                 android:title="@string/apply"

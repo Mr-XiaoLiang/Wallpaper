@@ -1,17 +1,21 @@
 package com.lollipop.wallpaper.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.WallpaperManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lollipop.wallpaper.R
 import com.lollipop.wallpaper.databinding.ActivityMainBinding
+import com.lollipop.wallpaper.dialog.HeaderMessageDialog
 import com.lollipop.wallpaper.entitys.AppInfo
 import com.lollipop.wallpaper.list.AppUsageHolder
 import com.lollipop.wallpaper.service.LWallpaperService
@@ -19,10 +23,6 @@ import com.lollipop.wallpaper.utils.*
 
 
 class MainActivity : BaseActivity() {
-
-    companion object {
-        private const val REQUEST_CODE_SET_WALLPAPER = 120
-    }
 
     private val binding: ActivityMainBinding by lazyBind()
 
@@ -37,6 +37,29 @@ class MainActivity : BaseActivity() {
     private val settings = LSettings.bind(this)
 
     private val appUsageInfoList = ArrayList<AppInfo>()
+
+    private val backgroundHelper by lazy {
+        BackgroundHelper.write(this)
+    }
+
+    private val backgroundLauncher by lazy {
+        registerForActivityResult(
+            BackgroundHelper.createActivityResultContract(),
+            backgroundHelper.getActivityResultCallback()
+        )
+    }
+
+    private val wallpaperResultLauncher by lazy {
+        registerForActivityResult(WallpaperResultContract()) {
+            if (it) {
+                Toast.makeText(
+                    this,
+                    R.string.apply_wallpaper_success,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +79,10 @@ class MainActivity : BaseActivity() {
         }
         binding.recyclerView.adapter = UsageAdapter(appUsageInfoList)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
+
+        // 初始化一次
+        backgroundLauncher
+        wallpaperResultLauncher
     }
 
     override fun canShowGuide(): Boolean {
@@ -76,6 +103,7 @@ class MainActivity : BaseActivity() {
         loadData()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun loadData() {
         binding.swipeRefreshLayout.isRefreshing = true
         binding.swipeRefreshLayout.visibleOrInvisible(true)
@@ -119,27 +147,26 @@ class MainActivity : BaseActivity() {
             R.id.settings -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
+            R.id.background -> {
+                HeaderMessageDialog.create(this)
+                    .setMessage(getString(R.string.msg_change_background))
+                    .setCancelMessage(getString(R.string.delete)) {
+                        backgroundHelper.delete()
+                        it.dismiss()
+                    }
+                    .setEnterButton(getString(R.string.change)) {
+                        backgroundLauncher.launch(Unit)
+                        it.dismiss()
+                    }.show()
+            }
             R.id.generate -> {
                 startActivity(Intent(this, GenerateActivity::class.java))
             }
             R.id.apply -> {
                 try {
-                    startActivityForResult(Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER).apply {
-                        putExtra(
-                            WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
-                            ComponentName(applicationContext, LWallpaperService::class.java)
-                        )
-                    }, REQUEST_CODE_SET_WALLPAPER)
+                    wallpaperResultLauncher.launch(WallpaperRequestType.CHANGE_LIVE_WALLPAPER)
                 } catch (e: Throwable) {
-                    try {
-                        startActivityForResult(
-                            Intent(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER),
-                            REQUEST_CODE_SET_WALLPAPER
-                        )
-                    } catch (ee: Throwable) {
-                        Toast.makeText(this, R.string.apply_wallpaper_error, Toast.LENGTH_SHORT)
-                            .show()
-                    }
+                    wallpaperResultLauncher.launch(WallpaperRequestType.LIVE_WALLPAPER_CHOOSER)
                 }
             }
             else -> {
@@ -147,13 +174,6 @@ class MainActivity : BaseActivity() {
             }
         }
         return true
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_SET_WALLPAPER && resultCode == Activity.RESULT_OK) {
-            Toast.makeText(this, R.string.apply_wallpaper_success, Toast.LENGTH_SHORT).show()
-        }
     }
 
     private class UsageAdapter(
@@ -174,4 +194,28 @@ class MainActivity : BaseActivity() {
 
     }
 
+    private class WallpaperResultContract :
+        ActivityResultContract<WallpaperRequestType, Boolean>() {
+        override fun createIntent(context: Context, input: WallpaperRequestType?): Intent {
+            return if (input == WallpaperRequestType.CHANGE_LIVE_WALLPAPER) {
+                Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER).apply {
+                    putExtra(
+                        WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
+                        ComponentName(context, LWallpaperService::class.java)
+                    )
+                }
+            } else {
+                Intent(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER)
+            }
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
+            return resultCode == Activity.RESULT_OK
+        }
+    }
+
+    private enum class WallpaperRequestType {
+        CHANGE_LIVE_WALLPAPER,
+        LIVE_WALLPAPER_CHOOSER
+    }
 }

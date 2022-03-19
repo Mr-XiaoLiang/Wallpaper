@@ -58,5 +58,16 @@
     <string name="generate_complete_summary">恭喜你 🎉，你已经完成了所有应用分组工作。\n现在你可以选择点击下方的确定按钮使设置生效。\n或者可以返回对前面的设置再做一些调整。\n需要注意的是，如果分组的名称与现有名称重名的话，将会把原有的颜色覆盖。</string>
     <string name="back_on_changing">正在应用更改，请稍等</string>
     <string name="guide_generate">它可以帮助您进行快速的对应用分组工作，尽管不能让您完全满意，但是可以减少您的部分工作量</string>
+    <string name="background">背景</string>
+    <string name="guide_background">选择一张图片作为背景</string>
+    <string name="start_loading">开始加载</string>
+    <string name="end_loading_successful">加载完成</string>
+    <string name="end_loading_fail">加载失败</string>
+    <string name="msg_change_background">你想要怎么修改背景呢？</string>
+    <string name="change">修改</string>
+    <string name="delete">删除</string>
+    <string name="start_delete">开始删除</string>
+    <string name="delete_successful">删除成功</string>
+    <string name="delete_fail">删除失败</string>
 
 </resources>

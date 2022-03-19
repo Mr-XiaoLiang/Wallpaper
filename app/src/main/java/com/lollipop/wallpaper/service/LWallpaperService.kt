@@ -72,6 +72,10 @@ class LWallpaperService : WallpaperService() {
 
     private var animationEnable = true
 
+    private val backgroundHelper by lazy {
+        BackgroundHelper.read(this)
+    }
+
     private val updateWeightTask = task {
         callUpdateWeights()
     }
@@ -87,6 +91,7 @@ class LWallpaperService : WallpaperService() {
         callGroupInfoChange()
         registerReceiver(groupInfoReceiver, IntentFilter(ACTION_GROUP_INFO_CHANGED))
         packageChangeReceiver = PackageUsageHelper.registerPackageChangeReceiver(this)
+        backgroundHelper.load()
     }
 
     override fun onDestroy() {
@@ -97,6 +102,7 @@ class LWallpaperService : WallpaperService() {
             unregisterReceiver(it)
         }
         packageChangeReceiver = null
+        backgroundHelper.clean()
     }
 
     override fun onCreateEngine(): Engine {
@@ -105,7 +111,8 @@ class LWallpaperService : WallpaperService() {
             ::getWallpaperWeight,
             ::getWallpaperBackground,
             ::getWallpaperPadding,
-            ::animationEnable
+            ::animationEnable,
+            ::getWallpaperBackgroundPicture,
         )
         engine = newEngine
         return newEngine
@@ -128,6 +135,14 @@ class LWallpaperService : WallpaperService() {
         } else {
             Color.WHITE
         }
+    }
+
+    private fun getWallpaperBackgroundPicture(): Bitmap? {
+        val bitmap = backgroundHelper.bitmap
+        if (backgroundHelper.needReload) {
+            backgroundHelper.load()
+        }
+        return bitmap
     }
 
     private fun getWallpaperPadding(): Float {
@@ -214,10 +229,12 @@ class LWallpaperService : WallpaperService() {
         private val weightProvider: () -> IntArray,
         private val backgroundProvider: () -> Int,
         private val paddingProvider: () -> Float,
-        private val enableAnimation: () -> Boolean
-    ) : WallpaperService.Engine() {
+        private val enableAnimation: () -> Boolean,
+        private val backgroundPictureProvider: () -> Bitmap?
+    ) : WallpaperService.Engine(), WallpaperPainter.BackgroundProvider {
 
         private val wallpaperPainter = WallpaperPainter()
+
         private val wallpaperColorsEngine by lazy {
             WallpaperColorsEngine(
                 colorProvider,
@@ -241,6 +258,10 @@ class LWallpaperService : WallpaperService() {
         }
 
         private var drawTaskVersion = 0L
+
+        init {
+            wallpaperPainter.backgroundProvider = this
+        }
 
         override fun onSurfaceChanged(
             holder: SurfaceHolder?,
@@ -272,11 +293,7 @@ class LWallpaperService : WallpaperService() {
 
         fun callDraw() {
             // 记录Surface更新时间作为任务版本号
-            var now = System.currentTimeMillis()
-            if (now == drawTaskVersion) {
-                now += 1
-            }
-            drawTaskVersion = now
+            updateVersion()
             val version = getVersion()
             doAsync {
                 if (enableAnimation()) {
@@ -350,6 +367,14 @@ class LWallpaperService : WallpaperService() {
             }
         }
 
+        private fun updateVersion() {
+            var now = System.currentTimeMillis()
+            if (now == drawTaskVersion) {
+                now += 1
+            }
+            drawTaskVersion = now
+        }
+
         private fun getVersion(): Long {
             return drawTaskVersion
         }
@@ -376,6 +401,10 @@ class LWallpaperService : WallpaperService() {
         override fun onDestroy() {
             super.onDestroy()
             cacheBitmap.destroy()
+        }
+
+        override fun getBackground(): Bitmap? {
+            return backgroundPictureProvider()
         }
 
     }
