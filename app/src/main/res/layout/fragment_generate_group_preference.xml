@@ -41,13 +41,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/hintSummaryView"
-        android:text="6"
+        tools:text="6"
         android:textColor="@color/textColorPrimary"
         android:textSize="22sp"
         android:gravity="center"
-        android:drawableEnd="@drawable/ic_baseline_edit_24"
-        android:drawableTint="@color/colorPrimaryVariant"
-        android:drawablePadding="5dp"/>
+        android:drawablePadding="5dp"
+        app:drawableEndCompat="@drawable/ic_baseline_edit_24"
+        app:drawableTint="@color/colorPrimaryVariant" />
 
     <TextView
         android:layout_width="wrap_content"

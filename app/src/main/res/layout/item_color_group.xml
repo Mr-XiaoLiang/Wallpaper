@@ -76,8 +76,8 @@
             android:ellipsize="end"
             android:textColor="@color/textColorPrimary"
             android:textSize="18sp"
-            android:drawableEnd="@drawable/ic_baseline_edit_24"
-            android:drawableTint="@color/colorPrimaryVariant"/>
+            app:drawableEndCompat="@drawable/ic_baseline_edit_24"
+            app:drawableTint="@color/colorPrimaryVariant" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
