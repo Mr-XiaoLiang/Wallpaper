@@ -65,6 +65,8 @@ class TransparencyPaletteView(context: Context, attrs: AttributeSet?, defStyleAt
 
         private var alphaShader: Shader? = null
 
+        private val arrowPath = Path()
+
         private val paint = Paint().apply {
             isDither = true
             isAntiAlias = true
@@ -98,6 +100,11 @@ class TransparencyPaletteView(context: Context, attrs: AttributeSet?, defStyleAt
             paint.color = Color.WHITE
             left = selectedAlpha * bounds.width() + bounds.left
             canvas.drawLine(left, bounds.top.toFloat(), left, bounds.bottom.toFloat(), paint)
+
+            val saveCount = canvas.save()
+            canvas.translate(left, 0F)
+            canvas.drawPath(arrowPath, paint)
+            canvas.restoreToCount(saveCount)
         }
 
         fun parser(alphaF: Float) {
@@ -123,6 +130,16 @@ class TransparencyPaletteView(context: Context, attrs: AttributeSet?, defStyleAt
             alphaShader = LinearGradient(bounds.left.toFloat(), bounds.top.toFloat(),
                 bounds.right.toFloat(), bounds.top.toFloat(),
                 Color.TRANSPARENT, Color.BLACK, Shader.TileMode.CLAMP)
+
+            arrowPath.reset()
+
+            val arrowHeight = bounds.height() * 0.25F
+            val arrowWidthHalf = arrowHeight * 0.5F
+            arrowPath.moveTo(bounds.left - arrowWidthHalf, bounds.top.toFloat())
+            arrowPath.lineTo(bounds.left.toFloat(), bounds.top + arrowHeight)
+            arrowPath.lineTo(bounds.left + arrowWidthHalf, bounds.top.toFloat())
+            arrowPath.close()
+
             invalidateSelf()
         }
 
