@@ -3,11 +3,13 @@ package com.lollipop.wallpaper.utils
 import android.app.Activity
 import android.graphics.Color
 import android.graphics.Rect
-import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.core.graphics.Insets
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import com.lollipop.wallpaper.utils.WindowInsetsHelper.EdgeStrategy.*
 import kotlin.math.max
 
@@ -24,20 +26,10 @@ class WindowInsetsHelper(
 
     companion object {
         fun getInsetsValue(insets: WindowInsets): InsetsValue {
-            return if (versionThen(Build.VERSION_CODES.R)) {
-                val value = insets.getInsets(
-                    WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout()
-                )
-                InsetsValue(value.left, value.top, value.right, value.bottom)
-            } else {
-                InsetsValue(
-                    insets.systemWindowInsetLeft,
-                    insets.systemWindowInsetTop,
-                    insets.systemWindowInsetRight,
-                    insets.systemWindowInsetBottom
-                )
-            }
-
+            return WindowInsetsCompat.toWindowInsetsCompat(insets)
+                .getInsets(WindowInsetsCompat.Type.systemGestures()).let {
+                    InsetsValue(it)
+                }
         }
 
         fun initWindowFlag(activity: Activity) {
@@ -45,17 +37,7 @@ class WindowInsetsHelper(
                 statusBarColor = Color.TRANSPARENT
                 navigationBarColor = Color.TRANSPARENT
             }
-            if (versionThen(Build.VERSION_CODES.R)) {
-                activity.window.setDecorFitsSystemWindows(false)
-            } else {
-                var viewFlag = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    viewFlag = (viewFlag or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
-                }
-                activity.window.decorView.systemUiVisibility = viewFlag
-            }
+            WindowCompat.setDecorFitsSystemWindows(activity.window, false)
             activity.window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         }
 
@@ -145,12 +127,13 @@ class WindowInsetsHelper(
         return insets
     }
 
-    class InsetsValue(
-        var left: Int,
-        var top: Int,
-        var right: Int,
-        var bottom: Int
-    ) {
+    class InsetsValue(insets: Insets) {
+
+        var left = insets.left
+        var top = insets.top
+        var right = insets.right
+        var bottom = insets.bottom
+
         fun basePlus(base: Rect, edge: Edge) {
             left = getNewValue(left, base.left, edge.left)
             top = getNewValue(top, base.top, edge.top)
@@ -174,7 +157,6 @@ class WindowInsetsHelper(
                 }
             }
         }
-
     }
 
     enum class ApplyType {
