@@ -5,6 +5,16 @@
     android:layout_height="wrap_content">
 
     <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:tint="@color/logoColor"
+        android:src="@drawable/ic_supporter_logo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/legendLeftArray"
+        app:layout_constraintEnd_toEndOf="@id/legendRightArray"/>
+
+    <ImageView
         android:id="@+id/legendColorView"
         android:layout_width="match_parent"
         android:layout_height="0px"

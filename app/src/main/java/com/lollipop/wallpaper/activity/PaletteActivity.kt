@@ -129,6 +129,7 @@ class PaletteActivity : BaseActivity() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onStart() {
         super.onStart()
         paletteDialogDelegator.reload()

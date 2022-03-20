@@ -17,10 +17,21 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                app:tint="@color/logoColor"
+                android:layout_width="0px"
+                android:layout_height="0px"
+                android:src="@drawable/ic_supporter_logo"
+                app:layout_constraintTop_toTopOf="@id/colorPreviewView"
+                app:layout_constraintBottom_toBottomOf="@id/colorPreviewView"
+                app:layout_constraintStart_toStartOf="@id/colorPreviewView"
+                app:layout_constraintEnd_toEndOf="@id/colorPreviewView"
+                app:layout_constraintWidth_percent="0.5"
+                app:layout_constraintDimensionRatio="1:1"/>
+
+            <ImageView
                 android:id="@+id/colorPreviewView"
                 android:layout_width="match_parent"
                 android:layout_height="0px"
-                android:src="#F00"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

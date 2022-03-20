@@ -1,5 +1,6 @@
 package com.lollipop.wallpaper.activity
 
+import android.annotation.SuppressLint
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -104,6 +105,7 @@ class LegendActivity : BaseActivity() {
         binding.legendFloatingRecyclerView.layoutManager = LinearLayoutManager(this)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun refresh() {
         binding.swipeRefreshLayout.isRefreshing = true
         appInfoList.clear()
@@ -158,6 +160,7 @@ class LegendActivity : BaseActivity() {
         autoSaveTask.run()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.swap -> {
@@ -374,10 +377,9 @@ class LegendActivity : BaseActivity() {
         }
 
         private fun callLegendPageChanged(position: Int) {
-            selectedLegendPosition = position
             legendDrawable.color = getColor(position)
-            checkArrowButton()
             onLegendPageChanged(position)
+            checkArrowButton()
         }
 
     }
@@ -453,7 +455,7 @@ class LegendActivity : BaseActivity() {
             paint.shader = LinearGradient(
                 bounds.left.toFloat(),
                 bounds.exactCenterY(),
-                bounds.right.toFloat(),
+                bounds.exactCenterX(),
                 bounds.exactCenterY(),
                 0xFFFFFF,
                 color,

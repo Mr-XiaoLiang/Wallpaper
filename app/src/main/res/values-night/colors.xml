@@ -18,4 +18,6 @@
 
     <color name="background">#000</color>
 
+    <color name="logoColor">#FFF</color>
+
 </resources>

@@ -1,6 +1,8 @@
 package com.lollipop.wallpaper.engine
 
 import android.graphics.*
+import androidx.core.graphics.alpha
+import com.lollipop.wallpaper.utils.changeAlpha
 import kotlin.math.max
 import kotlin.math.min
 
@@ -155,13 +157,12 @@ class WallpaperPainter {
                 }
             }
             val radialRadius = max(radius * 2.5F, minRadius)
+            val currentColor = colorArray[index]
             shaderArray.add(
                 RadialGradient(
-                    x,
-                    y,
-                    radialRadius,
+                    x, y, radialRadius,
                     intArrayOf(
-                        colorArray[index],
+                        currentColor,
                         colorEnd,
                     ),
                     floatArrayOf(

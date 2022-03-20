@@ -18,4 +18,5 @@
 
     <color name="background">#fff</color>
 
+    <color name="logoColor">#000</color>
 </resources>
