@@ -1,10 +1,12 @@
 package com.lollipop.wallpaper.dialog
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.alpha
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -62,13 +64,14 @@ class PaletteDialogDelegator(private val binding: DialogColorBinding) {
     }
 
     init {
+        binding.transparencyPaletteView.onTransparencyChanged { _, alphaI ->
+            onTransparencyChanged(alphaI)
+        }
         binding.huePaletteView.onHueChange { hue, _ ->
             binding.satValPaletteView.onHueChange(hue.toFloat())
         }
         binding.satValPaletteView.onHSVChange { _, color, _ ->
-            dialogSelectedColor = color
-            updatePreview(color)
-            onColorChangedListener?.invoke(color)
+            onColorChanged(color)
         }
         binding.presetColorView.layoutManager =
             LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
@@ -95,11 +98,29 @@ class PaletteDialogDelegator(private val binding: DialogColorBinding) {
 
     }
 
+    private fun onColorChanged(color: Int) {
+        val alpha = Color.alpha(dialogSelectedColor)
+        val newColor = color.changeAlpha(alpha)
+        setSelectedColor(newColor)
+    }
+
+    private fun onTransparencyChanged(alpha: Int) {
+        val newColor = dialogSelectedColor.changeAlpha(alpha)
+        setSelectedColor(newColor)
+    }
+
+    private fun setSelectedColor(newColor: Int) {
+        dialogSelectedColor = newColor
+        updatePreview(newColor)
+        onColorChangedListener?.invoke(newColor)
+    }
+
     fun saveInfo() {
         saveInfoTask.cancel()
         saveInfoTask.delay(100L)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun reload() {
         colorStore.reload(settings) {
             binding.presetColorView.adapter?.notifyDataSetChanged()
@@ -142,6 +163,7 @@ class PaletteDialogDelegator(private val binding: DialogColorBinding) {
         dialogSelectedColor = color
         binding.huePaletteView.parser(color)
         binding.satValPaletteView.parser(color)
+        binding.transparencyPaletteView.parser(color.alpha)
         updatePreview(color)
     }
 

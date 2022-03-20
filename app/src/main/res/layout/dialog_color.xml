@@ -36,17 +36,26 @@
         app:constraint_referenced_ids="palettePreviewView, colorConfirmButton"
         android:visibility="gone"/>
 
+    <com.lollipop.wallpaper.view.TransparencyPaletteView
+        android:layout_width="0px"
+        android:layout_height="40dp"
+        android:id="@+id/transparencyPaletteView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/huePaletteView"
+        app:layout_constraintTop_toBottomOf="@id/palettePreviewView"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"/>
+
     <com.lollipop.wallpaper.view.SatValPaletteView
         android:id="@+id/satValPaletteView"
         android:layout_width="0px"
         android:layout_height="0px"
-        android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toStartOf="@id/huePaletteView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/palettePreviewView" />
+        app:layout_constraintEnd_toEndOf="@id/transparencyPaletteView"
+        app:layout_constraintStart_toStartOf="@id/transparencyPaletteView"
+        app:layout_constraintTop_toBottomOf="@id/transparencyPaletteView" />
 
     <com.lollipop.wallpaper.view.HuePaletteView
         android:id="@+id/huePaletteView"
@@ -55,7 +64,7 @@
         android:layout_marginEnd="20dp"
         app:layout_constraintBottom_toBottomOf="@id/satValPaletteView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/satValPaletteView" />
+        app:layout_constraintTop_toTopOf="@id/transparencyPaletteView" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/presetColorView"
