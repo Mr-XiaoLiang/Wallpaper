@@ -56,6 +56,9 @@ class SettingsActivity : BaseActivity() {
         binding.appVersionView.setOnClickListener {
             openGitHub()
         }
+        binding.privacyAgreement.setOnClickListener {
+            PrivacyAgreementActivity.start(this)
+        }
     }
 
     private fun openGitHub() {

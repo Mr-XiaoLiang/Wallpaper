@@ -61,6 +61,8 @@ class LSettings private constructor(val context: Context) {
 
     var useAnalogData by SettingDelegator(true)
 
+    var allowPrivacyAgreement by SettingDelegator(false)
+
     private var usageStatsGroupInfo by SettingDelegator("")
 
     private var usageStatsPackageInfo by SettingDelegator("")

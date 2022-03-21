@@ -19,10 +19,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Wallpaper">
-        <activity android:name=".activity.GenerateActivity"
+        <activity
+            android:name=".activity.LauncherActivity"
+            android:excludeFromRecents="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.PrivacyAgreementActivity"
+            android:excludeFromRecents="true"
+            android:exported="false" />
+        <activity
+            android:name=".activity.GenerateActivity"
+            android:excludeFromRecents="true"
             android:label="@string/generate_color"
-            android:launchMode="singleInstance"
-            android:excludeFromRecents="true"/>
+            android:launchMode="singleInstance" />
         <activity
             android:name=".activity.SettingsActivity"
             android:excludeFromRecents="true"
@@ -43,14 +58,8 @@
         <activity
             android:name=".activity.MainActivity"
             android:excludeFromRecents="true"
-            android:launchMode="singleInstance"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="true"
+            android:launchMode="singleInstance" />
 
         <service
             android:name=".service.LWallpaperService"

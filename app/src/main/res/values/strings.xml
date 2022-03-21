@@ -67,5 +67,14 @@
     <string name="start_delete">Start deletion</string>
     <string name="delete_successful">Deleted successfully</string>
     <string name="delete_fail">Delete failed</string>
+    <string name="privacy_agreement_title">隐私声明</string>
+    <string name="privacy_usage_stats">应用使用情况</string>
+    <string name="privacy_usage_stats_detail">本应用将会收集您的应用使用时长数据（android.permission.PACKAGE_USAGE_STATS）用于生成动态壁纸图案。但是仅用于本地生成，软件不支持网络功能，绝对不会上传您的使用情况并用于其他用途。</string>
+    <string name="privacy_query_all">获取全部已安装应用</string>
+    <string name="privacy_query_all_detail">本应用将会获取您的设备所有已安装应用（android.permission.QUERY_ALL_PACKAGES）用于匹配并生成动态壁纸图案。但是仅用于本地生成，软件不支持网络功能，绝对不会上传您的使用情况并用于其他用途。</string>
+    <string name="privacy_set_wallpaper">修改壁纸</string>
+    <string name="privacy_set_wallpaper_detail">本应用将会修改您的桌面及锁屏壁纸（android.permission.SET_WALLPAPER）用于使壁纸生效。这个操作需要您的主动触发，并且由您来确认才会生效。</string>
+    <string name="refuse">拒绝</string>
+    <string name="allow">同意</string>
 
 </resources>

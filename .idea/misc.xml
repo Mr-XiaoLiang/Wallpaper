@@ -5,11 +5,17 @@
       <map>
         <entry key="app/src/main/res/drawable/ic_baseline_info_24.xml" value="0.187" />
         <entry key="app/src/main/res/drawable/ic_supporter_logo.xml" value="0.187" />
+        <entry key="app/src/main/res/layout/activity_base.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_generate.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_launcher.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_palette.xml" value="0.16767983789260385" />
+        <entry key="app/src/main/res/layout/activity_privacy_agreement.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_settings.xml" value="0.5" />
         <entry key="app/src/main/res/layout/dialog_color.xml" value="0.5" />
         <entry key="app/src/main/res/layout/dialog_group_name.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_generate_group_preference.xml" value="0.178125" />
         <entry key="app/src/main/res/layout/guide_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/guide_palette.xml" value="0.16767983789260385" />
         <entry key="app/src/main/res/layout/item_color_group.xml" value="0.178125" />
         <entry key="app/src/main/res/layout/item_group_info.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_usage_legend.xml" value="0.5" />
