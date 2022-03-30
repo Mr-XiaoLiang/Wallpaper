@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#49599a</color>
+    <color name="colorPrimary">#49599A</color>
     <color name="colorPrimaryVariant">#333E6A</color>
     <color name="colorOnPrimary">#FF000000</color>
     <color name="colorSecondary">#02988A</color>
@@ -20,4 +20,5 @@
 
     <color name="logoColor">#FFF</color>
 
+    <color name="splashBackground">#000</color>
 </resources>

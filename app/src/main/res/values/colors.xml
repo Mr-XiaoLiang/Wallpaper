@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#aab6fe</color>
-    <color name="colorPrimaryVariant">#7986cb</color>
+    <color name="colorPrimary">#AAB6FE</color>
+    <color name="colorPrimaryVariant">#7986CB</color>
     <color name="colorOnPrimary">#FFFFFFFF</color>
     <color name="colorSecondary">#FF03DAC5</color>
     <color name="colorSecondaryVariant">#FF03DAC5</color>
@@ -16,7 +16,9 @@
 
     <color name="contentLoadingBackground">#8000</color>
 
-    <color name="background">#fff</color>
+    <color name="background">#FFF</color>
 
     <color name="logoColor">#000</color>
+
+    <color name="splashBackground">#FFF</color>
 </resources>
