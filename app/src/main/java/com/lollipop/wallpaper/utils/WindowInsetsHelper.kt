@@ -27,7 +27,7 @@ class WindowInsetsHelper(
     companion object {
         fun getInsetsValue(insets: WindowInsets): InsetsValue {
             return WindowInsetsCompat.toWindowInsetsCompat(insets)
-                .getInsets(WindowInsetsCompat.Type.systemGestures()).let {
+                .getInsets(WindowInsetsCompat.Type.systemBars()).let {
                     InsetsValue(it)
                 }
         }
