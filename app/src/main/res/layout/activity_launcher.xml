@@ -10,8 +10,7 @@
     <ImageView
         android:layout_width="128dp"
         android:layout_height="128dp"
-        android:src="@drawable/ic_supporter_logo"
-        android:layout_gravity="center"
-        app:tint="@color/logoColor"/>
+        android:src="@drawable/ic_splash"
+        android:layout_gravity="center"/>
 
 </FrameLayout>

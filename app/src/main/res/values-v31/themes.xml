@@ -14,7 +14,7 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="android:windowSplashScreenBackground">@color/splashBackground</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
         <item name="android:windowSplashScreenAnimationDuration">100</item>
     </style>
 </resources>
